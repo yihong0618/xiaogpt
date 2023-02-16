@@ -21,7 +21,7 @@ play chatgpt with xiaomi ai speaker
 ## QA
 
 1. 用破解么？不用
-2. 为啥必须抓包？小米在我昨天发推得瑟后把容易获取的方式封了。。。我之后再看看
+2. 为啥必须抓包？我之后再看看，争取不用抓包
 3. 连不上 revChatGPT？国情，你得设置 proxy 并且该地区可用的 proxy
 4. 你做这玩意也没用啊？确实。。。但是挺好玩的，有用对你来说没用，对我们来说不一定呀
 5. 想把它变得更好？PR Issue always welcome.
