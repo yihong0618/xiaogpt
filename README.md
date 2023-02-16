@@ -16,6 +16,11 @@ play chatgpt with xiaomi ai speaker
 4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
 5. 跑起来之后就可以问小爱同学问题了，“帮我回答开头的问题” 会发送一份给 ChatGPT 然后小爱同学用 tts 回答
 
+e.g.
+```shell
+python3 xiaogpt.py --hardware LX06
+```
+
 ## QA
 
 1. 用破解么？不用
