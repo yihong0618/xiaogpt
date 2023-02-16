@@ -25,7 +25,7 @@ play chatgpt with xiaomi ai speaker
 3. 连不上 revChatGPT？国情，你得设置 proxy 并且该地区可用的 proxy
 4. 你做这玩意也没用啊？确实。。。但是挺好玩的，有用对你来说重要，对我们来说不一定呀
 5. 想把它变得更好？PR Issue always welcome.
-6. 还有问题？提 Issuse
+6. 还有问题？提 Issuse 哈哈
 
 ## 赞赏
 
