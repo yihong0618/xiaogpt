@@ -2,6 +2,7 @@ import argparse
 import json
 import subprocess
 import time
+import os
 from http.cookies import SimpleCookie
 from pathlib import Path
 
@@ -12,10 +13,24 @@ from rich import print
 
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
+USER_NAME = "可爱无敌小朋友"
+
+# Read the CHATGPT_PROMPT, set it in the .bashrc or .zshrc
+# export CHATGPT_PROMPT="XXX"
+prompt = os.environ.get("CHATGPT_PROMPT")
+if prompt:
+    CHATGPT_PROMPT = prompt
+else:
+    # Use a default value if the CHATGPT_PROMPT environment variable is not set
+    CHATGPT_PROMPT = "假设你是" + USER_NAME + "的智能语音助手，他是一个5岁的小男孩，他还有其它小名，皮皮，皮皮虾，回答问题的时候活泼一点，可以随便选一个名字，可以适当加上一些语气词，让他喜欢和你说话，让我们继续之前的聊天吧"
+
+print(f"ChatGPT Prompt: {CHATGPT_PROMPT}")
 
 HARDWARE_COMMAND_DICT = {
     "LX06": "5-1",
     "L05B": "5-3",
+    "S12A": "5-1",
+    "LX01": "5-1"
     # add more here
 }
 
@@ -33,7 +48,7 @@ def parse_cookie_string(cookie_string):
 
 
 class MiGPT:
-    def __init__(self, hardware):
+    def __init__(self, hardware, conversation_id):
         self.mi_token_home = Path.home() / ".mi.token"
         self.hardware = hardware
         self.cookie_string = ""
@@ -44,12 +59,14 @@ class MiGPT:
         self.device_id = ""
         self.service_token = ""
         self.tts_command = HARDWARE_COMMAND_DICT.get(hardware, "5-1")
+        self.conversation_id = conversation_id
 
     def _init_all_data(self):
         # Step 1 make sure we init the ai api and servive token
         try:
             # micli mina to make sure the init
             mi_hardware_data = json.loads(subprocess.check_output(["micli", "mina"]))
+            # mi_hardware_data = json.loads(result.stdout)
         except Exception as e:
             print(str(e))
             raise Exception(
@@ -68,6 +85,7 @@ class MiGPT:
         self._init_first_data_and_chatbot()
 
     def _init_data_hardware(self, hardware_data):
+        # print(hardware_data)
         for h in hardware_data:
             if h.get("hardware", "") == self.hardware:
                 self.device_id = h.get("deviceID")
@@ -86,7 +104,7 @@ class MiGPT:
     def _init_first_data_and_chatbot(self):
         data = self.get_latest_ask_from_xiaoai()
         self.last_timestamp, self.last_record = self.get_last_timestamp_and_record(data)
-        self.chatbot = Chatbot(configure())
+        self.chatbot = Chatbot(configure(), self.conversation_id)
 
     def get_latest_ask_from_xiaoai(self):
         r = self.s.get(
@@ -105,10 +123,28 @@ class MiGPT:
         else:
             return 0, None
 
+    def do_action(self, command, value):
+        # print(f"MiService: do_action {command}:{value}")
+        result = subprocess.run(["micli", command, value])
+        print(f"MiService: do_action {command}: done, {result}")
+
+    def normalize(self, message):
+        message = message.replace(" ", "，")
+        message = message.replace("\n", "，")
+        message = message.replace("\"", "，")
+
+        return message
+
     def run_forever(self):
-        self._init_all_data()
+        self.do_action(self.tts_command, f"正在启动小爱同学和{USER_NAME}的智能语音助手的连接,请稍等哦")
+        data = list(self.chatbot.ask(CHATGPT_PROMPT))[-1]
+        if message := data.get("message", ""):
+            message = self.normalize(message)
+            print("ChatGPT:" + message)
+            self.do_action(self.tts_command, message)
+        # self._init_all_data()
         while 1:
-            print(f"Now listening xiaoai new message timestamp: {self.last_timestamp}")
+            # print(f"Waiting for new MiSpeaker message: {self.last_timestamp}")
             try:
                 r = self.get_latest_ask_from_xiaoai()
             except Exception:
@@ -116,44 +152,54 @@ class MiGPT:
                 self._init_all_data()
                 r = self.get_latest_ask_from_xiaoai()
 
-            time.sleep(5)
+            time.sleep(2)
             new_timestamp, last_record = self.get_last_timestamp_and_record(r)
             if new_timestamp > self.last_timestamp:
                 self.last_timestamp = new_timestamp
                 query = last_record.get("query", "")
-                if query.find("帮我回答") != -1:
-                    # drop 帮我回答
-                    query = query[4:] + "，请用100字以内回答"
-                    print(query)
-                    print("Running chatgpt ask maybe a little slow we do not pay")
-                    # waiting for xiaoai speaker done
-                    time.sleep(8)
-                    subprocess.run(["micli", self.tts_command, "正在问GPT我们不是会员还用的API有点慢"])
+                print(query)
+                if query.find("停止") != -1:
+                    continue
+
+                if query.find("播放") != -1:
+                    continue
+
+                if query.find("打开") != -1:
+                    continue
+
+                if query.find("关闭") != -1:
+                    continue
+
+                if query.find("天气") != -1:
+                    continue
+
+                self.do_action(self.tts_command, f"你的问题是{query},请稍等哦，让我来想一想")
+                try:
+                    print(f"Ask ChatGPT:{query}")
                     data = list(self.chatbot.ask(query))[-1]
                     if message := data.get("message", ""):
                         # xiaoai tts did not support space
-                        message = message.replace(" ", ",")
-                        message = "以下是GPT的回答:" + message
-                        print(message)
+                        message = self.normalize(message)
+                        print("ChatGPT:" + message)
                         try:
                             print(
-                                "以下是小爱的回答: ",
+                                "MiSpeaker: ",
                                 last_record.get("answers")[0]
                                 .get("tts", {})
                                 .get("text"),
                             )
                         except:
-                            print("小爱没回")
-                        # 5-1 for xiaoai pro tts
-                        # TODO more data to chunk
-                        try:
-                            subprocess.run(["micli", self.tts_command, message])
-                            time.sleep(1)
-                        except Exception as e:
-                            print("Something is wrong: ", str(e))
+                            print("No response from MiSpeaker")
 
-            else:
-                print("No new xiao ai record")
+                        # Text from ChatGPT to TTS
+                        self.do_action(self.tts_command, message)
+                        # wait for the TTS finished
+                        sleep_time = len(message) / 5
+                        print(f"sleep: {sleep_time}s")
+                        time.sleep(sleep_time)
+                except Exception as e:
+                    self.do_action(self.tts_command, "不知道哪里出什么问题了，请重新问问题吧")
+                    print("Something is wrong: ", str(e))
 
 
 if __name__ == "__main__":
@@ -162,10 +208,17 @@ if __name__ == "__main__":
         "--hardware",
         dest="hardware",
         type=str,
-        default="LX06",
+        default="S12A",
         help="小爱 hardware",
     )
+    parser.add_argument(
+        "--conversation_id",
+        dest="conversation_id",
+        type=str,
+        default="c379851d-fbd4-479e-a716-dddc379fbxxx",
+        help="ChatGPT conversation_id",
+    )
     options = parser.parse_args()
-    miboy = MiGPT(options.hardware)
+    miboy = MiGPT(options.hardware, options.conversation_id)
     miboy._init_all_data()
     miboy.run_forever()
