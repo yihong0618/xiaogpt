@@ -137,11 +137,16 @@ class MiGPT:
 
     def run_forever(self):
         self.do_action(self.tts_command, f"正在启动小爱同学和{USER_NAME}的智能语音助手的连接,请稍等哦")
-        data = list(self.chatbot.ask(CHATGPT_PROMPT))[-1]
-        if message := data.get("message", ""):
-            message = self.normalize(message)
-            print("ChatGPT:" + message)
-            self.do_action(self.tts_command, message)
+        try:
+            #setup the ChatGPT with the prompt text
+            data = list(self.chatbot.ask(CHATGPT_PROMPT))[-1]
+            if message := data.get("message", ""):
+                message = self.normalize(message)
+                print("ChatGPT:" + message)
+                self.do_action(self.tts_command, message)
+        except Exception as e:
+            print("ChatGPT: setup prompt failure:" + str(e))
+
         # self._init_all_data()
         while 1:
             # print(f"Waiting for new MiSpeaker message: {self.last_timestamp}")
