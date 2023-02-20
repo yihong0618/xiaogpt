@@ -56,15 +56,12 @@ class MiGPT:
         self.mina_service = None
 
     async def init_all_data(self, session):
-        # Step 1 make sure we init the ai api and servive token
-
-        # Step 2 get user_id and ai service_token
+        await self.login_miboy(session)
+        await self._init_data_hardware()
         with open(self.mi_token_home) as f:
             user_data = json.loads(f.read())
         self.user_id = user_data.get("userId")
         self.service_token = user_data.get("micoapi")[1]
-        await self.login_miboy(session)
-        await self._init_data_hardware()
         # Step 3 init get get message api's cookie
         self._init_cookie()
         # Step 4 init first data and chatbot
