@@ -33,7 +33,7 @@ def parse_cookie_string(cookie_string):
 
 
 class MiGPT:
-    def __init__(self, hardware):
+    def __init__(self, hardware, conversation_id=""):
         self.mi_token_home = Path.home() / ".mi.token"
         self.hardware = hardware
         self.cookie_string = ""
@@ -44,6 +44,7 @@ class MiGPT:
         self.device_id = ""
         self.service_token = ""
         self.tts_command = HARDWARE_COMMAND_DICT.get(hardware, "5-1")
+        self.conversation_id=conversation_id
 
     def _init_all_data(self):
         # Step 1 make sure we init the ai api and servive token
@@ -86,7 +87,7 @@ class MiGPT:
     def _init_first_data_and_chatbot(self):
         data = self.get_latest_ask_from_xiaoai()
         self.last_timestamp, self.last_record = self.get_last_timestamp_and_record(data)
-        self.chatbot = Chatbot(configure())
+        self.chatbot = Chatbot(configure(), conversation_id=self.conversation_id)
 
     def get_latest_ask_from_xiaoai(self):
         r = self.s.get(
@@ -104,6 +105,18 @@ class MiGPT:
             return timestamp, last_record
         else:
             return 0, None
+
+    def do_action(self, command, value):
+        # print(f"MiService: do_action {command}:{value}")
+        result = subprocess.run(["micli", command, value])
+        print(f"MiService: do_action {command}: done, {result}")
+
+    def normalize(self, message):
+        message = message.replace(" ", "，")
+        message = message.replace("\n", "，")
+        message = message.replace("\"", "，")
+
+        return message
 
     def run_forever(self):
         self._init_all_data()
@@ -128,11 +141,11 @@ class MiGPT:
                     print("Running chatgpt ask maybe a little slow we do not pay")
                     # waiting for xiaoai speaker done
                     time.sleep(8)
-                    subprocess.run(["micli", self.tts_command, "正在问GPT我们不是会员还用的API有点慢"])
+                    self.do_action(self.tts_command, "正在问GPT我们不是会员还用的API有点慢")
                     data = list(self.chatbot.ask(query))[-1]
                     if message := data.get("message", ""):
                         # xiaoai tts did not support space
-                        message = message.replace(" ", ",")
+                        message = self.normalize(message)
                         message = "以下是GPT的回答:" + message
                         print(message)
                         try:
@@ -147,7 +160,7 @@ class MiGPT:
                         # 5-1 for xiaoai pro tts
                         # TODO more data to chunk
                         try:
-                            subprocess.run(["micli", self.tts_command, message])
+                            self.do_action(self.tts_command, message)
                             time.sleep(1)
                         except Exception as e:
                             print("Something is wrong: ", str(e))
@@ -165,7 +178,15 @@ if __name__ == "__main__":
         default="LX06",
         help="小爱 hardware",
     )
+
+    parser.add_argument(
+        "--conversation_id",
+        dest="conversation_id",
+        type=str,
+        default="",
+        help="ChatGPT conversation_id",
+    )
     options = parser.parse_args()
-    miboy = MiGPT(options.hardware)
+    miboy = MiGPT(options.hardware, options.conversation_id)
     miboy._init_all_data()
     miboy.run_forever()

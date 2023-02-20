@@ -18,7 +18,7 @@ play chatgpt with xiaomi ai speaker
 
 e.g.
 ```shell
-python3 xiaogpt.py --hardware LX06
+python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx";
 ```
 
 ## QA
