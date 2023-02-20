@@ -108,8 +108,7 @@ class MiGPT:
 
     def do_action(self, command, value):
         # print(f"MiService: do_action {command}:{value}")
-        result = subprocess.run(["micli", command, value])
-        print(f"MiService: do_action {command}: done, {result}")
+        result = subprocess.check_output(["micli", command, value])
 
     def normalize(self, message):
         message = message.replace(" ", "，")
