@@ -33,7 +33,7 @@ def parse_cookie_string(cookie_string):
 
 
 class MiGPT:
-    def __init__(self, hardware, conversation_id=""):
+    def __init__(self, hardware, conversation_id="", cookie=""):
         self.mi_token_home = Path.home() / ".mi.token"
         self.hardware = hardware
         self.cookie_string = ""
@@ -43,8 +43,9 @@ class MiGPT:
         self.user_id = ""
         self.device_id = ""
         self.service_token = ""
+        self.cookie = cookie
         self.tts_command = HARDWARE_COMMAND_DICT.get(hardware, "5-1")
-        self.conversation_id=conversation_id
+        self.conversation_id = conversation_id
 
     def _init_all_data(self):
         # Step 1 make sure we init the ai api and servive token
@@ -52,7 +53,6 @@ class MiGPT:
             # micli mina to make sure the init
             mi_hardware_data = json.loads(subprocess.check_output(["micli", "mina"]))
         except Exception as e:
-            print(str(e))
             raise Exception(
                 "Something is wrong with get data, please visit https://github.com/Yonsm/MiService"
             )
@@ -69,6 +69,9 @@ class MiGPT:
         self._init_first_data_and_chatbot()
 
     def _init_data_hardware(self, hardware_data):
+        if self.cookie:
+            # if use cookie do not need init
+            return
         for h in hardware_data:
             if h.get("hardware", "") == self.hardware:
                 self.device_id = h.get("deviceID")
@@ -77,12 +80,15 @@ class MiGPT:
             raise Exception(f"we have no hardware: {self.hardware} please check")
 
     def _init_cookie(self):
-        self.cookie_string = COOKIE_TEMPLATE.format(
-            device_id=self.device_id,
-            service_token=self.service_token,
-            user_id=self.user_id,
-        )
-        self.s.cookies = parse_cookie_string(self.cookie_string)
+        if self.cookie:
+            self.s.cookies = parse_cookie_string(self.cookie)
+        else:
+            self.cookie_string = COOKIE_TEMPLATE.format(
+                device_id=self.device_id,
+                service_token=self.service_token,
+                user_id=self.user_id,
+            )
+            self.s.cookies = parse_cookie_string(self.cookie_string)
 
     def _init_first_data_and_chatbot(self):
         data = self.get_latest_ask_from_xiaoai()
@@ -113,7 +119,7 @@ class MiGPT:
     def normalize(self, message):
         message = message.replace(" ", "，")
         message = message.replace("\n", "，")
-        message = message.replace("\"", "，")
+        message = message.replace('"', "，")
 
         return message
 
@@ -144,7 +150,11 @@ class MiGPT:
                     if self.conversation_id:
                         data = list(self.chatbot.ask(query))[-1]
                     else:
-                        data = list(self.chatbot.ask(query, conversation_id=self.conversation_id))[-1]
+                        data = list(
+                            self.chatbot.ask(
+                                query, conversation_id=self.conversation_id
+                            )
+                        )[-1]
                     if message := data.get("message", ""):
                         # xiaoai tts did not support space
                         message = self.normalize(message)
@@ -188,7 +198,14 @@ if __name__ == "__main__":
         default="",
         help="ChatGPT conversation_id",
     )
+    parser.add_argument(
+        "--cookie",
+        dest="cookie",
+        type=str,
+        default="",
+        help="xiaomi cookie",
+    )
     options = parser.parse_args()
-    miboy = MiGPT(options.hardware, options.conversation_id)
+    miboy = MiGPT(options.hardware, options.conversation_id, options.cookie)
     miboy._init_all_data()
     miboy.run_forever()

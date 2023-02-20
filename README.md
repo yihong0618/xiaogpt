@@ -19,13 +19,15 @@ play chatgpt with xiaomi ai speaker
 4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
 5. 跑起来之后就可以问小爱同学问题了，“帮我回答开头的问题” 会发送一份给 ChatGPT 然后小爱同学用 tts 回答
 6. 如果你想用 conversation_id 来持续对话，可以加上 --conversation_id="xxxxxxxx"
+7. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie ${cookie}
 
 e.g.
 ```shell
 python3 xiaogpt.py --hardware LX06;
 # or
 python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx";
-
+# or 
+python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx" --cookie ${cookie};
 ```
 
 ## QA
