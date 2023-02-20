@@ -87,7 +87,7 @@ class MiGPT:
     def _init_first_data_and_chatbot(self):
         data = self.get_latest_ask_from_xiaoai()
         self.last_timestamp, self.last_record = self.get_last_timestamp_and_record(data)
-        self.chatbot = Chatbot(configure(), conversation_id=self.conversation_id)
+        self.chatbot = Chatbot(configure())
 
     def get_latest_ask_from_xiaoai(self):
         r = self.s.get(
@@ -142,7 +142,10 @@ class MiGPT:
                     # waiting for xiaoai speaker done
                     time.sleep(8)
                     self.do_action(self.tts_command, "正在问GPT我们不是会员还用的API有点慢")
-                    data = list(self.chatbot.ask(query))[-1]
+                    if self.conversation_id:
+                        data = list(self.chatbot.ask(query))[-1]
+                    else:
+                        data = list(self.chatbot.ask(query, conversation_id=self.conversation_id))[-1]
                     if message := data.get("message", ""):
                         # xiaoai tts did not support space
                         message = self.normalize(message)

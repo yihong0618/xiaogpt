@@ -15,10 +15,14 @@ play chatgpt with xiaomi ai speaker
 3. 参考 [revChatGPT](https://github.com/acheong08/ChatGPT) 项目 README 配置 chatGPT 的 config
 4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
 5. 跑起来之后就可以问小爱同学问题了，“帮我回答开头的问题” 会发送一份给 ChatGPT 然后小爱同学用 tts 回答
+6. 如果你想用 conversation_id 来持续对话，可以加上 --conversation_id="xxxxxxxx"
 
 e.g.
 ```shell
+python3 xiaogpt.py --hardware LX06;
+# or
 python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx";
+
 ```
 
 ## QA
