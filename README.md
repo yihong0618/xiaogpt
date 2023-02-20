@@ -1,6 +1,9 @@
 # xiaogpt
 play chatgpt with xiaomi ai speaker
 
+![image](https://user-images.githubusercontent.com/15976103/220028375-c193a859-48a1-4270-95b6-ef540e54a621.png)
+
+
 ## 准备
 
 1. ChatGPT id
