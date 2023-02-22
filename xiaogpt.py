@@ -23,6 +23,8 @@ HARDWARE_COMMAND_DICT = {
     "LX01": "5-1"
     # add more here
 }
+MI_USER = ""
+MI_PASS = ""
 
 
 ### HELP FUNCTION ###
@@ -38,7 +40,14 @@ def parse_cookie_string(cookie_string):
 
 
 class MiGPT:
-    def __init__(self, hardware, conversation_id="", cookie="", use_command=False):
+    def __init__(
+        self,
+        hardware,
+        conversation_id="",
+        cookie="",
+        use_command=False,
+        mute_xiaoai=False,
+    ):
         self.mi_token_home = Path.home() / ".mi.token"
         self.hardware = hardware
         self.cookie_string = ""
@@ -54,6 +63,10 @@ class MiGPT:
         self.conversation_id = conversation_id
         self.miboy_account = None
         self.mina_service = None
+        # try to mute xiaoai config
+        self.mute_xiaoai = mute_xiaoai
+        # mute xiaomi in runtime
+        self.this_mute_xiaoai = mute_xiaoai
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
@@ -70,8 +83,8 @@ class MiGPT:
         self.session = session
         self.account = MiAccount(
             session,
-            env.get("MI_USER"),
-            env.get("MI_PASS"),
+            env.get("MI_USER") or MI_USER,
+            env.get("MI_PASS") or MI_PASS,
             str(self.mi_token_home),
         )
         self.mina_service = MiNAService(self.account)
@@ -153,6 +166,21 @@ class MiGPT:
             return message
         return ""
 
+    async def get_if_xiaoai_is_playing(self):
+        playing_info = await self.mina_service.player_get_status(self.device_id)
+        # WTF xiaomi api
+        is_playing = (
+            json.loads(playing_info.get("data", {}).get("info", "{}")).get("status", -1)
+            == 1
+        )
+        return is_playing
+
+    async def stop_if_xiaoai_is_playing(self):
+        is_playing = await self.get_if_xiaoai_is_playing()
+        if is_playing:
+            # stop it
+            await self.mina_service.player_pause(self.device_id)
+
     async def run_forever(self):
         async with ClientSession() as session:
             await self.init_all_data(session)
@@ -167,17 +195,24 @@ class MiGPT:
                     await self.init_all_data(session)
                     r = await self.get_latest_ask_from_xiaoai()
                 # spider rule
-                await asyncio.sleep(5)
+                if not self.mute_xiaoai:
+                    await asyncio.sleep(3)
+                else:
+                    await asyncio.sleep(0.3)
+                if self.this_mute_xiaoai:
+                    await self.stop_if_xiaoai_is_playing()
 
                 new_timestamp, last_record = self.get_last_timestamp_and_record(r)
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
                     if query.find("帮我回答") != -1:
+                        self.this_mute_xiaoai = False
                         # drop 帮我回答
                         query = query[4:] + "，请用100字以内回答"
                         # waiting for xiaoai speaker done
-                        await asyncio.sleep(8)
+                        if not self.mute_xiaoai:
+                            await asyncio.sleep(8)
                         await self.do_tts("正在问GPT有点慢请耐心等待")
                         try:
                             print(
@@ -189,9 +224,16 @@ class MiGPT:
                         except:
                             print("小爱没回")
                         message = await self.ask_gpt(query)
-                        print(message)
                         # tts to xiaoai with ChatGPT answer
+                        print(message)
                         await self.do_tts(message)
+                        if self.mute_xiaoai:
+                            while 1:
+                                is_playing = await self.get_if_xiaoai_is_playing()
+                                time.sleep(2)
+                                if not is_playing:
+                                    break
+                            self.this_mute_xiaoai = True
                 else:
                     print("No new xiao ai record")
 
@@ -205,13 +247,26 @@ if __name__ == "__main__":
         default="LX06",
         help="小爱 hardware",
     )
-
     parser.add_argument(
         "--conversation_id",
         dest="conversation_id",
         type=str,
         default="",
         help="ChatGPT conversation_id",
+    )
+    parser.add_argument(
+        "--account",
+        dest="account",
+        type=str,
+        default="",
+        help="xiaomi account",
+    )
+    parser.add_argument(
+        "--password",
+        dest="password",
+        type=str,
+        default="",
+        help="xiaomi password",
     )
     parser.add_argument(
         "--cookie",
@@ -226,8 +281,22 @@ if __name__ == "__main__":
         action="store_true",
         help="use command to tts",
     )
+    parser.add_argument(
+        "--mute_xiaoai",
+        dest="mute_xiaoai",
+        action="store_true",
+        help="try to mute xiaoai answer",
+    )
     options = parser.parse_args()
+    # if set
+    MI_USER = options.account
+    MI_PASS = options.password
+    print(MI_USER, MI_PASS, os.environ.get("MI_USER"))
     miboy = MiGPT(
-        options.hardware, options.conversation_id, options.cookie, options.use_command
+        options.hardware,
+        options.conversation_id,
+        options.cookie,
+        options.use_command,
+        options.mute_xiaoai,
     )
     asyncio.run(miboy.run_forever())
