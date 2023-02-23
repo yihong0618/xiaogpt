@@ -129,11 +129,11 @@ class MiGPT:
     def get_last_timestamp_and_record(self, data):
         if d := data.get("data"):
             records = json.loads(d).get("records")
+            if not records:
+                return 0, None
             last_record = records[0]
             timestamp = last_record.get("time")
             return timestamp, last_record
-        else:
-            return 0, None
 
     async def do_tts(self, value):
         if not self.use_command:
@@ -201,7 +201,6 @@ class MiGPT:
                     await asyncio.sleep(0.3)
                 if self.this_mute_xiaoai:
                     await self.stop_if_xiaoai_is_playing()
-
                 new_timestamp, last_record = self.get_last_timestamp_and_record(r)
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
@@ -299,4 +298,3 @@ if __name__ == "__main__":
         options.mute_xiaoai,
     )
     asyncio.run(miboy.run_forever())
-
