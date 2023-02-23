@@ -22,7 +22,7 @@ Play ChatGPT with Xiaomi AI Speaker
 7. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
 8. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
 9. 使用 --mute_xiaoai 选项，可以让小爱不回答，但会频繁请求，玩一下可以使用，不建议一直用
-10. 使用 --account ${account} --password ${password} 可以不进行步骤 2
+10. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
 11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码 ` if query.find("帮我回答") != -1:`
 
 e.g.
