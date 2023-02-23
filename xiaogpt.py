@@ -291,7 +291,6 @@ if __name__ == "__main__":
     # if set
     MI_USER = options.account
     MI_PASS = options.password
-    print(MI_USER, MI_PASS, os.environ.get("MI_USER"))
     miboy = MiGPT(
         options.hardware,
         options.conversation_id,
@@ -300,3 +299,4 @@ if __name__ == "__main__":
         options.mute_xiaoai,
     )
     asyncio.run(miboy.run_forever())
+
