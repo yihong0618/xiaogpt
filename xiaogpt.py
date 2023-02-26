@@ -25,6 +25,8 @@ HARDWARE_COMMAND_DICT = {
 }
 MI_USER = ""
 MI_PASS = ""
+KEY_WORD = "帮我回答"
+PROMPT = "请用100字以内回答"
 
 
 ### HELP FUNCTION ###
@@ -87,6 +89,8 @@ class MiGPT:
             env.get("MI_PASS") or MI_PASS,
             str(self.mi_token_home),
         )
+        # Forced login to refresh to refresh token
+        await self.account.login("micoapi")
         self.mina_service = MiNAService(self.account)
 
     async def _init_data_hardware(self):
@@ -205,10 +209,11 @@ class MiGPT:
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
-                    if query.find("帮我回答") != -1:
+                    if query.find(KEY_WORD) != -1:
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
-                        query = query[4:] + "，请用100字以内回答"
+                        query = query.replace(KEY_WORD, "")
+                        query = f"{query}，{PROMPT}"
                         # waiting for xiaoai speaker done
                         if not self.mute_xiaoai:
                             await asyncio.sleep(8)

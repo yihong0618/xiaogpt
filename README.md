@@ -36,6 +36,11 @@ python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx" --cookie ${cooki
 python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx" --account ${your_xiaomi_account} --password ${your_password};
 ```
 
+## 注意
+
+1. 请开启小爱同学的蓝牙
+2. 如果要更改提示词和 PROMPT 在代码最上面自行更改
+
 ## QA
 
 1. 用破解么？不用
