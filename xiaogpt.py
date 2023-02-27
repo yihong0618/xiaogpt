@@ -20,7 +20,9 @@ HARDWARE_COMMAND_DICT = {
     "LX06": "5-1",
     "L05B": "5-3",
     "S12A": "5-1",
-    "LX01": "5-1"
+    "LX01": "5-1",
+    "L06A": "5-1",
+    "LX04": "5-1",
     # add more here
 }
 MI_USER = ""
@@ -45,7 +47,6 @@ class MiGPT:
     def __init__(
         self,
         hardware,
-        conversation_id="",
         cookie="",
         use_command=False,
         mute_xiaoai=False,
@@ -62,7 +63,8 @@ class MiGPT:
         self.cookie = cookie
         self.use_command = use_command
         self.tts_command = HARDWARE_COMMAND_DICT.get(hardware, "5-1")
-        self.conversation_id = conversation_id
+        self.conversation_id = None
+        self.parent_id = None
         self.miboy_account = None
         self.mina_service = None
         # try to mute xiaoai config
@@ -157,13 +159,19 @@ class MiGPT:
 
     async def ask_gpt(self, query):
         # TODO maybe use v2 to async it here
-        if self.conversation_id:
-            data = list(self.chatbot.ask(query, conversation_id=self.conversation_id))[
-                -1
-            ]
+        if self.conversation_id and self.parent_id:
+            data = list(
+                self.chatbot.ask(
+                    query,
+                    conversation_id=self.conversation_id,
+                    parent_id=self.parent_id,
+                )
+            )[-1]
         else:
             data = list(self.chatbot.ask(query))[-1]
         if message := data.get("message", ""):
+            self.conversation_id = data.get("conversation_id")
+            self.parent_id = data.get("parent_id")
             # xiaoai tts did not support space
             message = self._normalize(message)
             message = "以下是GPT的回答:" + message
@@ -252,13 +260,6 @@ if __name__ == "__main__":
         help="小爱 hardware",
     )
     parser.add_argument(
-        "--conversation_id",
-        dest="conversation_id",
-        type=str,
-        default="",
-        help="ChatGPT conversation_id",
-    )
-    parser.add_argument(
         "--account",
         dest="account",
         type=str,
@@ -297,7 +298,6 @@ if __name__ == "__main__":
     MI_PASS = options.password
     miboy = MiGPT(
         options.hardware,
-        options.conversation_id,
         options.cookie,
         options.use_command,
         options.mute_xiaoai,

@@ -18,7 +18,7 @@ Play ChatGPT with Xiaomi AI Speaker
 3. 参考 [revChatGPT](https://github.com/acheong08/ChatGPT) 项目 README 配置 chatGPT 的 config
 4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
 5. 跑起来之后就可以问小爱同学问题了，“帮我回答开头的问题” 会发送一份给 ChatGPT 然后小爱同学用 tts 回答
-6. 如果你想用 conversation_id 来持续对话，可以加上 --conversation_id="xxxxxxxx"
+6. 因为现在必须指定 conversation_id 和 parent_id 来持续对话，会自动建一个新的 conversation
 7. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
 8. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
 9. 使用 --mute_xiaoai 选项，可以让小爱不回答，但会频繁请求，玩一下可以使用，不建议一直用
@@ -31,9 +31,9 @@ python3 xiaogpt.py --hardware LX06;
 # or
 python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx";
 # or 
-python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx" --cookie ${cookie};
+python3 xiaogpt.py --hardware LX06 --cookie ${cookie};
 # 如果你想直接输入账号密码
-python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx" --account ${your_xiaomi_account} --password ${your_password};
+python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password};
 ```
 
 ## 注意
