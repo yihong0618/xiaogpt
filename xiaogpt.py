@@ -158,11 +158,11 @@ class MiGPT:
     async def ask_gpt(self, query):
         # TODO maybe use v2 to async it here
         if self.conversation_id:
-            data = list(self.chatbot.ask(query))[-1]
-        else:
             data = list(self.chatbot.ask(query, conversation_id=self.conversation_id))[
                 -1
             ]
+        else:
+            data = list(self.chatbot.ask(query))[-1]
         if message := data.get("message", ""):
             # xiaoai tts did not support space
             message = self._normalize(message)
