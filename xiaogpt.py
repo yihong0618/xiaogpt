@@ -1,7 +1,7 @@
 import argparse
 import asyncio
 import json
-import os
+from os import environ as env
 import subprocess
 import time
 from http.cookies import SimpleCookie
@@ -27,7 +27,8 @@ HARDWARE_COMMAND_DICT = {
 }
 MI_USER = ""
 MI_PASS = ""
-KEY_WORD = "帮我回答"
+OPENAI_API_KEY = ""
+KEY_WORD = "帮我"
 PROMPT = "请用100字以内回答"
 
 
@@ -43,6 +44,33 @@ def parse_cookie_string(cookie_string):
     return cookiejar
 
 
+class GPT3Bot:
+    def __init__(self, session):
+        self.api_key = OPENAI_API_KEY
+        self.api_url = "https://api.openai.com/v1/completions"
+        self.headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}",
+        }
+        # TODO support more models here
+        self.data = {
+            "prompt": "",
+            "model": "text-davinci-003",
+            "max_tokens": 1024,
+            "temperature": 1,
+            "top_p": 1,
+        }
+        self.session = session
+
+    async def ask(self, query):
+        # TODO Support for continuous dialogue
+        # pass all prompt and answers
+        # PR welcome
+        self.data["prompt"] = query
+        r = await self.session.post(self.api_url, headers=self.headers, json=self.data)
+        return await r.json()
+
+
 class MiGPT:
     def __init__(
         self,
@@ -50,6 +78,8 @@ class MiGPT:
         cookie="",
         use_command=False,
         mute_xiaoai=False,
+        use_gpt3=False,
+        verbose=False,
     ):
         self.mi_token_home = Path.home() / ".mi.token"
         self.hardware = hardware
@@ -71,6 +101,9 @@ class MiGPT:
         self.mute_xiaoai = mute_xiaoai
         # mute xiaomi in runtime
         self.this_mute_xiaoai = mute_xiaoai
+        # if use gpt3 api
+        self.use_gpt3 = use_gpt3
+        self.verbose = verbose
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
@@ -83,7 +116,6 @@ class MiGPT:
         await self._init_first_data_and_chatbot()
 
     async def login_miboy(self, session):
-        env = os.environ
         self.session = session
         self.account = MiAccount(
             session,
@@ -121,7 +153,10 @@ class MiGPT:
     async def _init_first_data_and_chatbot(self):
         data = await self.get_latest_ask_from_xiaoai()
         self.last_timestamp, self.last_record = self.get_last_timestamp_and_record(data)
-        self.chatbot = Chatbot(configure())
+        if self.use_gpt3:
+            self.chatbot = GPT3Bot(self.session)
+        else:
+            self.chatbot = Chatbot(configure())
 
     async def get_latest_ask_from_xiaoai(self):
         r = await self.session.get(
@@ -158,6 +193,21 @@ class MiGPT:
         return message
 
     async def ask_gpt(self, query):
+        if self.use_gpt3:
+            return await self.ask_gpt3(query)
+        return await self.ask_chatgpt(query)
+
+    async def ask_gpt3(self, query):
+        data = await self.chatbot.ask(query)
+        choices = data.get("choices")
+        if not choices:
+            print("No reply from gpt3")
+        else:
+            message = choices[0].get("text", "")
+            message = self._normalize(message)
+            return message
+
+    async def ask_chatgpt(self, query):
         # TODO maybe use v2 to async it here
         if self.conversation_id and self.parent_id:
             data = list(
@@ -174,7 +224,6 @@ class MiGPT:
             self.parent_id = data.get("parent_id")
             # xiaoai tts did not support space
             message = self._normalize(message)
-            message = "以下是GPT的回答:" + message
             return message
         return ""
 
@@ -194,12 +243,14 @@ class MiGPT:
             await self.mina_service.player_pause(self.device_id)
 
     async def run_forever(self):
+        print(f"Running xiaogpt now, 用`{KEY_WORD}`开头来提问")
         async with ClientSession() as session:
             await self.init_all_data(session)
             while 1:
-                print(
-                    f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
-                )
+                if self.verbose:
+                    print(
+                        f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
+                    )
                 try:
                     r = await self.get_latest_ask_from_xiaoai()
                 except Exception:
@@ -225,7 +276,7 @@ class MiGPT:
                         # waiting for xiaoai speaker done
                         if not self.mute_xiaoai:
                             await asyncio.sleep(8)
-                        await self.do_tts("正在问GPT有点慢请耐心等待")
+                        await self.do_tts("正在问GPT请耐心等待")
                         try:
                             print(
                                 "以下是小爱的回答: ",
@@ -237,7 +288,7 @@ class MiGPT:
                             print("小爱没回")
                         message = await self.ask_gpt(query)
                         # tts to xiaoai with ChatGPT answer
-                        print(message)
+                        print("以下是GPT的回答: " + message)
                         await self.do_tts(message)
                         if self.mute_xiaoai:
                             while 1:
@@ -247,7 +298,8 @@ class MiGPT:
                                     break
                             self.this_mute_xiaoai = True
                 else:
-                    print("No new xiao ai record")
+                    if self.verbose:
+                        print("No new xiao ai record")
 
 
 if __name__ == "__main__":
@@ -274,6 +326,13 @@ if __name__ == "__main__":
         help="xiaomi password",
     )
     parser.add_argument(
+        "--openai_key",
+        dest="openai_key",
+        type=str,
+        default="",
+        help="openai api key",
+    )
+    parser.add_argument(
         "--cookie",
         dest="cookie",
         type=str,
@@ -292,14 +351,32 @@ if __name__ == "__main__":
         action="store_true",
         help="try to mute xiaoai answer",
     )
+    parser.add_argument(
+        "--verbose",
+        dest="verbose",
+        action="store_true",
+        help="show info",
+    )
+    parser.add_argument(
+        "--use_gpt3",
+        dest="use_gpt3",
+        action="store_true",
+        help="if use openai gpt3 api",
+    )
     options = parser.parse_args()
     # if set
     MI_USER = options.account
     MI_PASS = options.password
+    OPENAI_API_KEY = env.get("OPENAI_API_KEY") or options.openai_key
+    if options.use_gpt3:
+        if not OPENAI_API_KEY:
+            raise Exception("Use gpt-3 api need openai API key, please google how to")
     miboy = MiGPT(
         options.hardware,
         options.cookie,
         options.use_command,
         options.mute_xiaoai,
+        options.use_gpt3,
+        options.verbose,
     )
     asyncio.run(miboy.run_forever())
