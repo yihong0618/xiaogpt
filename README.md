@@ -17,13 +17,14 @@ Play ChatGPT with Xiaomi AI Speaker
 2. 参考 [MiService](https://github.com/Yonsm/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用 
 3. 参考 [revChatGPT](https://github.com/acheong08/ChatGPT) 项目 README 配置 chatGPT 的 config
 4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
-5. 跑起来之后就可以问小爱同学问题了，“帮我回答开头的问题” 会发送一份给 ChatGPT 然后小爱同学用 tts 回答
+5. 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
 6. 因为现在必须指定 conversation_id 和 parent_id 来持续对话，会自动建一个新的 conversation
 7. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
 8. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
 9. 使用 --mute_xiaoai 选项，可以让小爱不回答，但会频繁请求，玩一下可以使用，不建议一直用
 10. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
 11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码 ` if query.find("帮我回答") != -1:`
+12. 可以使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 openai api, 命令 --use_gpt3
 
 e.g.
 ```shell
@@ -34,6 +35,11 @@ python3 xiaogpt.py --hardware LX06 --conversation_id="xxxxxxxx";
 python3 xiaogpt.py --hardware LX06 --cookie ${cookie};
 # 如果你想直接输入账号密码
 python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password};
+# 如果你想 mute 小米的回答
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai 
+# 如果你想使用 gpt3 ai
+export OPENAI_API_KEY=${your_api_key}
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
 ```
 
 ## 注意
