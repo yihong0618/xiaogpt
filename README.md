@@ -25,6 +25,7 @@ Play ChatGPT with Xiaomi AI Speaker
 10. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
 11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码 ` if query.find("帮我回答") != -1:`
 12. 可以使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 openai api, 命令 --use_gpt3
+13. 可以使用 --use_chatgpt_api 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, 请 google 如何用 openai api, 命令 --use_chatgpt_api
 
 e.g.
 ```shell
@@ -40,6 +41,9 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai
 # 如果你想使用 gpt3 ai
 export OPENAI_API_KEY=${your_api_key}
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
+# 如果你想用 chatgpt api
+export OPENAI_API_KEY=${your_api_key}
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_chatgpt_api
 ```
 
 ## 注意

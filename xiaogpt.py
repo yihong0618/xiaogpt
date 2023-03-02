@@ -7,6 +7,7 @@ import time
 from http.cookies import SimpleCookie
 from pathlib import Path
 
+import openai
 from aiohttp import ClientSession
 from miservice import MiAccount, MiNAService
 from requests.utils import cookiejar_from_dict
@@ -71,6 +72,31 @@ class GPT3Bot:
         return await r.json()
 
 
+class ChatGPTBot:
+    def __init__(self, session):
+        pass
+
+    async def ask(self, query):
+        openai.api_key = OPENAI_API_KEY
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"{query}",
+                }
+            ],
+        )
+        message = (
+            completion["choices"][0]
+            .get("message")
+            .get("content")
+            .encode("utf8")
+            .decode()
+        )
+        return message
+
+
 class MiGPT:
     def __init__(
         self,
@@ -79,6 +105,7 @@ class MiGPT:
         use_command=False,
         mute_xiaoai=False,
         use_gpt3=False,
+        use_chatgpt_api=False,
         verbose=False,
     ):
         self.mi_token_home = Path.home() / ".mi.token"
@@ -103,6 +130,7 @@ class MiGPT:
         self.this_mute_xiaoai = mute_xiaoai
         # if use gpt3 api
         self.use_gpt3 = use_gpt3
+        self.use_chatgpt_api = use_chatgpt_api
         self.verbose = verbose
 
     async def init_all_data(self, session):
@@ -153,8 +181,11 @@ class MiGPT:
     async def _init_first_data_and_chatbot(self):
         data = await self.get_latest_ask_from_xiaoai()
         self.last_timestamp, self.last_record = self.get_last_timestamp_and_record(data)
+        # TODO refactor this
         if self.use_gpt3:
             self.chatbot = GPT3Bot(self.session)
+        elif self.use_chatgpt_api:
+            self.chatbot = ChatGPTBot(self.session)
         else:
             self.chatbot = Chatbot(configure())
 
@@ -195,7 +226,14 @@ class MiGPT:
     async def ask_gpt(self, query):
         if self.use_gpt3:
             return await self.ask_gpt3(query)
+        elif self.use_chatgpt_api:
+            return await self.ask_chatgpt_api(query)
         return await self.ask_chatgpt(query)
+
+    async def ask_chatgpt_api(self, query):
+        message = await self.chatbot.ask(query)
+        message = self._normalize(message)
+        return message
 
     async def ask_gpt3(self, query):
         data = await self.chatbot.ask(query)
@@ -363,20 +401,31 @@ if __name__ == "__main__":
         action="store_true",
         help="if use openai gpt3 api",
     )
+    parser.add_argument(
+        "--use_chatgpt_api",
+        dest="use_chatgpt_api",
+        action="store_true",
+        help="if use openai chatgpt api",
+    )
     options = parser.parse_args()
     # if set
     MI_USER = options.account
     MI_PASS = options.password
-    OPENAI_API_KEY = env.get("OPENAI_API_KEY") or options.openai_key
+    OPENAI_API_KEY = options.openai_key or env.get("OPENAI_API_KEY")
     if options.use_gpt3:
         if not OPENAI_API_KEY:
             raise Exception("Use gpt-3 api need openai API key, please google how to")
+    if options.use_chatgpt_api:
+        if not OPENAI_API_KEY:
+            raise Exception("Use chatgpt api need openai API key, please google how to")
+
     miboy = MiGPT(
         options.hardware,
         options.cookie,
         options.use_command,
         options.mute_xiaoai,
         options.use_gpt3,
+        options.use_chatgpt_api,
         options.verbose,
     )
     asyncio.run(miboy.run_forever())
