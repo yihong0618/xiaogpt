@@ -46,14 +46,14 @@ export OPENAI_API_KEY=${your_api_key}
 python3 xiaogpt.py --hardware LX06 --use_chatgpt_api
 ```
 
-## config.txt
+## config.json
 如果想通过单一配置文件启动也是可以的, 可以通过--config参数指定配置文件, config文件必须是合法的JSON格式
 ```shell
-python3 xiaogpt.py --config config.txt
+python3 xiaogpt.py --config config.json
 ```
 或者
 ```shell
-cp config.txt.example config.txt
+cp config.json.example config.json
 python3 xiaogpt.py 
 ```
 

@@ -2,6 +2,7 @@
 import argparse
 import asyncio
 import json
+import os
 from os import environ as env
 import subprocess
 import time
@@ -412,15 +413,15 @@ if __name__ == "__main__":
         "--config",
         dest="config",
         type=str,
-        default="config.txt",
+        default="config.json",
         help="config file path",
     )
 
     options = parser.parse_args()
 
-    # init the --config config.txt.example
+    # init the --config config.json.example
     config = {}
-    if options.config:
+    if options.config and os.path.exists(options.config):
         with open(options.config, "r") as f:
             config = json.load(f)
 
