@@ -29,7 +29,7 @@ HARDWARE_COMMAND_DICT = {
 MI_USER = ""
 MI_PASS = ""
 OPENAI_API_KEY = ""
-KEY_WORD = "帮我"
+KEY_WORD = ""
 PROMPT = "请用100字以内回答"
 
 
@@ -74,18 +74,46 @@ class GPT3Bot:
 
 class ChatGPTBot:
     def __init__(self, session):
+        self.history=[] # added by jtc
+        self.time=round(time.time()*1000) # added by jtc
         pass
 
     async def ask(self, query):
         openai.api_key = OPENAI_API_KEY
+        # added by jtc: start
+        ms=[]
+        if(len(self.history)>=5):
+            l=len(self.history)
+            ms=[
+                {'role': 'user', 'content': self.history[-5][0]},
+                {'role': 'assistant', 'content': self.history[-5][1]},
+                {'role': 'user', 'content': self.history[-4][0]},
+                {'role': 'assistant', 'content': self.history[-4][1]},
+                {'role': 'user', 'content': self.history[-3][0]},
+                {'role': 'assistant', 'content': self.history[-3][1]},
+                {'role': 'user', 'content': self.history[-2][0]},
+                {'role': 'assistant', 'content': self.history[-2][1]},
+                {'role': 'user', 'content': self.history[-1][0]},
+                {'role': 'assistant', 'content': self.history[-1][1]},
+                {'role': 'user', 'content': f"{query}"}
+            ]
+        else:
+            for h in self.history:
+                ms.append({'role': 'user', 'content': h[0]})
+                ms.append({'role': 'assistant', 'content': h[1]})
+            ms.append({'role': 'user', 'content': f"{query}"})
+        # added by jtc: end
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"{query}",
-                }
-            ],
+            # commented by jtc
+            # messages=[
+            #     {
+            #         "role": "user",
+            #         "content": f"{query}",
+            #     }
+            # ],
+
+            messages=ms # added by jtc
         )
         message = (
             completion["choices"][0]
@@ -94,6 +122,12 @@ class ChatGPTBot:
             .encode("utf8")
             .decode()
         )
+        # added by jtc: start
+        self.history.append([f"{query}",message])
+        f=open(f'./log-{self.time}.txt','w')
+        f.write(json.dumps(self.history,ensure_ascii=False))
+        f.close()
+        # added by jtc: end
         return message
 
 
