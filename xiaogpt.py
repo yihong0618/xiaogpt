@@ -43,7 +43,6 @@ CLI_INTERACTIVE_MODE = False
 # Keyword that no need send to OpenAI, e.g. ["停止", "播放", "打开", "关闭", "天气"]
 KEYWORDS_AVOID_SEND_TO_OPENAI = []
 
-
 ### HELP FUNCTION ###
 def parse_cookie_string(cookie_string):
     cookie = SimpleCookie()
