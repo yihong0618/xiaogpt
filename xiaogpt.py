@@ -34,11 +34,14 @@ MI_USER = ""
 MI_PASS = ""
 OPENAI_API_KEY = ""
 KEY_WORD = "帮我"
+# Enable the immersive talking mode.
+ENABLE_IMMERSIVE_TALKING_MODE=False
 PROMPT = "请用100字以内回答"
 
 # simulate the response from xiaoai server by type the input.
 CLI_INTERACTIVE_MODE = False
-
+#Keyword that no need send to OpenAI, e.g. ["停止", "播放", "打开", "关闭", "天气"]
+KEYWORDS_AVOID_SEND_TO_OPENAI = []
 
 ### HELP FUNCTION ###
 def parse_cookie_string(cookie_string):
@@ -316,6 +319,10 @@ class MiGPT:
             # stop it
             await self.mina_service.player_pause(self.device_id)
 
+    def intercept(self, query):
+        # Skip the keywords that no need send to OpenAI
+        return any(keyword in query for keyword in KEYWORDS_AVOID_SEND_TO_OPENAI)
+
     async def run_forever(self):
         print(f"Running xiaogpt now, 用`{KEY_WORD}`开头来提问")
         async with ClientSession() as session:
@@ -452,11 +459,16 @@ if __name__ == "__main__":
         default="",
         help="config file path",
     )
-
+    parser.add_argument(
+        "--cli_interactive_mode",
+        dest="cli_interactive_mode",
+        action="store_true",
+        help="enable the cli interactive mode",
+    )
     options = parser.parse_args()
 
+    config = {}
     if options.config:
-        config = {}
         if os.path.exists(options.config):
             with open(options.config, "r") as f:
                 config = json.load(f)
@@ -472,6 +484,13 @@ if __name__ == "__main__":
     MI_USER = options.account or env.get("MI_USER") or MI_USER
     MI_PASS = options.password or env.get("MI_PASS") or MI_PASS
     OPENAI_API_KEY = options.openai_key or env.get("OPENAI_API_KEY")
+
+    KEY_WORD = config.get('KEY_WORD', KEY_WORD)
+    ENABLE_IMMERSIVE_TALKING_MODE = config.get('ENABLE_IMMERSIVE_TALKING_MODE', ENABLE_IMMERSIVE_TALKING_MODE)
+    PROMPT = config.get('PROMPT', PROMPT)
+    KEYWORDS_AVOID_SEND_TO_OPENAI = config.get('KEYWORDS_AVOID_SEND_TO_OPENAI', KEYWORDS_AVOID_SEND_TO_OPENAI)
+    CLI_INTERACTIVE_MODE = options.cli_interactive_mode or config.get('CLI_INTERACTIVE_MODE', CLI_INTERACTIVE_MODE)
+
     if options.use_gpt3:
         if not OPENAI_API_KEY:
             raise Exception("Use gpt-3 api need openai API key, please google how to")
