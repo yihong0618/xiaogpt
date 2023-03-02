@@ -29,7 +29,7 @@ HARDWARE_COMMAND_DICT = {
 MI_USER = ""
 MI_PASS = ""
 OPENAI_API_KEY = ""
-KEY_WORD = ""
+KEY_WORD = "帮我"
 PROMPT = "请用100字以内回答"
 
 
