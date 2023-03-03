@@ -413,13 +413,13 @@ if __name__ == "__main__":
         "--config",
         dest="config",
         type=str,
-        default="config.json",
+        default="xiaogptconfig.json",
         help="config file path",
     )
 
     options = parser.parse_args()
 
-    # init the --config config.json.example
+    # init the --config xiaogptconfig.json.example
     config = {}
     if options.config:
         if os.path.exists(options.config):

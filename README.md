@@ -52,11 +52,11 @@ python3 xiaogpt.py --hardware LX06 --use_chatgpt_api
 - cli>default>config
 
 ```shell
-python3 xiaogpt.py --config config.json
+python3 xiaogpt.py --config xiaogptconfig.json
 ```
 或者
 ```shell
-cp config.json.example config.json
+cp xiaogptconfig.json.example xiaogptconfig.json
 python3 xiaogpt.py 
 ```
 

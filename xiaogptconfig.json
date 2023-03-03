@@ -1,0 +1,12 @@
+{
+    "hardware": "LX01",
+    "account": "",
+    "password": "",
+    "openai_key": "",
+    "cookie": "",
+    "use_command": false,
+    "mute_xiaoai": false,
+    "verbose": false,
+    "use_gpt3": false,
+    "use_chatgpt_api": false
+}
