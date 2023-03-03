@@ -4,6 +4,11 @@ Play ChatGPT with Xiaomi AI Speaker
 ![image](https://user-images.githubusercontent.com/15976103/220028375-c193a859-48a1-4270-95b6-ef540e54a621.png)
 
 
+## 一点原理
+
+[不用 root 使用小爱同学和 ChatGPT 交互折腾记](https://github.com/yihong0618/gitblog/issues/258)
+
+
 ## 准备
 
 1. ChatGPT id
