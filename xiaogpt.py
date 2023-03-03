@@ -421,11 +421,12 @@ if __name__ == "__main__":
 
     # init the --config config.json.example
     config = {}
-    if options.config and os.path.exists(options.config):
-        with open(options.config, "r") as f:
-            config = json.load(f)
-    else:
-        raise Exception(f"{options.config} doesn't exist")
+    if options.config:
+        if os.path.exists(options.config):
+            with open(options.config, "r") as f:
+                config = json.load(f)
+        else:
+            raise Exception(f"{options.config} doesn't exist")
 
 
     # update options with config
