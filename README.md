@@ -73,6 +73,9 @@ python3 xiaogpt.py
 4. 想把它变得更好？PR Issue always welcome.
 5. 还有问题？提 Issuse 哈哈
 
+## 视频教程
+https://www.youtube.com/watch?v=K4YA8YwzOOA
+
 # 感谢
 
 - [xiaomi](https://www.mi.com/)
