@@ -148,8 +148,8 @@ class MiGPT:
         self.session = session
         self.account = MiAccount(
             session,
-            env.get("MI_USER") or MI_USER,
-            env.get("MI_PASS") or MI_PASS,
+            MI_USER,
+            MI_PASS,
             str(self.mi_token_home),
         )
         # Forced login to refresh to refresh token
@@ -410,8 +410,8 @@ if __name__ == "__main__":
     )
     options = parser.parse_args()
     # if set
-    MI_USER = options.account
-    MI_PASS = options.password
+    MI_USER = options.account or env.get("MI_USER") or MI_USER
+    MI_PASS = options.password or env.get("MI_PASS") or MI_PASS
     OPENAI_API_KEY = options.openai_key or env.get("OPENAI_API_KEY")
     if options.use_gpt3:
         if not OPENAI_API_KEY:
