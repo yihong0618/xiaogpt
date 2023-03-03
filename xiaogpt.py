@@ -2,6 +2,7 @@
 import argparse
 import asyncio
 import json
+import os
 from os import environ as env
 import subprocess
 import time
@@ -347,7 +348,7 @@ if __name__ == "__main__":
         "--hardware",
         dest="hardware",
         type=str,
-        default="LX06",
+        default="",
         help="小爱 hardware",
     )
     parser.add_argument(
@@ -408,7 +409,31 @@ if __name__ == "__main__":
         action="store_true",
         help="if use openai chatgpt api",
     )
+    parser.add_argument(
+        "--config",
+        dest="config",
+        type=str,
+        default="xiaogptconfig.json",
+        help="config file path",
+    )
+
     options = parser.parse_args()
+
+    # init the --config xiaogptconfig.json.example
+    config = {}
+    if options.config:
+        if os.path.exists(options.config):
+            with open(options.config, "r") as f:
+                config = json.load(f)
+        else:
+            raise Exception(f"{options.config} doesn't exist")
+
+
+    # update options with config
+    for key, value in config.items():
+        if not getattr(options, key, None):
+            setattr(options, key, value)
+
     # if set
     MI_USER = options.account or env.get("MI_USER") or MI_USER
     MI_PASS = options.password or env.get("MI_PASS") or MI_PASS
