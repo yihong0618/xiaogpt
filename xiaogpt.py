@@ -348,7 +348,7 @@ if __name__ == "__main__":
         "--hardware",
         dest="hardware",
         type=str,
-        default="LX06",
+        default="",
         help="小爱 hardware",
     )
     parser.add_argument(
@@ -424,10 +424,14 @@ if __name__ == "__main__":
     if options.config and os.path.exists(options.config):
         with open(options.config, "r") as f:
             config = json.load(f)
+    else:
+        raise Exception(f"{options.config} doesn't exist")
+
 
     # update options with config
     for key, value in config.items():
-         setattr(options, key, value)
+        if not getattr(options, key, None):
+            setattr(options, key, value)
 
     # if set
     MI_USER = options.account or env.get("MI_USER") or MI_USER
