@@ -440,26 +440,24 @@ if __name__ == "__main__":
         "--config",
         dest="config",
         type=str,
-        default="xiaogptconfig.json",
+        default="",
         help="config file path",
     )
 
     options = parser.parse_args()
 
-    # init the --config xiaogptconfig.json.example
-    config = {}
     if options.config:
+        config = {}
         if os.path.exists(options.config):
             with open(options.config, "r") as f:
                 config = json.load(f)
         else:
             raise Exception(f"{options.config} doesn't exist")
 
-
-    # update options with config
-    for key, value in config.items():
-        if not getattr(options, key, None):
-            setattr(options, key, value)
+        # update options with config
+        for key, value in config.items():
+            if not getattr(options, key, None):
+                setattr(options, key, value)
 
     # if set
     MI_USER = options.account or env.get("MI_USER") or MI_USER
