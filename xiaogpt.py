@@ -34,6 +34,8 @@ OPENAI_API_KEY = ""
 KEY_WORD = "帮我"
 PROMPT = "请用100字以内回答"
 
+# simulate the response from xiaoai server by type the input.
+CLI_INTERACTIVE_MODE=False
 
 ### HELP FUNCTION ###
 def parse_cookie_string(cookie_string):
@@ -191,7 +193,27 @@ class MiGPT:
         else:
             self.chatbot = Chatbot(configure())
 
+
+    async def simulate_xiaoai_question(self):
+        data = {'code': 0, 'message': 'Success',
+                'data': '{"bitSet":[0,1,1],"records":[{"bitSet":[0,1,1,1,1],"answers":[{"bitSet":[0,1,1,1],"type":"TTS","tts":{"bitSet":[0,1],"text":"Fake Answer"}}],"time":1677851434593,"query":"Fake Question","requestId":"fada34f8fa0c3f408ee6761ec7391d85"}],"nextEndTime":1677849207387}'}
+        # Convert the data['data'] value from a string to a dictionary
+        data_dict = json.loads(data['data'])
+        # Get the first item in the records list
+        record = data_dict['records'][0]
+        # Replace the query and time values with user input
+        record['query'] = input('Enter the new query: ')
+        record['time'] = int(time.time() * 1000)
+        # Convert the updated data_dict back to a string and update the data['data'] value
+        data['data'] = json.dumps(data_dict)
+        await asyncio.sleep(1)
+
+        return data
     async def get_latest_ask_from_xiaoai(self):
+        if CLI_INTERACTIVE_MODE:
+            r = await self.simulate_xiaoai_question()
+            return r
+
         r = await self.session.get(
             LATEST_ASK_API.format(
                 hardware=self.hardware, timestamp=str(int(time.time() * 1000))
@@ -210,6 +232,11 @@ class MiGPT:
             return timestamp, last_record
 
     async def do_tts(self, value):
+        if CLI_INTERACTIVE_MODE:
+           print(f"do_tts, CLI_INTERACTIVE_MODE:{value}")
+           await asyncio.sleep(2)
+           return
+
         if not self.use_command:
             try:
                 await self.mina_service.text_to_speech(self.device_id, value)
