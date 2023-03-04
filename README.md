@@ -53,16 +53,16 @@ python3 xiaogpt.py --hardware LX06 --use_chatgpt_api
 ```
 
 ## config.json
-如果想通过单一配置文件启动也是可以的, 可以通过--config参数指定配置文件, config文件必须是合法的JSON格式
+如果想通过单一配置文件启动也是可以的, 可以通过 --config 参数指定配置文件, config 文件必须是合法的 JSON 格式
 参数优先级
 - cli args > default > config
 
 ```shell
-python3 xiaogpt.py --config config.json
+python3 xiaogpt.py --config xiao_config.json
 ```
 或者
 ```shell
-cp xiaogptconfig.json.example config.json
+cp xiao_config.json.example xiao_config.json
 python3 xiaogpt.py 
 ```
 
