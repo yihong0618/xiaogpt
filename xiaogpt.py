@@ -334,13 +334,15 @@ class MiGPT:
                     await asyncio.sleep(3)
                 else:
                     await asyncio.sleep(0.3)
-                if self.this_mute_xiaoai:
-                    await self.stop_if_xiaoai_is_playing()
+                
                 new_timestamp, last_record = self.get_last_timestamp_and_record(r)
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
                     if query.find(KEY_WORD) != -1:
+                        # only mute when your clause start's with the keyword
+                        if self.this_mute_xiaoai:
+                            await self.stop_if_xiaoai_is_playing()
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
                         query = query.replace(KEY_WORD, "")
