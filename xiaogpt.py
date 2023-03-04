@@ -74,30 +74,16 @@ class GPT3Bot:
 
 class ChatGPTBot:
     def __init__(self, session):
+        self.session = session
         self.history = []
 
     async def ask(self, query):
         openai.api_key = OPENAI_API_KEY
         ms = []
-        if len(self.history) >= 5:
-            ms = [
-                {"role": "user", "content": self.history[-5][0]},
-                {"role": "assistant", "content": self.history[-5][1]},
-                {"role": "user", "content": self.history[-4][0]},
-                {"role": "assistant", "content": self.history[-4][1]},
-                {"role": "user", "content": self.history[-3][0]},
-                {"role": "assistant", "content": self.history[-3][1]},
-                {"role": "user", "content": self.history[-2][0]},
-                {"role": "assistant", "content": self.history[-2][1]},
-                {"role": "user", "content": self.history[-1][0]},
-                {"role": "assistant", "content": self.history[-1][1]},
-                {"role": "user", "content": f"{query}"},
-            ]
-        else:
-            for h in self.history:
-                ms.append({"role": "user", "content": h[0]})
-                ms.append({"role": "assistant", "content": h[1]})
-            ms.append({"role": "user", "content": f"{query}"})
+        for h in self.history:
+            ms.append({"role": "user", "content": h[0]})
+            ms.append({"role": "assistant", "content": h[1]})
+        ms.append({"role": "user", "content": f"{query}"})
         completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=ms)
         message = (
             completion["choices"][0]
@@ -107,6 +93,8 @@ class ChatGPTBot:
             .decode()
         )
         self.history.append([f"{query}", message])
+        # only keep 5 history
+        self.history = self.history[-5:]
         return message
 
 
