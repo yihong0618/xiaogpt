@@ -364,8 +364,8 @@ class MiGPT:
                     query = f"{query}，{PROMPT}"
                     # waiting for xiaoai speaker done
                     if not self.mute_xiaoai:
-                        await asyncio.sleep(8)
-                    await self.do_tts("正在问GPT请耐心等待")
+                        await asyncio.sleep(2)
+                    await self.do_tts(f"{query}, 正在问GPT请耐心等待")
                     try:
                         print(
                             "以下是小爱的回答: ",
@@ -377,6 +377,9 @@ class MiGPT:
                     # tts to xiaoai with ChatGPT answer
                     print("以下是GPT的回答: " + message)
                     await self.do_tts(message)
+                    # wait for the tts finished, otherwise the tts will be stopped.
+                    sleep_time = len(message) / 4
+                    time.sleep(sleep_time)
                     if self.mute_xiaoai:
                         while 1:
                             is_playing = await self.get_if_xiaoai_is_playing()
