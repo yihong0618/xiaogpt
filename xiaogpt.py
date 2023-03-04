@@ -79,19 +79,17 @@ class GPT3Bot:
 
 class ChatGPTBot:
     def __init__(self, session):
-        pass
+        self.session = session
+        self.history = []
 
     async def ask(self, query):
         openai.api_key = OPENAI_API_KEY
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"{query}",
-                }
-            ],
-        )
+        ms = []
+        for h in self.history:
+            ms.append({"role": "user", "content": h[0]})
+            ms.append({"role": "assistant", "content": h[1]})
+        ms.append({"role": "user", "content": f"{query}"})
+        completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=ms)
         message = (
             completion["choices"][0]
             .get("message")
@@ -99,6 +97,9 @@ class ChatGPTBot:
             .encode("utf8")
             .decode()
         )
+        self.history.append([f"{query}", message])
+        # only keep 5 history
+        self.history = self.history[-5:]
         return message
 
 
