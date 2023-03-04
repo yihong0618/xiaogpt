@@ -247,7 +247,7 @@ class MiGPT:
             subprocess.check_output(["micli", self.tts_command, value])
 
     def _normalize(self, message):
-        message = message.replace(" ", "，")
+        message = message.replace(" ", "--")
         message = message.replace("\n", "，")
         message = message.replace('"', "，")
         return message
