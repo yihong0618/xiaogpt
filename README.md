@@ -18,19 +18,20 @@ Play ChatGPT with Xiaomi AI Speaker
 
 ## 使用
 
-1. pip install -r requirements.txt
-2. 参考 [MiService](https://github.com/Yonsm/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用 
-3. 参考 [revChatGPT](https://github.com/acheong08/ChatGPT) 项目 README 配置 chatGPT 的 config
-4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
-5. 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
-6. 因为现在必须指定 conversation_id 和 parent_id 来持续对话，会自动建一个新的 conversation
-7. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
-8. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
-9. 使用 --mute_xiaoai 选项，可以让小爱不回答，但会频繁请求，玩一下可以使用，不建议一直用
-10. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
-11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码在 https://github.com/yihong0618/xiaogpt/blob/main/xiaogpt.py#L32
-12. 可以使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 openai api, 命令 --use_gpt3
-13. 可以使用 --use_chatgpt_api 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, 请 google 如何用 openai api, 命令 --use_chatgpt_api
+1. pip install aiohttp # 解决 miserver 依赖
+2. pip install -r requirements.txt
+3. 参考 [MiService](https://github.com/Yonsm/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用 
+4. 参考 [revChatGPT](https://github.com/acheong08/ChatGPT) 项目 README 配置 chatGPT 的 config
+5. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
+6. 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
+7. 因为现在必须指定 conversation_id 和 parent_id 来持续对话，会自动建一个新的 conversation
+8. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
+9. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
+10. 使用 --mute_xiaoai 选项，可以让小爱不回答，但会频繁请求，玩一下可以使用，不建议一直用
+11. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
+12. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码在 https://github.com/yihong0618/xiaogpt/blob/main/xiaogpt.py#L32
+13. 可以使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 openai api, 命令 --use_gpt3
+14. 可以使用 --use_chatgpt_api 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, 请 google 如何用 openai api, 命令 --use_chatgpt_api
 
 e.g.
 ```shell
