@@ -220,7 +220,7 @@ class MiGPT:
             subprocess.check_output(["micli", self.tts_command, value])
 
     def _normalize(self, message):
-        message = message.replace(" ", "，")
+        message = message.replace(" ", "--")
         message = message.replace("\n", "，")
         message = message.replace('"', "，")
         return message
@@ -330,6 +330,10 @@ class MiGPT:
                         # tts to xiaoai with ChatGPT answer
                         print("以下是GPT的回答: " + message)
                         await self.do_tts(message)
+                        # wait for the tts finished, otherwise the tts will be stopped.
+                        sleep_time = len(message) / 4
+                        time.sleep(sleep_time)
+
                         if self.mute_xiaoai:
                             while 1:
                                 is_playing = await self.get_if_xiaoai_is_playing()
