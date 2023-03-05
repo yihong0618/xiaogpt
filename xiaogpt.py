@@ -370,9 +370,7 @@ class MiGPT:
                     try:
                         print(
                             "以下是小爱的回答: ",
-                            last_record.get("answers")[0]
-                            .get("tts", {})
-                            .get("text"),
+                            last_record.get("answers")[0].get("tts", {}).get("text"),
                         )
                     except:
                         print("小爱没回")
