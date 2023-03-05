@@ -350,38 +350,44 @@ class MiGPT:
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
-                    if query.find(KEY_WORD) != -1:
-                        # only mute when your clause start's with the keyword
-                        if self.this_mute_xiaoai:
-                            await self.stop_if_xiaoai_is_playing()
-                        self.this_mute_xiaoai = False
-                        # drop 帮我回答
-                        query = query.replace(KEY_WORD, "")
-                        query = f"{query}，{PROMPT}"
-                        # waiting for xiaoai speaker done
-                        if not self.mute_xiaoai:
-                            await asyncio.sleep(8)
-                        await self.do_tts("正在问GPT请耐心等待")
-                        try:
-                            print(
-                                "以下是小爱的回答: ",
-                                last_record.get("answers")[0]
-                                .get("tts", {})
-                                .get("text"),
-                            )
-                        except:
-                            print("小爱没回")
-                        message = await self.ask_gpt(query)
-                        # tts to xiaoai with ChatGPT answer
-                        print("以下是GPT的回答: " + message)
-                        await self.do_tts(message)
-                        if self.mute_xiaoai:
-                            while 1:
-                                is_playing = await self.get_if_xiaoai_is_playing()
-                                time.sleep(2)
-                                if not is_playing:
-                                    break
-                            self.this_mute_xiaoai = True
+
+                    if ENABLE_IMMERSIVE_TALKING_MODE:
+                        print(f"ENABLE_IMMERSIVE_TALKING_MODE: {query}")
+                    else:
+                        if query.find(KEY_WORD) != -1:
+                            # only mute when your clause start's with the keyword
+                            if self.this_mute_xiaoai:
+                                await self.stop_if_xiaoai_is_playing()
+                            self.this_mute_xiaoai = False
+                            # drop 帮我回答
+                            query = query.replace(KEY_WORD, "")
+                        else:
+                            continue
+                    query = f"{query}，{PROMPT}"
+                    # waiting for xiaoai speaker done
+                    if not self.mute_xiaoai:
+                        await asyncio.sleep(8)
+                    await self.do_tts("正在问GPT请耐心等待")
+                    try:
+                        print(
+                            "以下是小爱的回答: ",
+                            last_record.get("answers")[0]
+                            .get("tts", {})
+                            .get("text"),
+                        )
+                    except:
+                        print("小爱没回")
+                    message = await self.ask_gpt(query)
+                    # tts to xiaoai with ChatGPT answer
+                    print("以下是GPT的回答: " + message)
+                    await self.do_tts(message)
+                    if self.mute_xiaoai:
+                        while 1:
+                            is_playing = await self.get_if_xiaoai_is_playing()
+                            time.sleep(2)
+                            if not is_playing:
+                                break
+                        self.this_mute_xiaoai = True
                 else:
                     if self.verbose:
                         print("No new xiao ai record")
