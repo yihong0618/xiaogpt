@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 .idea/
 xiaogptconfig.json
+xiao_config.json
+xiao_config.json.example
+xiao_config.json.example
