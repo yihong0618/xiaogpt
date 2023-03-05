@@ -334,7 +334,7 @@ class MiGPT:
                     await asyncio.sleep(3)
                 else:
                     await asyncio.sleep(0.3)
-                
+
                 new_timestamp, last_record = self.get_last_timestamp_and_record(r)
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
