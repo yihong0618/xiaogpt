@@ -35,13 +35,14 @@ MI_PASS = ""
 OPENAI_API_KEY = ""
 KEY_WORD = "帮我"
 # Enable the immersive talking mode.
-ENABLE_IMMERSIVE_TALKING_MODE=False
+ENABLE_IMMERSIVE_TALKING_MODE = False
 PROMPT = "请用100字以内回答"
 
 # simulate the response from xiaoai server by type the input.
 CLI_INTERACTIVE_MODE = False
-#Keyword that no need send to OpenAI, e.g. ["停止", "播放", "打开", "关闭", "天气"]
+# Keyword that no need send to OpenAI, e.g. ["停止", "播放", "打开", "关闭", "天气"]
 KEYWORDS_AVOID_SEND_TO_OPENAI = []
+
 
 ### HELP FUNCTION ###
 def parse_cookie_string(cookie_string):
@@ -485,11 +486,17 @@ if __name__ == "__main__":
     MI_PASS = options.password or env.get("MI_PASS") or MI_PASS
     OPENAI_API_KEY = options.openai_key or env.get("OPENAI_API_KEY")
 
-    KEY_WORD = config.get('KEY_WORD', KEY_WORD)
-    ENABLE_IMMERSIVE_TALKING_MODE = config.get('ENABLE_IMMERSIVE_TALKING_MODE', ENABLE_IMMERSIVE_TALKING_MODE)
-    PROMPT = config.get('PROMPT', PROMPT)
-    KEYWORDS_AVOID_SEND_TO_OPENAI = config.get('KEYWORDS_AVOID_SEND_TO_OPENAI', KEYWORDS_AVOID_SEND_TO_OPENAI)
-    CLI_INTERACTIVE_MODE = options.cli_interactive_mode or config.get('CLI_INTERACTIVE_MODE', CLI_INTERACTIVE_MODE)
+    KEY_WORD = config.get("KEY_WORD", KEY_WORD)
+    ENABLE_IMMERSIVE_TALKING_MODE = config.get(
+        "ENABLE_IMMERSIVE_TALKING_MODE", ENABLE_IMMERSIVE_TALKING_MODE
+    )
+    PROMPT = config.get("PROMPT", PROMPT)
+    KEYWORDS_AVOID_SEND_TO_OPENAI = config.get(
+        "KEYWORDS_AVOID_SEND_TO_OPENAI", KEYWORDS_AVOID_SEND_TO_OPENAI
+    )
+    CLI_INTERACTIVE_MODE = options.cli_interactive_mode or config.get(
+        "CLI_INTERACTIVE_MODE", CLI_INTERACTIVE_MODE
+    )
 
     if options.use_gpt3:
         if not OPENAI_API_KEY:
