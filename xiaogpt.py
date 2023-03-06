@@ -8,6 +8,11 @@ import subprocess
 import time
 from http.cookies import SimpleCookie
 from pathlib import Path
+import http.server
+import socketserver
+import socket
+import random
+import threading
 
 import openai
 from aiohttp import ClientSession
@@ -15,6 +20,7 @@ from miservice import MiAccount, MiNAService
 from requests.utils import cookiejar_from_dict
 from revChatGPT.V1 import Chatbot, configure
 from rich import print
+from ms_tts_service import service as text2mp3
 
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
@@ -42,6 +48,11 @@ PROMPT = "请用100字以内回答"
 CLI_INTERACTIVE_MODE = False
 # Keyword that no need send to OpenAI, e.g. ["停止", "播放", "打开", "关闭", "天气"]
 KEYWORDS_AVOID_SEND_TO_OPENAI = []
+
+# for the Microsoft TTS service
+ENABLE_MICROSOFT_TTS = True
+speech_synthesis_voice_name = "zh-CN-XiaoxiaoNeural"
+
 
 ### HELP FUNCTION ###
 def parse_cookie_string(cookie_string):
@@ -108,6 +119,10 @@ class ChatGPTBot:
         return message
 
 
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    pass
+
+
 class MiGPT:
     def __init__(
         self,
@@ -118,6 +133,8 @@ class MiGPT:
         use_gpt3=False,
         use_chatgpt_api=False,
         verbose=False,
+        ms_subscription_key="",
+        ms_service_region="",
     ):
         self.mi_token_home = Path.home() / ".mi.token"
         self.hardware = hardware
@@ -143,6 +160,8 @@ class MiGPT:
         self.use_gpt3 = use_gpt3
         self.use_chatgpt_api = use_chatgpt_api
         self.verbose = verbose
+        self.ms_subscription_key = ms_subscription_key
+        self.ms_service_region = ms_service_region
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
@@ -256,6 +275,46 @@ class MiGPT:
         else:
             subprocess.check_output(["micli", self.tts_command, value])
 
+    def start_http_server(self):
+        # set the port range
+        port_range = range(8050, 8090)
+        # get a random port from the range
+        self.port = random.choice(port_range)
+        # create the server
+        handler = http.server.SimpleHTTPRequestHandler
+        httpd = ThreadedHTTPServer(("", self.port), handler)
+        # start the server in a new thread
+        server_thread = threading.Thread(target=httpd.serve_forever)
+        server_thread.daemon = True
+        server_thread.start()
+
+        # local ip
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.local_ip = s.getsockname()[0]
+        s.close()
+        print(f"Serving on {self.local_ip}:{self.port}")
+
+    def text2mp3(self, value):
+        print(f"text2mp3 ")
+        text2mp3.ms_tts(
+            value,
+            "msoutput",
+            subscription_key=self.ms_subscription_key,
+            service_region=self.ms_service_region,
+            speech_synthesis_voice_name=speech_synthesis_voice_name,
+        )
+
+    async def play_url(self, url):
+        url = url or f"http://{self.local_ip}:{self.port}/msoutput.mp3"
+        print(f"play: {url}")
+        await self.mina_service.play_by_url(self.device_id, url)
+
+    async def ms_tts(self, value):
+        print(f"ms_tts")
+        self.text2mp3(value)
+        await self.play_url("")
+
     def _normalize(self, message):
         message = message.replace(" ", "--")
         message = message.replace("\n", "，")
@@ -271,7 +330,6 @@ class MiGPT:
 
     async def ask_chatgpt_api(self, query):
         message = await self.chatbot.ask(query)
-        message = self._normalize(message)
         return message
 
     async def ask_gpt3(self, query):
@@ -281,7 +339,6 @@ class MiGPT:
             print("No reply from gpt3")
         else:
             message = choices[0].get("text", "")
-            message = self._normalize(message)
             return message
 
     async def ask_chatgpt(self, query):
@@ -299,8 +356,6 @@ class MiGPT:
         if message := data.get("message", ""):
             self.conversation_id = data.get("conversation_id")
             self.parent_id = data.get("parent_id")
-            # xiaoai tts did not support space
-            message = self._normalize(message)
             return message
         return ""
 
@@ -374,9 +429,14 @@ class MiGPT:
                     except:
                         print("小爱没回")
                     message = await self.ask_gpt(query)
-                    # tts to xiaoai with ChatGPT answer
                     print("以下是GPT的回答: " + message)
-                    await self.do_tts(message)
+                    if ENABLE_MICROSOFT_TTS:
+                        await self.ms_tts(message)
+                    else:
+                        message = self._normalize(message)
+                        # tts to xiaoai with ChatGPT answer
+                        await self.do_tts(message)
+
                     # wait for the tts finished, otherwise the tts will be stopped.
                     sleep_time = len(message) / 4
                     time.sleep(sleep_time)
@@ -504,6 +564,14 @@ if __name__ == "__main__":
         "CLI_INTERACTIVE_MODE", CLI_INTERACTIVE_MODE
     )
 
+    # for the Microsoft TTS service
+    ms_subscription_key = config.get("ms_subscription_key", "")
+    ms_service_region = config.get("ms_service_region", "")
+    ENABLE_MICROSOFT_TTS = config.get("ENABLE_MICROSOFT_TTS", ENABLE_MICROSOFT_TTS)
+    speech_synthesis_voice_name = config.get(
+        "speech_synthesis_voice_name", speech_synthesis_voice_name
+    )
+
     if options.use_gpt3:
         if not OPENAI_API_KEY:
             raise Exception("Use gpt-3 api need openai API key, please google how to")
@@ -519,5 +587,14 @@ if __name__ == "__main__":
         options.use_gpt3,
         options.use_chatgpt_api,
         options.verbose,
+        ms_subscription_key,
+        ms_service_region,
     )
+
+    if ENABLE_MICROSOFT_TTS:
+        if not ms_subscription_key:
+            raise Exception("Use Microsoft TTS api need the subscription_key")
+        else:
+            miboy.start_http_server()
+
     asyncio.run(miboy.run_forever())

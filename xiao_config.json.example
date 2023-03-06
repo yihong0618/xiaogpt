@@ -14,4 +14,8 @@
     "PROMPT": "请用100字以内回答",
     "KEYWORDS_AVOID_SEND_TO_OPENAI": [],
     "CLI_INTERACTIVE_MODE": false
+    "ENABLE_MICROSOFT_TTS": true,
+    "speech_synthesis_voice_name": "zh-CN-XiaoxiaoNeural",
+    "ms_subscription_key": "",
+    "ms_service_region": "eastasia"
 }

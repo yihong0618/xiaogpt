@@ -1,6 +1,7 @@
 rich
 git+https://github.com/yihong0618/MiService
+git+https://github.com/pjq/ms_tts_audio
+azure-cognitiveservices-speech
 requests
 revChatGPT
 openai
-
