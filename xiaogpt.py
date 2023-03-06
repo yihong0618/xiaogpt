@@ -339,14 +339,14 @@ class MiGPT:
                 new_timestamp, last_record = self.get_last_timestamp_and_record(r)
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
-                    query = last_record.get("query", "")
-                    if query.find(KEY_WORD) != -1:
+                    query: str = last_record.get("query", "")
+                    if query.startswith(KEY_WORD):
                         # only mute when your clause start's with the keyword
                         if self.this_mute_xiaoai:
                             await self.stop_if_xiaoai_is_playing()
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
-                        query = query.replace(KEY_WORD, "")
+                        query = query.replace(KEY_WORD, "", 1)
                         query = f"{query}，{PROMPT}"
                         # waiting for xiaoai speaker done
                         if not self.mute_xiaoai:
@@ -356,8 +356,8 @@ class MiGPT:
                             print(
                                 "以下是小爱的回答: ",
                                 last_record.get("answers")[0]
-                                .get("tts", {})
-                                .get("text"),
+                                    .get("tts", {})
+                                    .get("text"),
                             )
                         except:
                             print("小爱没回")
