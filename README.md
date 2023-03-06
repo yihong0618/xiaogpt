@@ -70,6 +70,7 @@ python3 xiaogpt.py
 
 1. 请开启小爱同学的蓝牙
 2. 如果要更改提示词和 PROMPT 在代码最上面自行更改
+3. 目前已知 LX04 必须使用 `--use_command`
 
 ## QA
 
