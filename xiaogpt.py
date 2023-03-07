@@ -28,6 +28,7 @@ HARDWARE_COMMAND_DICT = {
     "LX04": "5-1",
     "L05C": "5-3",
     "L17A": "7-3",
+    "X08E": "7-3",
     # add more here
 }
 MI_USER = ""
