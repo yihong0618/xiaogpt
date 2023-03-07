@@ -87,12 +87,12 @@ https://www.youtube.com/watch?v=K4YA8YwzOOA
 
 ### 常规用法
 
-docker run -e OPENAI_API_KEY=< your-openapi-key > yihong0618/xiaogpt < 命令行参数 >
+docker run -e OPENAI_API_KEY=< your-openapi-key > pengjianqing/xiaogpt < 命令行参数 >
 
 如
 
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
+docker run -e OPENAI_API_KEY=<your-openapi-key> pengjianqing/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
 ```
 
 ### 使用配置文件
@@ -100,13 +100,13 @@ docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<yo
 1.xiaogpt的配置文件可通过指定volume /config，以及指定参数--config来处理，如
 
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> -v <your-config-dir>:/config yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
+docker run -e OPENAI_API_KEY=<your-openapi-key> -v <your-config-dir>:/config pengjianqing/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
 ```
 
 2.如果使用revChatGPT，则可通过指定volume /config，以及指定环境变量XDG_CONFIG_HOME来处理 ( **revChatGPT配置文件需要放置到<your-config-dir>/revChatGPT/config.json** ) ，如
 
 ```shell
-docker run -e XDG_CONFIG_HOME=/config -v <your-config-dir>:/config yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
+docker run -e XDG_CONFIG_HOME=/config -v <your-config-dir>:/config pengjianqing/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
 ```
 
 # 感谢
