@@ -29,6 +29,7 @@ HARDWARE_COMMAND_DICT = {
     "L05C": "5-3",
     "L17A": "7-3",
     "X08E": "7-3",
+    "LX05A": "5-1",  # 小爱红外版
     # add more here
 }
 MI_USER = ""
