@@ -72,6 +72,25 @@ python3 xiaogpt.py
 2. 如果要更改提示词和 PROMPT 在代码最上面自行更改
 3. 目前已知 LX04 和 L05B L05C 可能需要使用 `--use_command`
 
+
+## 启用Microsoft TTS 服务
+小爱同学默认的语音听起来不是太好，特别是英语，接入Microsoft TTS服务, 听起来会好很多.
+- https://azure.microsoft.com/en-us/products/cognitive-services/text-to-speech/#features
+
+配置文件上增加了以下字段
+```json
+{
+    "ENABLE_MICROSOFT_TTS": false,
+    "speech_synthesis_voice_name": "zh-CN-XiaoxiaoNeural",
+    "ms_subscription_key": "",
+    "ms_service_region": "eastasia"
+}
+```
+- ENABLE_MICROSOFT_TTS: true 启用微软TTS
+- speech_synthesis_voice_name: 可以在上面网站链接上，找到想要的人声
+- subscription_key: API Key, 可以参考这个文档 https://bobtranslate.com/service/tts/microsoft.html
+- service_region: 参考同上文档 
+
 ## QA
 
 1. 用破解么？不用
