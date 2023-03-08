@@ -86,13 +86,16 @@ https://www.youtube.com/watch?v=K4YA8YwzOOA
 ## Docker
 
 ### 常规用法
+X86/ARM Docker Image
+- X86: pengjianqing/xiaogpt-x86
+- ARM: pengjianqing/xiaogpt
 
-docker run -e OPENAI_API_KEY=< your-openapi-key > pengjianqing/xiaogpt < 命令行参数 >
+docker run -e OPENAI_API_KEY=< your-openapi-key > pengjianqing/xiaogpt-x86 < 命令行参数 >
 
 如
 
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> pengjianqing/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
+docker run -e OPENAI_API_KEY=<your-openapi-key> pengjianqing/xiaogpt-x86 --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
 ```
 
 ### 使用配置文件
@@ -100,13 +103,22 @@ docker run -e OPENAI_API_KEY=<your-openapi-key> pengjianqing/xiaogpt --account=<
 1.xiaogpt的配置文件可通过指定volume /config，以及指定参数--config来处理，如
 
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> -v <your-config-dir>:/config pengjianqing/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
+docker run -e OPENAI_API_KEY=<your-openapi-key> -v <your-config-dir>:/config pengjianqing/xiaogpt-x86 --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
 ```
 
 2.如果使用revChatGPT，则可通过指定volume /config，以及指定环境变量XDG_CONFIG_HOME来处理 ( **revChatGPT配置文件需要放置到<your-config-dir>/revChatGPT/config.json** ) ，如
 
 ```shell
-docker run -e XDG_CONFIG_HOME=/config -v <your-config-dir>:/config pengjianqing/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
+docker run -e XDG_CONFIG_HOME=/config -v <your-config-dir>:/config pengjianqing/xiaogpt-x86 --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api --config=/config/config.json
+```
+
+### 本地编译Docker Image
+```shell
+ docker build -t xiaogpt .
+```
+如果需要在Apple M1/M2上编译x86
+```shell
+ docker buildx build --platform=linux/amd64 -t xiaogpt-x86 .
 ```
 
 # 感谢
