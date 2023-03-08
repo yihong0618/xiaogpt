@@ -1,0 +1,17 @@
+{
+    "hardware": "LX06",
+    "account": "",
+    "password": "",
+    "openai_key": "",
+    "cookie": "",
+    "use_command": false,
+    "mute_xiaoai": false,
+    "verbose": false,
+    "use_gpt3": false,
+    "use_chatgpt_api": false,
+    "KEY_WORD": "帮我",
+    "ENABLE_IMMERSIVE_TALKING_MODE": false,
+    "PROMPT": "请用100字以内回答",
+    "KEYWORDS_AVOID_SEND_TO_OPENAI": [],
+    "CLI_INTERACTIVE_MODE": false
+}

@@ -37,10 +37,14 @@ MI_USER = ""
 MI_PASS = ""
 OPENAI_API_KEY = ""
 KEY_WORD = "帮我"
+# Enable the immersive talking mode.
+ENABLE_IMMERSIVE_TALKING_MODE = False
 PROMPT = "请用100字以内回答"
 
 # simulate the response from xiaoai server by type the input.
 CLI_INTERACTIVE_MODE = False
+# Keyword that no need send to OpenAI, e.g. ["停止", "播放", "打开", "关闭", "天气"]
+KEYWORDS_AVOID_SEND_TO_OPENAI = []
 
 
 ### HELP FUNCTION ###
@@ -319,6 +323,10 @@ class MiGPT:
             # stop it
             await self.mina_service.player_pause(self.device_id)
 
+    def intercept(self, query):
+        # Skip the keywords that no need send to OpenAI
+        return any(keyword in query for keyword in KEYWORDS_AVOID_SEND_TO_OPENAI)
+
     async def run_forever(self):
         print(f"Running xiaogpt now, 用`{KEY_WORD}`开头来提问")
         async with ClientSession() as session:
@@ -344,38 +352,42 @@ class MiGPT:
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
-                    if query.find(KEY_WORD) != -1:
-                        # only mute when your clause start's with the keyword
-                        if self.this_mute_xiaoai:
-                            await self.stop_if_xiaoai_is_playing()
-                        self.this_mute_xiaoai = False
-                        # drop 帮我回答
-                        query = query.replace(KEY_WORD, "")
-                        query = f"{query}，{PROMPT}"
-                        # waiting for xiaoai speaker done
-                        if not self.mute_xiaoai:
-                            await asyncio.sleep(8)
-                        await self.do_tts("正在问GPT请耐心等待")
-                        try:
-                            print(
-                                "以下是小爱的回答: ",
-                                last_record.get("answers")[0]
-                                .get("tts", {})
-                                .get("text"),
-                            )
-                        except:
-                            print("小爱没回")
-                        message = await self.ask_gpt(query)
-                        # tts to xiaoai with ChatGPT answer
-                        print("以下是GPT的回答: " + message)
-                        await self.do_tts(message)
-                        if self.mute_xiaoai:
-                            while 1:
-                                is_playing = await self.get_if_xiaoai_is_playing()
-                                time.sleep(2)
-                                if not is_playing:
-                                    break
-                            self.this_mute_xiaoai = True
+
+                    if ENABLE_IMMERSIVE_TALKING_MODE:
+                        print(f"ENABLE_IMMERSIVE_TALKING_MODE: {query}")
+                    else:
+                        if query.find(KEY_WORD) != -1:
+                            # only mute when your clause start's with the keyword
+                            if self.this_mute_xiaoai:
+                                await self.stop_if_xiaoai_is_playing()
+                            self.this_mute_xiaoai = False
+                            # drop 帮我回答
+                            query = query.replace(KEY_WORD, "")
+                        else:
+                            continue
+                    query = f"{query}，{PROMPT}"
+                    # waiting for xiaoai speaker done
+                    if not self.mute_xiaoai:
+                        await asyncio.sleep(8)
+                    await self.do_tts("正在问GPT请耐心等待")
+                    try:
+                        print(
+                            "以下是小爱的回答: ",
+                            last_record.get("answers")[0].get("tts", {}).get("text"),
+                        )
+                    except:
+                        print("小爱没回")
+                    message = await self.ask_gpt(query)
+                    # tts to xiaoai with ChatGPT answer
+                    print("以下是GPT的回答: " + message)
+                    await self.do_tts(message)
+                    if self.mute_xiaoai:
+                        while 1:
+                            is_playing = await self.get_if_xiaoai_is_playing()
+                            time.sleep(2)
+                            if not is_playing:
+                                break
+                        self.this_mute_xiaoai = True
                 else:
                     if self.verbose:
                         print("No new xiao ai record")
@@ -455,11 +467,16 @@ if __name__ == "__main__":
         default="",
         help="config file path",
     )
-
+    parser.add_argument(
+        "--cli_interactive_mode",
+        dest="cli_interactive_mode",
+        action="store_true",
+        help="enable the cli interactive mode",
+    )
     options = parser.parse_args()
 
+    config = {}
     if options.config:
-        config = {}
         if os.path.exists(options.config):
             with open(options.config, "r") as f:
                 config = json.load(f)
@@ -475,6 +492,19 @@ if __name__ == "__main__":
     MI_USER = options.account or env.get("MI_USER") or MI_USER
     MI_PASS = options.password or env.get("MI_PASS") or MI_PASS
     OPENAI_API_KEY = options.openai_key or env.get("OPENAI_API_KEY")
+
+    KEY_WORD = config.get("KEY_WORD", KEY_WORD)
+    ENABLE_IMMERSIVE_TALKING_MODE = config.get(
+        "ENABLE_IMMERSIVE_TALKING_MODE", ENABLE_IMMERSIVE_TALKING_MODE
+    )
+    PROMPT = config.get("PROMPT", PROMPT)
+    KEYWORDS_AVOID_SEND_TO_OPENAI = config.get(
+        "KEYWORDS_AVOID_SEND_TO_OPENAI", KEYWORDS_AVOID_SEND_TO_OPENAI
+    )
+    CLI_INTERACTIVE_MODE = options.cli_interactive_mode or config.get(
+        "CLI_INTERACTIVE_MODE", CLI_INTERACTIVE_MODE
+    )
+
     if options.use_gpt3:
         if not OPENAI_API_KEY:
             raise Exception("Use gpt-3 api need openai API key, please google how to")
