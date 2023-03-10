@@ -26,7 +26,7 @@ Play ChatGPT with Xiaomi AI Speaker
 6. 因为现在必须指定 conversation_id 和 parent_id 来持续对话，会自动建一个新的 conversation
 7. 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
 8. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
-9. 使用 --mute_xiaoai 选项，可以让小爱不回答，但会频繁请求，玩一下可以使用，不建议一直用
+9. 使用 --mute_xiaoai 选项，可以快速停掉小爱的回答
 10. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
 11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码在 https://github.com/yihong0618/xiaogpt/blob/main/xiaogpt.py#L32
 12. 可以使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
