@@ -3,10 +3,11 @@ import argparse
 import asyncio
 import json
 import os
-from os import environ as env
+import re
 import subprocess
 import time
 from http.cookies import SimpleCookie
+from os import environ as env
 from pathlib import Path
 
 import openai
@@ -53,6 +54,16 @@ def parse_cookie_string(cookie_string):
         cookies_dict[k] = m.value
         cookiejar = cookiejar_from_dict(cookies_dict, cookiejar=None, overwrite=True)
     return cookiejar
+
+
+_no_elapse_chars = re.compile(r"([「」『』《》“”'\"()（）]|(?<!-)-(?!-))", re.UNICODE)
+
+
+def calculate_tts_elapse(text):
+    # for simplicity, we use a fixed speed
+    speed = 4.25  # this value is picked by trial and error
+    # Exclude quotes and brackets that do not affect the total elapsed time
+    return len(_no_elapse_chars.sub("", text)) / speed
 
 
 class GPT3Bot:
@@ -241,7 +252,7 @@ class MiGPT:
             timestamp = last_record.get("time")
             return timestamp, last_record
 
-    async def do_tts(self, value):
+    async def do_tts(self, value, wait_for_finish=False):
         if CLI_INTERACTIVE_MODE:
             print(f"do_tts, CLI_INTERACTIVE_MODE:{value}")
             await asyncio.sleep(2)
@@ -255,9 +266,17 @@ class MiGPT:
                 pass
         else:
             subprocess.check_output(["micli", self.tts_command, value])
+        if wait_for_finish:
+            elapse = calculate_tts_elapse(value)
+            await asyncio.sleep(elapse)
+            while True:
+                if not await self.get_if_xiaoai_is_playing():
+                    break
+                await asyncio.sleep(2)
+            print("回答完毕")
 
     def _normalize(self, message):
-        message = message.replace(" ", "--")
+        message = message.strip().replace(" ", "--")
         message = message.replace("\n", "，")
         message = message.replace('"', "，")
         return message
@@ -313,12 +332,6 @@ class MiGPT:
         )
         return is_playing
 
-    async def stop_if_xiaoai_is_playing(self):
-        is_playing = await self.get_if_xiaoai_is_playing()
-        if is_playing:
-            # stop it
-            await self.mina_service.player_pause(self.device_id)
-
     async def run_forever(self):
         print(f"Running xiaogpt now, 用`{KEY_WORD}`开头来提问")
         async with ClientSession() as session:
@@ -346,8 +359,6 @@ class MiGPT:
                     query = last_record.get("query", "")
                     if query.find(KEY_WORD) != -1:
                         # only mute when your clause start's with the keyword
-                        if self.this_mute_xiaoai:
-                            await self.stop_if_xiaoai_is_playing()
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
                         query = query.replace(KEY_WORD, "")
@@ -368,13 +379,8 @@ class MiGPT:
                         message = await self.ask_gpt(query)
                         # tts to xiaoai with ChatGPT answer
                         print("以下是GPT的回答: " + message)
-                        await self.do_tts(message)
+                        await self.do_tts(message, wait_for_finish=True)
                         if self.mute_xiaoai:
-                            while 1:
-                                is_playing = await self.get_if_xiaoai_is_playing()
-                                time.sleep(2)
-                                if not is_playing:
-                                    break
                             self.this_mute_xiaoai = True
                 else:
                     if self.verbose:
@@ -470,6 +476,10 @@ if __name__ == "__main__":
         for key, value in config.items():
             if not getattr(options, key, None):
                 setattr(options, key, value)
+            if key == "keyword":
+                KEY_WORD = value
+            elif key == "prompt":
+                PROMPT = value
 
     # if set
     MI_USER = options.account or env.get("MI_USER") or MI_USER
