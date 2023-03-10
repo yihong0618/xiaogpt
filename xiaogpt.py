@@ -94,12 +94,15 @@ class GPT3Bot:
 
 
 class ChatGPTBot:
-    def __init__(self, session):
+    def __init__(self, session, api_base=None):
         self.session = session
         self.history = []
+        self.api_base = api_base
 
     async def ask(self, query):
         openai.api_key = OPENAI_API_KEY
+        if self.api_base:
+            openai.api_base = self.api_base
         ms = []
         for h in self.history:
             ms.append({"role": "user", "content": h[0]})
@@ -128,6 +131,7 @@ class MiGPT:
         mute_xiaoai=False,
         use_gpt3=False,
         use_chatgpt_api=False,
+        api_base=None,
         verbose=False,
     ):
         self.mi_token_home = Path.home() / ".mi.token"
@@ -153,6 +157,7 @@ class MiGPT:
         # if use gpt3 api
         self.use_gpt3 = use_gpt3
         self.use_chatgpt_api = use_chatgpt_api
+        self.api_base = api_base
         self.verbose = verbose
 
     async def init_all_data(self, session):
@@ -207,7 +212,7 @@ class MiGPT:
         if self.use_gpt3:
             self.chatbot = GPT3Bot(self.session)
         elif self.use_chatgpt_api:
-            self.chatbot = ChatGPTBot(self.session)
+            self.chatbot = ChatGPTBot(self.session, self.api_base)
         else:
             self.chatbot = Chatbot(configure())
 
@@ -461,6 +466,13 @@ if __name__ == "__main__":
         default="",
         help="config file path",
     )
+    # args to change api_base
+    parser.add_argument(
+        "--api_base",
+        dest="api_base",
+        type=str,
+        help="specify base url other than the OpenAI's official API address",
+    )
 
     options = parser.parse_args()
 
@@ -492,6 +504,7 @@ if __name__ == "__main__":
         if not OPENAI_API_KEY:
             raise Exception("Use chatgpt api need openai API key, please google how to")
 
+
     miboy = MiGPT(
         options.hardware,
         options.cookie,
@@ -499,6 +512,7 @@ if __name__ == "__main__":
         options.mute_xiaoai,
         options.use_gpt3,
         options.use_chatgpt_api,
+        options.api_base,  # change api_base for issue #101 
         options.verbose,
     )
     asyncio.run(miboy.run_forever())
