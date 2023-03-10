@@ -504,7 +504,6 @@ if __name__ == "__main__":
         if not OPENAI_API_KEY:
             raise Exception("Use chatgpt api need openai API key, please google how to")
 
-
     miboy = MiGPT(
         options.hardware,
         options.cookie,
@@ -512,7 +511,7 @@ if __name__ == "__main__":
         options.mute_xiaoai,
         options.use_gpt3,
         options.use_chatgpt_api,
-        options.api_base,  # change api_base for issue #101 
+        options.api_base,  # change api_base for issue #101
         options.verbose,
     )
     asyncio.run(miboy.run_forever())
