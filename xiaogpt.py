@@ -367,6 +367,10 @@ class MiGPT:
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
                         query = query.replace(KEY_WORD, "")
+
+                        print('-'*20)
+                        print("问题：" + query + "？")
+
                         query = f"{query}，{PROMPT}"
                         # waiting for xiaoai speaker done
                         if not self.mute_xiaoai:
