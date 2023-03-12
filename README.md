@@ -18,7 +18,7 @@ Play ChatGPT with Xiaomi AI Speaker
 
 ## 使用
 
-1. pip install -r requirements.txt
+1. pip install -U xiaogpt 
 2. 参考我 fork 的 [MiService](https://github.com/yihong0618/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用 
 3. 参考 [revChatGPT](https://github.com/acheong08/ChatGPT) 项目 README 配置 chatGPT 的 config
 4. run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
@@ -34,6 +34,26 @@ Play ChatGPT with Xiaomi AI Speaker
 14. 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
 
 e.g.
+
+```shell
+xiaogpt --hardware LX06;
+# or
+xiaogpt --hardware LX06 --conversation_id="xxxxxxxx";
+# or 
+xiaogpt --hardware LX06 --cookie ${cookie};
+# 如果你想直接输入账号密码
+iaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_password};
+# 如果你想 mute 小米的回答
+xiaogpt --hardware LX06  --mute_xiaoai 
+# 如果你想使用 gpt3 ai
+export OPENAI_API_KEY=${your_api_key}
+xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
+# 如果你想用 chatgpt api
+export OPENAI_API_KEY=${your_api_key}
+xiaogpt --hardware LX06 --use_chatgpt_api
+```
+使用 git clone 运行
+
 ```shell
 python3 xiaogpt.py --hardware LX06;
 # or
@@ -59,6 +79,8 @@ python3 xiaogpt.py --hardware LX06 --use_chatgpt_api
 
 ```shell
 python3 xiaogpt.py --config xiao_config.json
+# or
+xiaogpt --config xiao_config.json
 ```
 或者
 ```shell
