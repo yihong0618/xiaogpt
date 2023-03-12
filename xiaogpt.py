@@ -495,7 +495,7 @@ if __name__ == "__main__":
             if key == "keyword":
                 if not isinstance(value, list):
                     value = [value]
-                KEY_WORD = value
+                KEY_WORD = [kw for kw in value if kw]
             elif key == "prompt":
                 PROMPT = value
 
