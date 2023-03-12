@@ -362,7 +362,7 @@ class MiGPT:
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
-                    if query.startswith(KEY_WORD):
+                    if query.startswith(tuple(KEY_WORD)):
                         # only mute when your clause start's with the keyword
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
