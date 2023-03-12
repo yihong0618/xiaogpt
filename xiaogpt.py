@@ -37,7 +37,7 @@ HARDWARE_COMMAND_DICT = {
 MI_USER = ""
 MI_PASS = ""
 OPENAI_API_KEY = ""
-KEY_WORD = "帮我"
+KEY_WORD = ["帮我"]
 PROMPT = "请用100字以内回答"
 
 # simulate the response from xiaoai server by type the input.
@@ -338,7 +338,7 @@ class MiGPT:
         return is_playing
 
     async def run_forever(self):
-        print(f"Running xiaogpt now, 用`{KEY_WORD}`开头来提问")
+        print(f"Running xiaogpt now, 用`{'/'.join(KEY_WORD)}`开头来提问")
         async with ClientSession() as session:
             await self.init_all_data(session)
             while 1:
@@ -362,13 +362,13 @@ class MiGPT:
                 if new_timestamp > self.last_timestamp:
                     self.last_timestamp = new_timestamp
                     query = last_record.get("query", "")
-                    if query.find(KEY_WORD) != -1:
+                    if query.startswith(KEY_WORD):
                         # only mute when your clause start's with the keyword
                         self.this_mute_xiaoai = False
                         # drop 帮我回答
-                        query = query.replace(KEY_WORD, "")
+                        query = re.sub(rf"^({'|'.join(KEY_WORD)})", "", query)
 
-                        print('-'*20)
+                        print("-" * 20)
                         print("问题：" + query + "？")
 
                         query = f"{query}，{PROMPT}"
@@ -493,7 +493,9 @@ if __name__ == "__main__":
             if not getattr(options, key, None):
                 setattr(options, key, value)
             if key == "keyword":
-                KEY_WORD = value
+                if not isinstance(value, list):
+                    value = [value]
+                KEY_WORD = [kw for kw in value if kw]
             elif key == "prompt":
                 PROMPT = value
 
