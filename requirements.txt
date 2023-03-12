@@ -1,6 +1,5 @@
 rich
-git+https://github.com/yihong0618/MiService
+miservice_fork
 requests
 revChatGPT
 openai
-
