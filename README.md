@@ -28,7 +28,7 @@ Play ChatGPT with Xiaomi AI Speaker
 8. 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 --use_command 来使用 command 来 tts
 9. 使用 --mute_xiaoai 选项，可以快速停掉小爱的回答
 10. 使用 --account ‘${account}’ --password ‘${password}’ 可以不进行步骤 2
-11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词，源码在 https://github.com/yihong0618/xiaogpt/blob/main/xiaogpt.py#L32
+11. 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
 12. 可以使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
 13. 可以使用 --use_chatgpt_api 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, [openai api](https://platform.openai.com/account/api-keys), 命令 --use_chatgpt_api
 14. 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
