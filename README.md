@@ -142,7 +142,11 @@ docker run -e XDG_CONFIG_HOME=/config -v <your-config-dir>:/config pengjianqing/
  docker buildx build --platform=linux/amd64 -t xiaogpt-x86 .
 ```
 
-# 感谢
+## 推荐的 fork
+
+- [MIGPT](https://github.com/Afool4U/MIGPT) -> 基于 API 流式对话的低延迟版MIGPT
+
+## 感谢
 
 - [xiaomi](https://www.mi.com/)
 - @[Yonsm](https://github.com/Yonsm) 的 [MiService](https://github.com/Yonsm/MiService) 
