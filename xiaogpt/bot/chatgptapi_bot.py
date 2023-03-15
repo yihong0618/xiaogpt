@@ -4,16 +4,13 @@ from xiaogpt.bot.base_bot import BaseBot
 
 
 class ChatGPTBot(BaseBot):
-    def __init__(self, session, openai_key, api_base=None):
-        self.session = session
+    def __init__(self, openai_key, api_base=None):
         self.history = []
-        self.api_base = api_base
-        self.openai_key = openai_key
+        openai.api_key = openai_key
+        if api_base:
+            openai.api_base = api_base
 
     async def ask(self, query):
-        openai.api_key = self.openai_key
-        if self.api_base:
-            openai.api_base = self.api_base
         ms = []
         for h in self.history:
             ms.append({"role": "user", "content": h[0]})

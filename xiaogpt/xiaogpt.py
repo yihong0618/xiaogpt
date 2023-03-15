@@ -8,124 +8,88 @@ from pathlib import Path
 
 from aiohttp import ClientSession
 from miservice import MiAccount, MiNAService
-from revChatGPT.V1 import Chatbot, configure
 from rich import print
 
-from xiaogpt.bot import ChatGPTBot, GPT3Bot
+from xiaogpt.bot import ChatBot, ChatGPTBot, GPT3Bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
     HARDWARE_COMMAND_DICT,
-    KEY_WORD,
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
-    PROMPT,
+    Config,
 )
 from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
 
 
 class MiGPT:
-    def __init__(
-        self,
-        hardware,
-        mi_user,
-        mi_pass,
-        openai_key,
-        cookie="",
-        use_command=False,
-        mute_xiaoai=False,
-        use_gpt3=False,
-        use_chatgpt_api=False,
-        api_base=None,
-        verbose=False,
-    ):
+    def __init__(self, config: Config):
         # TODO !!!! refactor so many of this shit
+        self.config = config
+
         self.mi_token_home = Path.home() / ".mi.token"
-        self.hardware = hardware
-        self.mi_user = mi_user
-        self.mi_pass = mi_pass
-        self.openai_key = openai_key
-        self.cookie_string = ""
-        self.last_timestamp = 0  # timestamp last call mi speaker
+        self.last_timestamp = int(time.time() * 1000)  # timestamp last call mi speaker
         self.session = None
         self.chatbot = None  # a little slow to init we move it after xiaomi init
-        self.user_id = ""
         self.device_id = ""
-        self.service_token = ""
-        self.cookie = cookie
-        self.use_command = use_command
-        self.tts_command = HARDWARE_COMMAND_DICT.get(hardware, "5-1")
+        self.tts_command = HARDWARE_COMMAND_DICT.get(config.hardware, "5-1")
         self.conversation_id = None
         self.parent_id = None
-        self.miboy_account = None
         self.mina_service = None
-        # try to mute xiaoai config
-        self.mute_xiaoai = mute_xiaoai
         # mute xiaomi in runtime
-        self.this_mute_xiaoai = mute_xiaoai
-        # if use gpt3 api
-        self.use_gpt3 = use_gpt3
-        self.use_chatgpt_api = use_chatgpt_api
-        self.api_base = api_base
-        self.verbose = verbose
-        # this attr can be re set value in cli
-        self.key_word = KEY_WORD
-        self.prompt = PROMPT
+        self.this_mute_xiaoai = config.mute_xiaoai
 
     async def init_all_data(self, session):
-        await self.login_miboy(session)
-        await self._init_data_hardware()
-        with open(self.mi_token_home) as f:
-            user_data = json.loads(f.read())
-        self.user_id = user_data.get("userId")
-        self.service_token = user_data.get("micoapi")[1]
-        self._init_cookie()
-        await self._init_first_data_and_chatbot()
-
-    async def login_miboy(self, session):
         self.session = session
-        self.account = MiAccount(
-            session,
-            self.mi_user,
-            self.mi_pass,
+        await self.login_miboy()
+        await self._init_data_hardware()
+        self._init_cookie()
+        self._init_chatbot()
+
+    async def login_miboy(self):
+        account = MiAccount(
+            self.session,
+            self.config.account,
+            self.config.password,
             str(self.mi_token_home),
         )
         # Forced login to refresh to refresh token
-        await self.account.login("micoapi")
-        self.mina_service = MiNAService(self.account)
+        await account.login("micoapi")
+        self.mina_service = MiNAService(account)
 
     async def _init_data_hardware(self):
-        if self.cookie:
+        if self.config.cookie:
             # if use cookie do not need init
             return
         hardware_data = await self.mina_service.device_list()
         for h in hardware_data:
-            if h.get("hardware", "") == self.hardware:
+            if h.get("hardware", "") == self.config.hardware:
                 self.device_id = h.get("deviceID")
                 break
         else:
-            raise Exception(f"we have no hardware: {self.hardware} please check")
+            raise Exception(f"we have no hardware: {self.config.hardware} please check")
 
     def _init_cookie(self):
-        if self.cookie:
-            self.cookie = parse_cookie_string(self.cookie)
+        if self.config.cookie:
+            cookiejar = parse_cookie_string(self.config.cookie)
         else:
-            self.cookie_string = COOKIE_TEMPLATE.format(
-                device_id=self.device_id,
-                service_token=self.service_token,
-                user_id=self.user_id,
+            with open(self.mi_token_home) as f:
+                user_data = json.loads(f.read())
+            user_id = user_data.get("userId")
+            service_token = user_data.get("micoapi")[1]
+            cookie_string = COOKIE_TEMPLATE.format(
+                device_id=self.device_id, service_token=service_token, user_id=user_id
             )
-            self.cookie = parse_cookie_string(self.cookie_string)
+            cookiejar = parse_cookie_string(cookie_string)
+        self.session.cookie_jar.update_cookies(cookiejar)
 
-    async def _init_first_data_and_chatbot(self):
-        data = await self.get_latest_ask_from_xiaoai()
-        self.last_timestamp, self.last_record = self.get_last_timestamp_and_record(data)
+    def _init_chatbot(self):
         # TODO refactor this
-        if self.use_gpt3:
-            self.chatbot = GPT3Bot(self.session, self.openai_key)
-        elif self.use_chatgpt_api:
-            self.chatbot = ChatGPTBot(self.session, self.openai_key, self.api_base)
+        if self.config.bot == "gpt3":
+            self.chatbot = GPT3Bot(self.config.openai_key, self.config.api_base)
+        elif self.config.bot == "chatgptapi":
+            self.chatbot = ChatGPTBot(self.config.openai_key, self.config.api_base)
         else:
-            self.chatbot = Chatbot(configure())
+            self.chatbot = ChatBot()
 
     async def simulate_xiaoai_question(self):
         data = MI_ASK_SIMULATE_DATA
@@ -142,29 +106,45 @@ class MiGPT:
 
         return data
 
-    async def get_latest_ask_from_xiaoai(self):
-        r = await self.session.get(
-            LATEST_ASK_API.format(
-                hardware=self.hardware, timestamp=str(int(time.time() * 1000))
-            ),
-            cookies=parse_cookie_string(self.cookie),
-        )
-        return await r.json()
+    def need_ask_gpt(self, record):
+        return record.get("query", "").startswith(tuple(self.config.keyword))
 
-    def get_last_timestamp_and_record(self, data):
+    async def get_latest_ask_from_xiaoai(self):
+        retries = 2
+        for _ in range(retries):
+            r = await self.session.get(
+                LATEST_ASK_API.format(
+                    hardware=self.config.hardware,
+                    timestamp=str(int(time.time() * 1000)),
+                )
+            )
+            try:
+                data = await r.json()
+            except Exception:
+                if self.config.verbose:
+                    print("get latest ask from xiaoai error, retry")
+                self.init_all_data(self.session)
+            else:
+                return self._get_last_query(data)
+        return False, None
+
+    def _get_last_query(self, data):
         if d := data.get("data"):
             records = json.loads(d).get("records")
             if not records:
-                return 0, None
+                return False, None
             last_record = records[0]
             timestamp = last_record.get("time")
-            return timestamp, last_record
+            if timestamp > self.last_timestamp:
+                self.last_timestamp = timestamp
+                return self.need_ask_gpt(last_record), last_record
+        return False, None
 
     async def do_tts(self, value, wait_for_finish=False):
-        if not self.use_command:
+        if not self.config.use_command:
             try:
                 await self.mina_service.text_to_speech(self.device_id, value)
-            except:
+            except Exception:
                 # do nothing is ok
                 pass
         else:
@@ -178,53 +158,16 @@ class MiGPT:
                 await asyncio.sleep(2)
             print("回答完毕")
 
-    def _normalize(self, message):
+    @staticmethod
+    def _normalize(message):
         message = message.strip().replace(" ", "--")
         message = message.replace("\n", "，")
         message = message.replace('"', "，")
         return message
 
     async def ask_gpt(self, query):
-        if self.use_gpt3:
-            return await self.ask_gpt3(query)
-        elif self.use_chatgpt_api:
-            return await self.ask_chatgpt_api(query)
-        return await self.ask_chatgpt(query)
-
-    async def ask_chatgpt_api(self, query):
-        message = await self.chatbot.ask(query)
-        message = self._normalize(message)
-        return message
-
-    async def ask_gpt3(self, query):
-        data = await self.chatbot.ask(query)
-        choices = data.get("choices")
-        if not choices:
-            print("No reply from gpt3")
-        else:
-            message = choices[0].get("text", "")
-            message = self._normalize(message)
-            return message
-
-    async def ask_chatgpt(self, query):
-        # TODO maybe use v2 to async it here
-        if self.conversation_id and self.parent_id:
-            data = list(
-                self.chatbot.ask(
-                    query,
-                    conversation_id=self.conversation_id,
-                    parent_id=self.parent_id,
-                )
-            )[-1]
-        else:
-            data = list(self.chatbot.ask(query))[-1]
-        if message := data.get("message", ""):
-            self.conversation_id = data.get("conversation_id")
-            self.parent_id = data.get("parent_id")
-            # xiaoai tts did not support space
-            message = self._normalize(message)
-            return message
-        return ""
+        answer = await self.chatbot.ask(query)
+        return self._normalize(answer) if answer else ""
 
     async def get_if_xiaoai_is_playing(self):
         playing_info = await self.mina_service.player_get_status(self.device_id)
@@ -235,60 +178,57 @@ class MiGPT:
         )
         return is_playing
 
+    async def stop_if_xiaoai_is_playing(self):
+        is_playing = await self.get_if_xiaoai_is_playing()
+        if is_playing:
+            # stop it
+            await self.mina_service.player_pause(self.device_id)
+
     async def run_forever(self):
-        print(f"Running xiaogpt now, 用`{'/'.join(KEY_WORD)}`开头来提问")
+        print(f"Running xiaogpt now, 用`{'/'.join(self.config.keyword)}`开头来提问")
         async with ClientSession() as session:
             await self.init_all_data(session)
             while 1:
-                if self.verbose:
+                if self.config.verbose:
                     print(
                         f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
                     )
-                try:
-                    r = await self.get_latest_ask_from_xiaoai()
-                except Exception:
-                    # we try to init all again
-                    await self.init_all_data(session)
-                    r = await self.get_latest_ask_from_xiaoai()
+                new_record, last_record = await self.get_latest_ask_from_xiaoai()
+                if not new_record:
+                    if self.config.verbose:
+                        print("No new xiao ai record")
+                    continue
                 # spider rule
-                if not self.mute_xiaoai:
+                if not self.config.mute_xiaoai:
                     await asyncio.sleep(3)
                 else:
                     await asyncio.sleep(0.3)
+                    await self.stop_if_xiaoai_is_playing()
 
-                new_timestamp, last_record = self.get_last_timestamp_and_record(r)
-                if new_timestamp > self.last_timestamp:
-                    self.last_timestamp = new_timestamp
-                    query = last_record.get("query", "")
-                    if query.startswith(tuple(self.key_word)):
-                        # only mute when your clause start's with the keyword
-                        self.this_mute_xiaoai = False
-                        # drop 帮我回答
-                        query = re.sub(rf"^({'|'.join(self.key_word)})", "", query)
+                query = last_record.get("query", "")
+                # only mute when your clause start's with the keyword
+                self.this_mute_xiaoai = False
+                # drop 帮我回答
+                query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
 
-                        print("-" * 20)
-                        print("问题：" + query + "？")
+                print("-" * 20)
+                print("问题：" + query + "？")
 
-                        query = f"{query}，{PROMPT}"
-                        # waiting for xiaoai speaker done
-                        if not self.mute_xiaoai:
-                            await asyncio.sleep(8)
-                        await self.do_tts("正在问GPT请耐心等待")
-                        try:
-                            print(
-                                "以下是小爱的回答: ",
-                                last_record.get("answers")[0]
-                                .get("tts", {})
-                                .get("text"),
-                            )
-                        except:
-                            print("小爱没回")
-                        message = await self.ask_gpt(query)
-                        # tts to xiaoai with ChatGPT answer
-                        print("以下是GPT的回答: " + message)
-                        await self.do_tts(message, wait_for_finish=True)
-                        if self.mute_xiaoai:
-                            self.this_mute_xiaoai = True
-                else:
-                    if self.verbose:
-                        print("No new xiao ai record")
+                query = f"{query}，{self.config.prompt}"
+                # waiting for xiaoai speaker done
+                if not self.config.mute_xiaoai:
+                    await asyncio.sleep(8)
+                await self.do_tts("正在问GPT请耐心等待")
+                try:
+                    print(
+                        "以下是小爱的回答: ",
+                        last_record.get("answers", [])[0].get("tts", {}).get("text"),
+                    )
+                except IndexError:
+                    print("小爱没回")
+                message = await self.ask_gpt(query)
+                # tts to xiaoai with ChatGPT answer
+                print("以下是GPT的回答: " + message)
+                await self.do_tts(message, wait_for_finish=True)
+                if self.config.mute_xiaoai:
+                    self.this_mute_xiaoai = True
