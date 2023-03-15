@@ -66,7 +66,7 @@ def main():
         help="if use openai chatgpt api",
     )
     group.add_argument(
-        "--bot", dest="bot", help="bot type", choices=["chatgpt", "gpt3", "chatgptapi"]
+        "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi"]
     )
     parser.add_argument(
         "--config",

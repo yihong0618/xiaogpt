@@ -8,6 +8,6 @@
     "mute_xiaoai": false,
     "verbose": false,
     "use_gpt3": false,
-    "use_chatgpt_api": false,
+    "use_chatgpt_api": true,
     "keyword": "",
 }
