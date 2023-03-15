@@ -10,7 +10,7 @@ from aiohttp import ClientSession
 from miservice import MiAccount, MiNAService
 from rich import print
 
-from xiaogpt.bot import ChatBot, ChatGPTBot, GPT3Bot
+from xiaogpt.bot import ChatGPTBot, GPT3Bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
     HARDWARE_COMMAND_DICT,
@@ -88,7 +88,7 @@ class MiGPT:
         elif self.config.bot == "chatgptapi":
             self.chatbot = ChatGPTBot(self.config.openai_key, self.config.api_base)
         else:
-            self.chatbot = ChatBot()
+            raise Exception(f"Do not support {self.config.bot}")
 
     async def simulate_xiaoai_question(self):
         data = MI_ASK_SIMULATE_DATA
