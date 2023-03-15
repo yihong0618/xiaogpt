@@ -23,7 +23,6 @@ from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
 
 class MiGPT:
     def __init__(self, config: Config):
-        # TODO !!!! refactor so many of this shit
         self.config = config
 
         self.mi_token_home = Path.home() / ".mi.token"
