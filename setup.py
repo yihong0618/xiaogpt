@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name="xiaogpt",
     description="Play ChatGPT with xiaomi AI speaker",
-    version="0.1.1",
+    version="0.2.0",
     license="MIT",
     author="yihong0618",
     author_email="zouzou0208@gmail.com",
