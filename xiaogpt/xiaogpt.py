@@ -215,7 +215,7 @@ class MiGPT:
 
     async def run_forever(self):
         print(f"Running xiaogpt now, 用`{'/'.join(self.config.keyword)}`开头来提问")
-        print(f"用`{self.config.start_conversation}`开始对话")
+        print(f"或用`{self.config.start_conversation}`开始持续对话")
         async with ClientSession() as session:
             await self.init_all_data(session)
             while 1:
@@ -223,10 +223,10 @@ class MiGPT:
                     print(
                         f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
                     )
-                new_record, last_record = await self.get_latest_ask_from_xiaoai()
-                if last_record:
+                need_ask_gpt, new_record = await self.get_latest_ask_from_xiaoai()
+                if new_record:
                     if (
-                        last_record.get("query", "").strip()
+                        new_record.get("query", "").strip()
                         == self.config.start_conversation
                     ):
                         if not self.in_conversation:
@@ -236,7 +236,7 @@ class MiGPT:
                         await self.stop_if_xiaoai_is_playing()
                         continue
                     elif (
-                        last_record.get("query", "").strip()
+                        new_record.get("query", "").strip()
                         == self.config.end_conversation
                     ):
                         if self.in_conversation:
@@ -244,7 +244,7 @@ class MiGPT:
                             self.in_conversation = False
                         await self.stop_if_xiaoai_is_playing()
                         continue
-                if not new_record:
+                if not need_ask_gpt:
                     if self.config.verbose:
                         print("No new xiao ai record")
                     continue
@@ -256,7 +256,7 @@ class MiGPT:
                     await asyncio.sleep(0.3)
                     await self.stop_if_xiaoai_is_playing()
 
-                query = last_record.get("query", "")
+                query = new_record.get("query", "")
                 # only mute when your clause start's with the keyword
                 self.this_mute_xiaoai = False
                 # drop 帮我回答
@@ -273,7 +273,7 @@ class MiGPT:
                 try:
                     print(
                         "以下是小爱的回答: ",
-                        last_record.get("answers", [])[0].get("tts", {}).get("text"),
+                        new_record.get("answers", [])[0].get("tts", {}).get("text"),
                     )
                 except IndexError:
                     print("小爱没回")
