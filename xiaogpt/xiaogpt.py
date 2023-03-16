@@ -2,20 +2,19 @@
 import asyncio
 import json
 import re
-import subprocess
 import time
 from pathlib import Path
 
 from aiohttp import ClientSession
-from miservice import MiAccount, MiNAService
+from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
 
 from xiaogpt.bot import ChatGPTBot, GPT3Bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
-    HARDWARE_COMMAND_DICT,
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
+    WAKEUP_KEYWORD,
     Config,
 )
 from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
@@ -30,12 +29,13 @@ class MiGPT:
         self.session = None
         self.chatbot = None  # a little slow to init we move it after xiaomi init
         self.device_id = ""
-        self.tts_command = HARDWARE_COMMAND_DICT.get(config.hardware, "5-1")
         self.conversation_id = None
         self.parent_id = None
         self.mina_service = None
+        self.miio_service = None
         # mute xiaomi in runtime
         self.this_mute_xiaoai = config.mute_xiaoai
+        self.in_conversation = False
 
     async def init_all_data(self, session):
         self.session = session
@@ -54,6 +54,7 @@ class MiGPT:
         # Forced login to refresh to refresh token
         await account.login("micoapi")
         self.mina_service = MiNAService(account)
+        self.miio_service = MiIOService(account)
 
     async def _init_data_hardware(self):
         if self.config.cookie:
@@ -66,6 +67,19 @@ class MiGPT:
                 break
         else:
             raise Exception(f"we have no hardware: {self.config.hardware} please check")
+        if not self.config.mi_did:
+            devices = await self.miio_service.device_list()
+            try:
+                self.config.mi_did = next(
+                    d["did"]
+                    for d in devices
+                    if d["model"].endswith(self.config.hardware.lower())
+                )
+            except StopIteration:
+                raise Exception(
+                    f"cannot find did for hardware: {self.config.hardware} "
+                    "please set it via MI_DID env"
+                )
 
     def _init_cookie(self):
         if self.config.cookie:
@@ -106,7 +120,12 @@ class MiGPT:
         return data
 
     def need_ask_gpt(self, record):
-        return record.get("query", "").startswith(tuple(self.config.keyword))
+        query = record.get("query", "")
+        return (
+            self.in_conversation
+            and not query.startswith(WAKEUP_KEYWORD)
+            or query.startswith(tuple(self.config.keyword))
+        )
 
     async def get_latest_ask_from_xiaoai(self):
         retries = 2
@@ -147,7 +166,11 @@ class MiGPT:
                 # do nothing is ok
                 pass
         else:
-            subprocess.check_output(["micli", self.tts_command, value])
+            await miio_command(
+                self.miio_service,
+                self.config.mi_did,
+                f"{self.config.tts_command} {value}",
+            )
         if wait_for_finish:
             elapse = calculate_tts_elapse(value)
             await asyncio.sleep(elapse)
@@ -183,8 +206,16 @@ class MiGPT:
             # stop it
             await self.mina_service.player_pause(self.device_id)
 
+    async def wakeup_xiaoai(self):
+        return await miio_command(
+            self.miio_service,
+            self.config.mi_did,
+            f"{self.config.wakeup_command} {WAKEUP_KEYWORD} 0",
+        )
+
     async def run_forever(self):
         print(f"Running xiaogpt now, 用`{'/'.join(self.config.keyword)}`开头来提问")
+        print(f"或用`{self.config.start_conversation}`开始持续对话")
         async with ClientSession() as session:
             await self.init_all_data(session)
             while 1:
@@ -192,11 +223,32 @@ class MiGPT:
                     print(
                         f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
                     )
-                new_record, last_record = await self.get_latest_ask_from_xiaoai()
-                if not new_record:
+                need_ask_gpt, new_record = await self.get_latest_ask_from_xiaoai()
+                if new_record:
+                    if (
+                        new_record.get("query", "").strip()
+                        == self.config.start_conversation
+                    ):
+                        if not self.in_conversation:
+                            print("开始对话")
+                            self.in_conversation = True
+                            await self.wakeup_xiaoai()
+                        await self.stop_if_xiaoai_is_playing()
+                        continue
+                    elif (
+                        new_record.get("query", "").strip()
+                        == self.config.end_conversation
+                    ):
+                        if self.in_conversation:
+                            print("结束对话")
+                            self.in_conversation = False
+                        await self.stop_if_xiaoai_is_playing()
+                        continue
+                if not need_ask_gpt:
                     if self.config.verbose:
                         print("No new xiao ai record")
                     continue
+
                 # spider rule
                 if not self.config.mute_xiaoai:
                     await asyncio.sleep(3)
@@ -204,7 +256,7 @@ class MiGPT:
                     await asyncio.sleep(0.3)
                     await self.stop_if_xiaoai_is_playing()
 
-                query = last_record.get("query", "")
+                query = new_record.get("query", "")
                 # only mute when your clause start's with the keyword
                 self.this_mute_xiaoai = False
                 # drop 帮我回答
@@ -221,7 +273,7 @@ class MiGPT:
                 try:
                     print(
                         "以下是小爱的回答: ",
-                        last_record.get("answers", [])[0].get("tts", {}).get("text"),
+                        new_record.get("answers", [])[0].get("tts", {}).get("text"),
                     )
                 except IndexError:
                     print("小爱没回")
@@ -231,3 +283,6 @@ class MiGPT:
                 await self.do_tts(message, wait_for_finish=True)
                 if self.config.mute_xiaoai:
                     self.this_mute_xiaoai = True
+                if self.in_conversation:
+                    print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
+                    await self.wakeup_xiaoai()

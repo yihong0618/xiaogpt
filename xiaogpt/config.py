@@ -8,21 +8,24 @@ from typing import Iterable
 
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
+WAKEUP_KEYWORD = "小爱同学"
 
 HARDWARE_COMMAND_DICT = {
-    "LX06": "5-1",
-    "L05B": "5-3",
-    "S12A": "5-1",
-    "LX01": "5-1",
-    "L06A": "5-1",
-    "LX04": "5-1",
-    "L05C": "5-3",
-    "L17A": "7-3",
-    "X08E": "7-3",
-    "LX05A": "5-1",  # 小爱红外版
-    "LX5A": "5-1",  # 小爱红外版
+    # hardware: (tts_command, wakeup_command)
+    "LX06": ("5-1", "5-5"),
+    "L05B": ("5-3", "5-4"),
+    "S12A": ("5-1", "5-5"),
+    "LX01": ("5-1", "5-5"),
+    "L06A": ("5-1", "5-5"),
+    "LX04": ("5-1", "5-4"),
+    "L05C": ("5-3", "5-4"),
+    "L17A": ("7-3", "5-4"),
+    "X08E": ("7-3", "5-4"),
+    "LX05A": ("5-1", "5-5"),  # 小爱红外版
+    "LX5A": ("5-1", "5-5"),  # 小爱红外版
     # add more here
 }
+DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
 PROMPT = "请用100字以内回答"
@@ -40,6 +43,7 @@ class Config:
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
     prompt: str = PROMPT
     mute_xiaoai: bool = False
@@ -48,6 +52,16 @@ class Config:
     api_base: str | None = None
     use_command: bool = False
     verbose: bool = False
+    start_conversation: str = "开始持续对话"
+    end_conversation: str = "结束持续对话"
+
+    @property
+    def tts_command(self) -> str:
+        return HARDWARE_COMMAND_DICT.get(self.hardware, DEFAULT_COMMAND)[0]
+
+    @property
+    def wakeup_command(self) -> str:
+        return HARDWARE_COMMAND_DICT.get(self.hardware, DEFAULT_COMMAND)[1]
 
     @classmethod
     def from_options(cls, options: argparse.Namespace) -> Config:

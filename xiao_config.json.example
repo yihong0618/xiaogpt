@@ -4,10 +4,12 @@
     "password": "",
     "openai_key": "",
     "cookie": "",
+    "mi_did": "",
     "use_command": false,
     "mute_xiaoai": false,
     "verbose": false,
-    "use_gpt3": false,
-    "use_chatgpt_api": true,
-    "keyword": "",
+    "bot": "chatgptapi,
+    "keyword": ["帮我", "请回答"],
+    "start_conversation": "开始持续对话",
+    "end_conversation": "结束持续对话"
 }
