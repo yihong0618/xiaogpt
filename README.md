@@ -142,6 +142,7 @@ docker run -e XDG_CONFIG_HOME=/config -v <your-config-dir>:/config pengjianqing/
 - [xiaomi](https://www.mi.com/)
 - @[Yonsm](https://github.com/Yonsm) 的 [MiService](https://github.com/Yonsm/MiService) 
 - @[pjq](https://github.com/pjq) 给了这个项目非常多的帮助
+- @[frostming](https://github.com/frostming) 重构了一些代码，支持了`持续会话功能`
 
 ## 赞赏
 
