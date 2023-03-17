@@ -55,6 +55,7 @@ class Config:
     verbose: bool = False
     start_conversation: str = "开始持续对话"
     end_conversation: str = "结束持续对话"
+    stream: bool = False
 
     @property
     def tts_command(self) -> str:

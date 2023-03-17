@@ -11,5 +11,6 @@
     "bot": "chatgptapi,
     "keyword": ["帮我", "请回答"],
     "start_conversation": "开始持续对话",
-    "end_conversation": "结束持续对话"
+    "end_conversation": "结束持续对话",
+    "stream": false
 }

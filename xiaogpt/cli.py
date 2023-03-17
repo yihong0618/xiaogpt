@@ -33,6 +33,9 @@ def main():
         help="xiaomi cookie",
     )
     parser.add_argument(
+        "--stream", dest="stream", action="store_true", help="GPT stream mode"
+    )
+    parser.add_argument(
         "--use_command",
         dest="use_command",
         action="store_true",

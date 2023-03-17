@@ -18,8 +18,8 @@ Play ChatGPT with Xiaomi AI Speaker
 
 ## 使用
 
-- pip install -U xiaogpt 
-- 参考我 fork 的 [MiService](https://github.com/yihong0618/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用 
+- pip install -U xiaogpt
+- 参考我 fork 的 [MiService](https://github.com/yihong0618/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用
 - run `python xiaogpt.py --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来
 - 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
 - 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 --cookie '${cookie}' cookie 别忘了用单引号包裹
@@ -36,13 +36,15 @@ e.g.
 
 ```shell
 export OPENAI_API_KEY=${your_api_key}
-xiaogpt --hardware LX06 --use_chatgpt_api 
-# or 
+xiaogpt --hardware LX06 --use_chatgpt_api
+# or
 xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api
 # 如果你想直接输入账号密码
 xiaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
 # 如果你想 mute 小米的回答
 xiaogpt --hardware LX06  --mute_xiaoai --use_chatgpt_api
+# 使用流式响应，获得更快的响应
+xiaogpt --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 gpt3 ai
 export OPENAI_API_KEY=${your_api_key}
 xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
@@ -51,13 +53,15 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
 
 ```shell
 export OPENAI_API_KEY=${your_api_key}
-python3 xiaogpt.py --hardware LX06 --use_chatgpt_api
+python3 xiaogpt.py --hardware LX06
 # or
-python3 xiaogpt.py --hardware LX06 --cookie ${cookie} --use_chatgpt_api
+python3 xiaogpt.py --hardware LX06 --cookie ${cookie}
 # 如果你想直接输入账号密码
-python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
+python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password}
 # 如果你想 mute 小米的回答
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_chatgpt_api
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai
+# 使用流式响应，获得更快的响应
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 gpt3 ai
 export OPENAI_API_KEY=${your_api_key}
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
@@ -72,6 +76,11 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
 python3 xiaogpt.py --config xiao_config.json
 # or
 xiaogpt --config xiao_config.json
+```
+或者
+```shell
+cp xiao_config.json.example xiao_config.json
+python3 xiaogpt.py
 ```
 
 ## 注意
@@ -127,7 +136,7 @@ docker run  -v <your-config-dir>:/config pengjianqing/xiaogpt-x86 config=/config
 ## 感谢
 
 - [xiaomi](https://www.mi.com/)
-- @[Yonsm](https://github.com/Yonsm) 的 [MiService](https://github.com/Yonsm/MiService) 
+- @[Yonsm](https://github.com/Yonsm) 的 [MiService](https://github.com/Yonsm/MiService)
 - @[pjq](https://github.com/pjq) 给了这个项目非常多的帮助
 - @[frostming](https://github.com/frostming) 重构了一些代码，支持了`持续会话功能`
 
