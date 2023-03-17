@@ -40,7 +40,7 @@ xiaogpt --hardware LX06 --use_chatgpt_api
 # or 
 xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api
 # 如果你想直接输入账号密码
-iaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
+xiaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
 # 如果你想 mute 小米的回答
 xiaogpt --hardware LX06  --mute_xiaoai --use_chatgpt_api
 # 如果你想使用 gpt3 ai
