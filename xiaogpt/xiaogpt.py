@@ -224,6 +224,12 @@ class MiGPT:
                         f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
                     )
                 need_ask_gpt, new_record = await self.get_latest_ask_from_xiaoai()
+                # spider rule
+                if not self.config.mute_xiaoai:
+                    await asyncio.sleep(3)
+                else:
+                    await asyncio.sleep(0.3)
+                    await self.stop_if_xiaoai_is_playing()
                 if new_record:
                     if (
                         new_record.get("query", "").strip()
@@ -248,13 +254,6 @@ class MiGPT:
                     if self.config.verbose:
                         print("No new xiao ai record")
                     continue
-
-                # spider rule
-                if not self.config.mute_xiaoai:
-                    await asyncio.sleep(3)
-                else:
-                    await asyncio.sleep(0.3)
-                    await self.stop_if_xiaoai_is_playing()
 
                 query = new_record.get("query", "")
                 # only mute when your clause start's with the keyword
