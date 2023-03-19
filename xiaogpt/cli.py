@@ -87,7 +87,8 @@ def main():
     config = Config.from_options(options)
 
     miboy = MiGPT(config)
-    asyncio.run(miboy.run_forever())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(miboy.run_forever())
 
 
 if __name__ == "__main__":
