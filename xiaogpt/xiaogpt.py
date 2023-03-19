@@ -29,9 +29,8 @@ class MiGPT:
         self.last_timestamp = int(time.time() * 1000)  # timestamp last call mi speaker
         self.last_record = None
         self.cookie_jar = None
-        self._chatbot = None  # a little slow to init we move it after xiaomi init
+        self._chatbot = None
         self.device_id = ""
-        self.conversation_id = None
         self.parent_id = None
         self.mina_service = None
         self.miio_service = None
@@ -99,7 +98,11 @@ class MiGPT:
 
     def get_cookie(self):
         if self.config.cookie:
-            return parse_cookie_string(self.config.cookie)
+            cookie_jar = parse_cookie_string(self.config.cookie)
+            # set attr from cookie fix #134
+            cookie_dict = cookie_jar.get_dict()
+            self.device_id = cookie_dict["deviceId"]
+            return cookie_jar
         else:
             with open(self.mi_token_home) as f:
                 user_data = json.loads(f.read())
