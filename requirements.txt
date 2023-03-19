@@ -1,5 +1,4 @@
 rich
 miservice_fork
 requests
-revChatGPT
 openai
