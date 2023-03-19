@@ -201,20 +201,41 @@ class MiGPT:
         return message
 
     async def ask_gpt(self, query):
-        async with ClientSession(trust_env=True) as session:
-            openai.aiosession.set(session)
-            if not self.config.stream:
+        if not self.config.stream:
+            async with ClientSession(trust_env=True) as session:
+                openai.aiosession.set(session)
                 answer = await self.chatbot.ask(query)
                 message = self._normalize(answer) if answer else ""
                 yield message
                 return
 
-            self.polling_event.set()
-            async for message in self.chatbot.ask_stream(query):
-                if self.new_record_event.is_set():
+        async def collect_stream(queue):
+            async with ClientSession(trust_env=True) as session:
+                openai.aiosession.set(session)
+                async for message in self.chatbot.ask_stream(query):
+                    await queue.put(message)
+
+        self.polling_event.set()
+        queue = asyncio.Queue()
+        EOF = object()
+        is_eof = False
+        task = asyncio.create_task(collect_stream(queue))
+        task.add_done_callback(lambda _: queue.put_nowait(EOF))
+        while True:
+            if is_eof or self.new_record_event.is_set():
+                break
+            message = await queue.get()
+            if message is EOF:
+                break
+            while not queue.empty():
+                if (next_msg := queue.get_nowait()) is EOF:
+                    is_eof = True
                     break
+                message += next_msg
+            if message:
                 yield self._normalize(message)
-            self.polling_event.clear()
+        self.polling_event.clear()
+        task.cancel()
 
     async def get_if_xiaoai_is_playing(self):
         playing_info = await self.mina_service.player_get_status(self.device_id)
