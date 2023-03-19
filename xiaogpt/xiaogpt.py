@@ -4,6 +4,12 @@ import json
 import re
 import time
 from pathlib import Path
+import http.server
+import socketserver
+import socket
+import random
+import threading
+import subprocess
 
 import openai
 from aiohttp import ClientSession
@@ -19,6 +25,10 @@ from xiaogpt.config import (
     Config,
 )
 from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
+
+
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    pass
 
 
 class MiGPT:
@@ -53,6 +63,9 @@ class MiGPT:
                 if time.perf_counter() - start < 1:
                     # sleep 2s to avoid too many request
                     await asyncio.sleep(2)
+
+        if config.edge_tts_enable:
+            self.start_http_server()
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
@@ -193,6 +206,42 @@ class MiGPT:
                     break
                 await asyncio.sleep(2)
 
+    def start_http_server(self):
+        # set the port range
+        port_range = range(8050, 8090)
+        # get a random port from the range
+        self.port = random.choice(port_range)
+        # create the server
+        handler = http.server.SimpleHTTPRequestHandler
+        httpd = ThreadedHTTPServer(("", self.port), handler)
+        # start the server in a new thread
+        server_thread = threading.Thread(target=httpd.serve_forever)
+        server_thread.daemon = True
+        server_thread.start()
+
+        # local ip
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.local_ip = s.getsockname()[0]
+        s.close()
+        print(f"Serving on {self.local_ip}:{self.port}")
+
+    def text2mp3(self, value):
+        print(f"text2mp3 ")
+        cmd = f'edge-tts --text "{value}" --write-media output.mp3 --voice {self.config.edge_tts_voice}'
+        subprocess.run(cmd, shell=True)
+
+        return f"http://{self.local_ip}:{self.port}/output.mp3"
+
+    async def play_url(self, url):
+        print(f"play: {url}")
+        await self.mina_service.play_by_url(self.device_id, url)
+
+    async def edge_tts(self, value):
+        print(f"edge_tts")
+        url = self.text2mp3(value)
+        await self.play_url(url)
+
     @staticmethod
     def _normalize(message):
         message = message.strip().replace(" ", "--")
@@ -316,8 +365,12 @@ class MiGPT:
                 print("以下是GPT的回答: ", end="")
                 try:
                     async for message in self.ask_gpt(query):
-                        # tts to xiaoai with ChatGPT answer
-                        await self.do_tts(message, wait_for_finish=True)
+                        if self.config.edge_tts_enable:
+                            # tts with edge_tts
+                            await self.edge_tts(message)
+                        else:
+                            # tts to xiaoai with ChatGPT answer
+                            await self.do_tts(message, wait_for_finish=True)
                     print("回答完毕")
                 except Exception:
                     print("GPT回答出错")

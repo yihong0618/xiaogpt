@@ -129,6 +129,28 @@ docker run  -v <your-config-dir>:/config pengjianqing/xiaogpt-x86 config=/config
  docker buildx build --platform=linux/amd64 -t xiaogpt-x86 .
 ```
 
+### Add edge-tts
+edge-tts提供了类似微软tts的能力
+- https://github.com/rany2/edge-tts
+
+#### Usage
+你可以通过参数`edge_tts_enable`, 来启用它
+```json
+{
+  "edge_tts_enable": true,
+  "edge_tts_voice": "zh-CN-XiaoxiaoNeural"
+}
+```
+
+#### Install
+```shell
+pip install edge-tts
+```
+查看更多语言支持, 从中选择一个
+```shell
+edge-tts --list-voices
+```
+
 ## 推荐的 fork
 
 - [MIGPT](https://github.com/Afool4U/MIGPT) -> 基于 API 流式对话的低延迟版MIGPT
