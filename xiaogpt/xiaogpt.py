@@ -1,29 +1,24 @@
 #!/usr/bin/env python3
 import asyncio
+import http.server
 import json
+import random
 import re
+import socket
+import socketserver
+import threading
 import time
 from pathlib import Path
-import http.server
-import socketserver
-import socket
-import random
-import threading
-import subprocess
 
+import edge_tts
 import openai
 from aiohttp import ClientSession
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
 
 from xiaogpt.bot import ChatGPTBot, GPT3Bot
-from xiaogpt.config import (
-    COOKIE_TEMPLATE,
-    LATEST_ASK_API,
-    MI_ASK_SIMULATE_DATA,
-    WAKEUP_KEYWORD,
-    Config,
-)
+from xiaogpt.config import (COOKIE_TEMPLATE, LATEST_ASK_API,
+                            MI_ASK_SIMULATE_DATA, WAKEUP_KEYWORD, Config)
 from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
 
 
@@ -230,20 +225,17 @@ class MiGPT:
         s.close()
         print(f"Serving on {self.local_ip}:{self.port}")
 
-    def text2mp3(self, value):
-        print(f"text2mp3 ")
-        cmd = f'edge-tts --text "{value}" --write-media output.mp3 --voice {self.config.edge_tts_voice}'
-        subprocess.run(cmd, shell=True)
-
+    async def text2mp3(self, text):
+        communicate = edge_tts.Communicate(text, self.config.edge_tts_voice)
+        await communicate.save("output.mp3")
         return f"http://{self.local_ip}:{self.port}/output.mp3"
 
     async def play_url(self, url):
         print(f"play: {url}")
         await self.mina_service.play_by_url(self.device_id, url)
 
-    async def edge_tts(self, value):
-        print(f"edge_tts")
-        url = self.text2mp3(value)
+    async def edge_tts(self, text):
+        url = await self.text2mp3(text)
         await self.play_url(url)
 
     @staticmethod

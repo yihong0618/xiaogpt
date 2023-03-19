@@ -70,11 +70,11 @@ class Config:
     @classmethod
     def from_options(cls, options: argparse.Namespace) -> Config:
         config = cls()
-        if options.config:
-            config.read_from_config(options.config)
         for key, value in vars(options).items():
             if value is not None and key in config.__dataclass_fields__:
                 setattr(config, key, value)
+        if options.config:
+            config.read_from_config(options.config)
         if not config.openai_key:
             raise Exception("Use gpt-3 api need openai API key, please google how to")
         return config
