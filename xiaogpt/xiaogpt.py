@@ -17,8 +17,13 @@ from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
 
 from xiaogpt.bot import ChatGPTBot, GPT3Bot
-from xiaogpt.config import (COOKIE_TEMPLATE, LATEST_ASK_API,
-                            MI_ASK_SIMULATE_DATA, WAKEUP_KEYWORD, Config)
+from xiaogpt.config import (
+    COOKIE_TEMPLATE,
+    LATEST_ASK_API,
+    MI_ASK_SIMULATE_DATA,
+    WAKEUP_KEYWORD,
+    Config,
+)
 from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
 
 
