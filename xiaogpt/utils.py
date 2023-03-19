@@ -22,6 +22,20 @@ _no_elapse_chars = re.compile(r"([「」『』《》“”'\"()（）]|(?<!-)-(?
 
 def calculate_tts_elapse(text):
     # for simplicity, we use a fixed speed
-    speed = 4.25  # this value is picked by trial and error
+    speed = 4.5  # this value is picked by trial and error
     # Exclude quotes and brackets that do not affect the total elapsed time
     return len(_no_elapse_chars.sub("", text)) / speed
+
+
+_ending_punctuations = ("。", "？", "！", "；", ".", "?", "!", ";")
+
+
+async def split_sentences(text_stream):
+    cur = ""
+    async for text in text_stream:
+        cur += text
+        if cur.endswith(_ending_punctuations):
+            yield cur
+            cur = ""
+    if cur:
+        yield cur
