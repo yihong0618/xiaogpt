@@ -10,7 +10,14 @@ setup(
     author_email="zouzou0208@gmail.com",
     url="https://github.com/yihong0618/xiaogpt",
     python_requires=">=3.7",
-    install_requires=["openai", "miservice_fork", "requests", "revChatGPT", "rich", "edge-tts"],
+    install_requires=[
+        "openai",
+        "miservice_fork",
+        "requests",
+        "revChatGPT",
+        "rich",
+        "edge-tts",
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
