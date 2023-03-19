@@ -64,14 +64,15 @@ class MiGPT:
                     # sleep 2s to avoid too many request
                     await asyncio.sleep(2)
 
-        if config.edge_tts_enable:
-            self.start_http_server()
-
     async def init_all_data(self, session):
         await self.login_miboy(session)
         await self._init_data_hardware()
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
+        if self.config.edge_tts_enable:
+            if self.config.stream:
+                raise Exception("Do not support stram and edge-tts together")
+            self.start_http_server()
 
     async def login_miboy(self, session):
         account = MiAccount(
@@ -372,8 +373,8 @@ class MiGPT:
                             # tts to xiaoai with ChatGPT answer
                             await self.do_tts(message, wait_for_finish=True)
                     print("回答完毕")
-                except Exception:
-                    print("GPT回答出错")
+                except Exception as e:
+                    print(f"GPT回答出错 {str(e)}")
                 if self.in_conversation:
                     print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
                     await self.wakeup_xiaoai()
