@@ -1,6 +1,5 @@
 rich
 miservice_fork
 requests
-revChatGPT
 openai
 edge-tts
