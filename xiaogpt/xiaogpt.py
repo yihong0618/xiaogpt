@@ -230,8 +230,12 @@ class MiGPT:
         s.close()
         print(f"Serving on {self.local_ip}:{self.port}")
 
-    async def text2mp3(self, text):
-        communicate = edge_tts.Communicate(text, self.config.edge_tts_voice)
+    async def text2mp3(self, text, is_eng=False):
+        if is_eng:
+            print(333)
+            communicate = edge_tts.Communicate(text)
+        else:
+            communicate = edge_tts.Communicate(text, self.config.edge_tts_voice)
         await communicate.save("output.mp3")
         return f"http://{self.local_ip}:{self.port}/output.mp3"
 
@@ -239,8 +243,8 @@ class MiGPT:
         print(f"play: {url}")
         await self.mina_service.play_by_url(self.device_id, url)
 
-    async def edge_tts(self, text):
-        url = await self.text2mp3(text)
+    async def edge_tts(self, text, is_eng=False):
+        url = await self.text2mp3(text, is_eng=is_eng)
         await self.play_url(url)
 
     @staticmethod
@@ -366,9 +370,12 @@ class MiGPT:
                 print("以下是GPT的回答: ", end="")
                 try:
                     async for message in self.ask_gpt(query):
+                        is_eng = False
                         if self.config.enable_edge_tts:
+                            if query.find("用英语") != 0:
+                                is_eng = True
                             # tts with edge_tts
-                            await self.edge_tts(message)
+                            await self.edge_tts(message, is_eng=is_eng)
                         else:
                             # tts to xiaoai with ChatGPT answer
                             await self.do_tts(message, wait_for_finish=True)
