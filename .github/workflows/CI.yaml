@@ -24,5 +24,4 @@ jobs:
       - name: Check install
         run: |
             pip install black
-        
-
+  

@@ -230,6 +230,16 @@ class MiGPT:
             await asyncio.sleep(2)
 
     def start_http_server(self):
+        import shutil
+
+        class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+            def copyfile(self, source, outputfile):
+                try:
+                    shutil.copyfileobj(source, outputfile)
+                except (socket.error, ConnectionResetError, BrokenPipeError) as e:
+                    # ignore this or TODO find out why the error later
+                    pass
+
         # set the port range
         port_range = range(8050, 8090)
         # get a random port from the range
@@ -237,7 +247,7 @@ class MiGPT:
         self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
         # create the server
         handler = functools.partial(
-            http.server.SimpleHTTPRequestHandler, directory=self.temp_dir.name
+            CustomHTTPRequestHandler, directory=self.temp_dir.name
         )
         httpd = ThreadedHTTPServer(("", self.port), handler)
         # start the server in a new thread
