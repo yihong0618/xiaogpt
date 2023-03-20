@@ -21,16 +21,16 @@ from rich.logging import RichHandler
 from xiaogpt.bot import ChatGPTBot, GPT3Bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
+    EDGE_TTS_DICT,
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
     WAKEUP_KEYWORD,
-    EDGE_TTS_DICT,
     Config,
 )
 from xiaogpt.utils import (
     calculate_tts_elapse,
-    parse_cookie_string,
     find_key_by_partial_string,
+    parse_cookie_string,
 )
 
 
@@ -82,8 +82,6 @@ class MiGPT:
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
         if self.config.enable_edge_tts:
-            if self.config.stream:
-                raise Exception("Do not support stram and edge-tts together")
             self.start_http_server()
 
     async def login_miboy(self, session):
@@ -217,10 +215,13 @@ class MiGPT:
         if wait_for_finish:
             elapse = calculate_tts_elapse(value)
             await asyncio.sleep(elapse)
-            while True:
-                if not await self.get_if_xiaoai_is_playing():
-                    break
-                await asyncio.sleep(2)
+            await self.wait_for_tts_finish()
+
+    async def wait_for_tts_finish(self):
+        while True:
+            if not await self.get_if_xiaoai_is_playing():
+                break
+            await asyncio.sleep(2)
 
     def start_http_server(self):
         # set the port range
@@ -242,19 +243,33 @@ class MiGPT:
         s.close()
         print(f"Serving on {self.local_ip}:{self.port}")
 
-    async def text2mp3(self, text, tts_lang):
-        print(tts_lang)
-        communicate = edge_tts.Communicate(text, tts_lang or self.config.edge_tts_voice)
-        await communicate.save("output.mp3")
-        return f"http://{self.local_ip}:{self.port}/output.mp3"
+    async def text2mp3(self, text):
+        tts_lang = (
+            find_key_by_partial_string(EDGE_TTS_DICT, text)
+            or self.config.edge_tts_voice
+        )
+        communicate = edge_tts.Communicate(text, tts_lang)
+        duration = 0
+        with open("output.mp3", "wb") as f:
+            async for chunk in communicate.stream():
+                if chunk["type"] == "audio":
+                    f.write(chunk["data"])
+                elif chunk["type"] == "WordBoundary":
+                    duration = (chunk["offset"] + chunk["duration"]) / 1e7
+        if duration == 0:
+            raise RuntimeError(f"Failed to get tts from edge with voice={tts_lang}")
+        return f"http://{self.local_ip}:{self.port}/output.mp3", duration
 
-    async def play_url(self, url):
-        print(f"play: {url}")
+    async def edge_tts(self, text):
+        try:
+            url, duration = await self.text2mp3(text)
+        except Exception as e:
+            self.log.error(e)
+            return
+        self.log.debug(f"play: {url}")
         await self.mina_service.play_by_url(self.device_id, url)
-
-    async def edge_tts(self, text, tts_lang):
-        url = await self.text2mp3(text, tts_lang)
-        await self.play_url(url)
+        await asyncio.sleep(duration)
+        await self.wait_for_tts_finish()
 
     @staticmethod
     def _normalize(message):
@@ -379,9 +394,8 @@ class MiGPT:
                 try:
                     async for message in self.ask_gpt(query):
                         if self.config.enable_edge_tts:
-                            tts_lang = find_key_by_partial_string(EDGE_TTS_DICT, query)
                             # tts with edge_tts
-                            await self.edge_tts(message, tts_lang)
+                            await self.edge_tts(message)
                         else:
                             # tts to xiaoai with ChatGPT answer
                             await self.do_tts(message, wait_for_finish=True)
