@@ -28,11 +28,11 @@ HARDWARE_COMMAND_DICT = {
 }
 
 EDGE_TTS_DICT = {
-    "用英语": "en-US-AriaNeura",
+    "用英语": "en-US-AriaNeural",
     "用日语": "ja-JP-NanamiNeural",
-    "用法语": "fr-BE-CharlineNeura",
+    "用法语": "fr-BE-CharlineNeural",
     "用韩语": "ko-KR-SunHiNeural",
-    "用德语": "de-AT-JonasNeura",
+    "用德语": "de-AT-JonasNeural",
     # add more here
 }
 
