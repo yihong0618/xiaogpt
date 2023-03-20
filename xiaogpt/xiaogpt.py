@@ -43,6 +43,23 @@ class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
 
+class HTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+    logger = logging.getLogger("xiaogpt")
+
+    def log_message(self, format, *args):
+        self.logger.debug(f"{self.address_string()} - {format}", *args)
+
+    def log_error(self, format, *args):
+        self.logger.error(f"{self.address_string()} - {format}", *args)
+
+    def copyfile(self, source, outputfile):
+        try:
+            super().copyfile(source, outputfile)
+        except (socket.error, ConnectionResetError, BrokenPipeError):
+            # ignore this or TODO find out why the error later
+            pass
+
+
 class MiGPT:
     def __init__(self, config: Config):
         self.config = config
@@ -230,25 +247,13 @@ class MiGPT:
             await asyncio.sleep(2)
 
     def start_http_server(self):
-        import shutil
-
-        class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-            def copyfile(self, source, outputfile):
-                try:
-                    shutil.copyfileobj(source, outputfile)
-                except (socket.error, ConnectionResetError, BrokenPipeError) as e:
-                    # ignore this or TODO find out why the error later
-                    pass
-
         # set the port range
         port_range = range(8050, 8090)
         # get a random port from the range
         self.port = random.choice(port_range)
         self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
         # create the server
-        handler = functools.partial(
-            CustomHTTPRequestHandler, directory=self.temp_dir.name
-        )
+        handler = functools.partial(HTTPRequestHandler, directory=self.temp_dir.name)
         httpd = ThreadedHTTPServer(("", self.port), handler)
         # start the server in a new thread
         server_thread = threading.Thread(target=httpd.serve_forever)
@@ -260,7 +265,7 @@ class MiGPT:
         s.connect(("8.8.8.8", 80))
         self.local_ip = s.getsockname()[0]
         s.close()
-        print(f"Serving on {self.local_ip}:{self.port}")
+        self.log.info(f"Serving on {self.local_ip}:{self.port}")
 
     async def text2mp3(self, text, tts_lang):
         communicate = edge_tts.Communicate(text, tts_lang)
