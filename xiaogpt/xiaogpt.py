@@ -2,6 +2,7 @@
 import asyncio
 import http.server
 import json
+import logging
 import random
 import re
 import socket
@@ -15,6 +16,7 @@ import openai
 from aiohttp import ClientSession
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
+from rich.logging import RichHandler
 
 from xiaogpt.bot import ChatGPTBot, GPT3Bot
 from xiaogpt.config import (
@@ -53,20 +55,26 @@ class MiGPT:
         self.polling_event = asyncio.Event()
         self.new_record_event = asyncio.Event()
 
+        # setup logger
+        self.log = logging.getLogger("xiaogpt")
+        self.log.setLevel(logging.DEBUG if config.verbose else logging.INFO)
+        self.log.addHandler(RichHandler())
+        self.log.debug(config)
+
     async def poll_latest_ask(self):
         async with ClientSession() as session:
             session._cookie_jar = self.cookie_jar
             while True:
-                if self.config.verbose:
-                    print(
-                        f"Now listening xiaoai new message timestamp: {self.last_timestamp}"
-                    )
+                self.log.debug(
+                    "Now listening xiaoai new message timestamp: %s",
+                    self.last_timestamp,
+                )
                 await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
                 await self.polling_event.wait()
-                if time.perf_counter() - start < 1:
-                    # sleep 1.5s to avoid too many request
-                    await asyncio.sleep(1.5)
+                if (d := time.perf_counter() - start) < 1:
+                    # sleep to avoid too many request
+                    await asyncio.sleep(1 - d)
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
@@ -178,8 +186,7 @@ class MiGPT:
             try:
                 data = await r.json()
             except Exception:
-                if self.config.verbose:
-                    print("get latest ask from xiaoai error, retry")
+                self.log.warning("get latest ask from xiaoai error, retry")
             else:
                 return self._get_last_query(data)
 
@@ -345,8 +352,7 @@ class MiGPT:
                     continue
 
                 if not self.need_ask_gpt(new_record):
-                    if self.config.verbose:
-                        print("No new xiao ai record")
+                    self.log.debug("No new xiao ai record")
                     continue
 
                 # drop 帮我回答
