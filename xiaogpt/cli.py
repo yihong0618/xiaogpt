@@ -33,24 +33,31 @@ def main():
         help="xiaomi cookie",
     )
     parser.add_argument(
-        "--stream", dest="stream", action="store_true", help="GPT stream mode"
+        "--stream",
+        dest="stream",
+        action="store_true",
+        default=None,
+        help="GPT stream mode",
     )
     parser.add_argument(
         "--use_command",
         dest="use_command",
         action="store_true",
+        default=None,
         help="use command to tts",
     )
     parser.add_argument(
         "--mute_xiaoai",
         dest="mute_xiaoai",
         action="store_true",
+        default=None,
         help="try to mute xiaoai answer",
     )
     parser.add_argument(
         "--verbose",
         dest="verbose",
         action="store_true",
+        default=None,
         help="show info",
     )
     group = parser.add_mutually_exclusive_group()
