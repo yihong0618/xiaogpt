@@ -60,15 +60,15 @@ class MiGPT:
                 start = time.perf_counter()
                 await self.polling_event.wait()
                 if time.perf_counter() - start < 1:
-                    # sleep 2s to avoid too many request
-                    await asyncio.sleep(2)
+                    # sleep 1.5s to avoid too many request
+                    await asyncio.sleep(1.5)
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
         await self._init_data_hardware()
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
-        if self.config.edge_tts_enable:
+        if self.config.enable_edge_tts:
             if self.config.stream:
                 raise Exception("Do not support stram and edge-tts together")
             self.start_http_server()
@@ -366,7 +366,7 @@ class MiGPT:
                 print("以下是GPT的回答: ", end="")
                 try:
                     async for message in self.ask_gpt(query):
-                        if self.config.edge_tts_enable:
+                        if self.config.enable_edge_tts:
                             # tts with edge_tts
                             await self.edge_tts(message)
                         else:

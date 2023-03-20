@@ -130,5 +130,6 @@ dmypy.json
 .idea/
 xiaogptconfig.json
 xiao_config.json
+*.json
 config/
 *.mp3

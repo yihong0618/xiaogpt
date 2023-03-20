@@ -61,9 +61,10 @@ def main():
         help="show info",
     )
     parser.add_argument(
-        "--edge_tts_enable",
-        dest="edge_tts_enable",
+        "--enable_edge_tts",
+        dest="enable_edge_tts",
         action="store_true",
+        default=None,
         help="if use edge tts",
     )
     group = parser.add_mutually_exclusive_group()
