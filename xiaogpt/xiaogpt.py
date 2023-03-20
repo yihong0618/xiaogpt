@@ -25,7 +25,11 @@ from xiaogpt.config import (
     EDGE_TTS_DICT,
     Config,
 )
-from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string, find_key_by_partial_string
+from xiaogpt.utils import (
+    calculate_tts_elapse,
+    parse_cookie_string,
+    find_key_by_partial_string,
+)
 
 
 class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
