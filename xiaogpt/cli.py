@@ -60,6 +60,13 @@ def main():
         default=None,
         help="show info",
     )
+    parser.add_argument(
+        "--enable_edge_tts",
+        dest="enable_edge_tts",
+        action="store_true",
+        default=None,
+        help="if use edge tts",
+    )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         "--use_gpt3",

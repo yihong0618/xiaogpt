@@ -2,3 +2,4 @@ rich
 miservice_fork
 requests
 openai
+edge-tts

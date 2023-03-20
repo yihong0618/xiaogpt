@@ -56,6 +56,8 @@ class Config:
     start_conversation: str = "开始持续对话"
     end_conversation: str = "结束持续对话"
     stream: bool = False
+    enable_edge_tts: bool = False
+    edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
 
     @property
     def tts_command(self) -> str:

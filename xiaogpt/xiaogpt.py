@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 import asyncio
+import http.server
 import json
+import random
 import re
+import socket
+import socketserver
+import threading
 import time
 from pathlib import Path
 
+import edge_tts
 import openai
 from aiohttp import ClientSession
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
@@ -19,6 +25,10 @@ from xiaogpt.config import (
     Config,
 )
 from xiaogpt.utils import calculate_tts_elapse, parse_cookie_string
+
+
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    pass
 
 
 class MiGPT:
@@ -50,14 +60,18 @@ class MiGPT:
                 start = time.perf_counter()
                 await self.polling_event.wait()
                 if time.perf_counter() - start < 1:
-                    # sleep 2s to avoid too many request
-                    await asyncio.sleep(2)
+                    # sleep 1.5s to avoid too many request
+                    await asyncio.sleep(1.5)
 
     async def init_all_data(self, session):
         await self.login_miboy(session)
         await self._init_data_hardware()
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
+        if self.config.enable_edge_tts:
+            if self.config.stream:
+                raise Exception("Do not support stram and edge-tts together")
+            self.start_http_server()
 
     async def login_miboy(self, session):
         account = MiAccount(
@@ -196,6 +210,43 @@ class MiGPT:
                     break
                 await asyncio.sleep(2)
 
+    def start_http_server(self):
+        # set the port range
+        port_range = range(8050, 8090)
+        # get a random port from the range
+        self.port = random.choice(port_range)
+        # create the server
+        handler = http.server.SimpleHTTPRequestHandler
+        httpd = ThreadedHTTPServer(("", self.port), handler)
+        # start the server in a new thread
+        server_thread = threading.Thread(target=httpd.serve_forever)
+        server_thread.daemon = True
+        server_thread.start()
+
+        # local ip
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.local_ip = s.getsockname()[0]
+        s.close()
+        print(f"Serving on {self.local_ip}:{self.port}")
+
+    async def text2mp3(self, text, is_eng=False):
+        if is_eng:
+            print(333)
+            communicate = edge_tts.Communicate(text)
+        else:
+            communicate = edge_tts.Communicate(text, self.config.edge_tts_voice)
+        await communicate.save("output.mp3")
+        return f"http://{self.local_ip}:{self.port}/output.mp3"
+
+    async def play_url(self, url):
+        print(f"play: {url}")
+        await self.mina_service.play_by_url(self.device_id, url)
+
+    async def edge_tts(self, text, is_eng=False):
+        url = await self.text2mp3(text, is_eng=is_eng)
+        await self.play_url(url)
+
     @staticmethod
     def _normalize(message):
         message = message.strip().replace(" ", "--")
@@ -319,11 +370,18 @@ class MiGPT:
                 print("以下是GPT的回答: ", end="")
                 try:
                     async for message in self.ask_gpt(query):
-                        # tts to xiaoai with ChatGPT answer
-                        await self.do_tts(message, wait_for_finish=True)
+                        is_eng = False
+                        if self.config.enable_edge_tts:
+                            if query.find("用英语") != 0:
+                                is_eng = True
+                            # tts with edge_tts
+                            await self.edge_tts(message, is_eng=is_eng)
+                        else:
+                            # tts to xiaoai with ChatGPT answer
+                            await self.do_tts(message, wait_for_finish=True)
                     print("回答完毕")
-                except Exception:
-                    print("GPT回答出错")
+                except Exception as e:
+                    print(f"GPT回答出错 {str(e)}")
                 if self.in_conversation:
                     print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
                     await self.wakeup_xiaoai()

@@ -31,6 +31,7 @@ Play ChatGPT with Xiaomi AI Speaker
 - 使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
+- 可以使用 `--enable_edge_tts` 来获取更好的 tts 能力
 
 e.g.
 
@@ -48,6 +49,8 @@ xiaogpt --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 gpt3 ai
 export OPENAI_API_KEY=${your_api_key}
 xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
+# 如果你想用 edge-tts
+xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --enable_edge_tts
 ```
 使用 git clone 运行
 
@@ -127,6 +130,28 @@ docker run  -v <your-config-dir>:/config pengjianqing/xiaogpt-x86 config=/config
 如果需要在Apple M1/M2上编译x86
 ```shell
  docker buildx build --platform=linux/amd64 -t xiaogpt-x86 .
+```
+
+### Add edge-tts
+edge-tts提供了类似微软tts的能力
+- https://github.com/rany2/edge-tts
+
+#### Usage
+你可以通过参数`enable_edge_tts`, 来启用它
+```json
+{
+  "enable_edge_tts": true,
+  "edge_tts_voice": "zh-CN-XiaoxiaoNeural"
+}
+```
+
+#### Install
+```shell
+pip install edge-tts
+```
+查看更多语言支持, 从中选择一个
+```shell
+edge-tts --list-voices
 ```
 
 ## 推荐的 fork
