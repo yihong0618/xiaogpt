@@ -39,3 +39,10 @@ async def split_sentences(text_stream):
             cur = ""
     if cur:
         yield cur
+
+
+### for edge-tts utils ###
+def find_key_by_partial_string(dictionary, partial_key):
+    for key, value in dictionary.items():
+        if key in partial_key:
+            return value

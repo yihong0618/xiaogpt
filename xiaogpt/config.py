@@ -26,6 +26,16 @@ HARDWARE_COMMAND_DICT = {
     "L07A": ("5-1", "5-5"),  # Redmi小爱音箱Play(l7a)
     # add more here
 }
+
+EDGE_TTS_DICT = {
+    "用英语": "en-US-AriaNeura",
+    "用日语": "ja-JP-NanamiNeural",
+    "用法语": "fr-BE-CharlineNeura",
+    "用韩语": "ko-KR-SunHiNeural",
+    "用德语": "de-AT-JonasNeura",
+    # add more here
+}
+
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
