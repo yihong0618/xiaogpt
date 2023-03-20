@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 import asyncio
+import functools
 import http.server
 import json
 import logging
+import os
 import random
 import re
 import socket
 import socketserver
+import tempfile
 import threading
 import time
 from pathlib import Path
@@ -21,17 +24,19 @@ from rich.logging import RichHandler
 from xiaogpt.bot import ChatGPTBot, GPT3Bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
+    EDGE_TTS_DICT,
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
     WAKEUP_KEYWORD,
-    EDGE_TTS_DICT,
     Config,
 )
 from xiaogpt.utils import (
     calculate_tts_elapse,
-    parse_cookie_string,
     find_key_by_partial_string,
+    parse_cookie_string,
 )
+
+EOF = object()
 
 
 class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -54,6 +59,7 @@ class MiGPT:
         self.in_conversation = False
         self.polling_event = asyncio.Event()
         self.new_record_event = asyncio.Event()
+        self.temp_dir = None
 
         # setup logger
         self.log = logging.getLogger("xiaogpt")
@@ -82,8 +88,6 @@ class MiGPT:
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
         if self.config.enable_edge_tts:
-            if self.config.stream:
-                raise Exception("Do not support stram and edge-tts together")
             self.start_http_server()
 
     async def login_miboy(self, session):
@@ -217,18 +221,24 @@ class MiGPT:
         if wait_for_finish:
             elapse = calculate_tts_elapse(value)
             await asyncio.sleep(elapse)
-            while True:
-                if not await self.get_if_xiaoai_is_playing():
-                    break
-                await asyncio.sleep(2)
+            await self.wait_for_tts_finish()
+
+    async def wait_for_tts_finish(self):
+        while True:
+            if not await self.get_if_xiaoai_is_playing():
+                break
+            await asyncio.sleep(2)
 
     def start_http_server(self):
         # set the port range
         port_range = range(8050, 8090)
         # get a random port from the range
         self.port = random.choice(port_range)
+        self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
         # create the server
-        handler = http.server.SimpleHTTPRequestHandler
+        handler = functools.partial(
+            http.server.SimpleHTTPRequestHandler, directory=self.temp_dir.name
+        )
         httpd = ThreadedHTTPServer(("", self.port), handler)
         # start the server in a new thread
         server_thread = threading.Thread(target=httpd.serve_forever)
@@ -243,18 +253,47 @@ class MiGPT:
         print(f"Serving on {self.local_ip}:{self.port}")
 
     async def text2mp3(self, text, tts_lang):
-        print(tts_lang)
-        communicate = edge_tts.Communicate(text, tts_lang or self.config.edge_tts_voice)
-        await communicate.save("output.mp3")
-        return f"http://{self.local_ip}:{self.port}/output.mp3"
+        communicate = edge_tts.Communicate(text, tts_lang)
+        duration = 0
+        with tempfile.NamedTemporaryFile(
+            "wb", suffix=".mp3", delete=False, dir=self.temp_dir.name
+        ) as f:
+            async for chunk in communicate.stream():
+                if chunk["type"] == "audio":
+                    f.write(chunk["data"])
+                elif chunk["type"] == "WordBoundary":
+                    duration = (chunk["offset"] + chunk["duration"]) / 1e7
+            if duration == 0:
+                raise RuntimeError(f"Failed to get tts from edge with voice={tts_lang}")
+            return (
+                f"http://{self.local_ip}:{self.port}/{os.path.basename(f.name)}",
+                duration,
+            )
 
-    async def play_url(self, url):
-        print(f"play: {url}")
-        await self.mina_service.play_by_url(self.device_id, url)
+    async def edge_tts(self, text_stream, tts_lang):
+        async def run_tts(text_stream, tts_lang, queue):
+            async for text in text_stream:
+                try:
+                    url, duration = await self.text2mp3(text, tts_lang)
+                except Exception as e:
+                    self.log.error(e)
+                    continue
+                await queue.put((url, duration))
 
-    async def edge_tts(self, text, tts_lang):
-        url = await self.text2mp3(text, tts_lang)
-        await self.play_url(url)
+        queue = asyncio.Queue()
+        self.log.debug("Edge TTS with voice=%s", tts_lang)
+        task = asyncio.create_task(run_tts(text_stream, tts_lang, queue))
+        task.add_done_callback(lambda _: queue.put_nowait(EOF))
+        while True:
+            item = await queue.get()
+            if item is EOF:
+                break
+            url, duration = item
+            self.log.debug(f"play: {url}")
+            await self.mina_service.play_by_url(self.device_id, url)
+            await asyncio.sleep(duration)
+            await self.wait_for_tts_finish()
+        task.cancel()
 
     @staticmethod
     def _normalize(message):
@@ -280,7 +319,6 @@ class MiGPT:
 
         self.polling_event.set()
         queue = asyncio.Queue()
-        EOF = object()
         is_eof = False
         task = asyncio.create_task(collect_stream(queue))
         task.add_done_callback(lambda _: queue.put_nowait(EOF))
@@ -377,14 +415,16 @@ class MiGPT:
                     print("小爱没回")
                 print("以下是GPT的回答: ", end="")
                 try:
-                    async for message in self.ask_gpt(query):
-                        if self.config.enable_edge_tts:
-                            tts_lang = find_key_by_partial_string(EDGE_TTS_DICT, query)
-                            # tts with edge_tts
-                            await self.edge_tts(message, tts_lang)
-                        else:
-                            # tts to xiaoai with ChatGPT answer
+                    if not self.config.enable_edge_tts:
+                        async for message in self.ask_gpt(query):
                             await self.do_tts(message, wait_for_finish=True)
+                    else:
+                        tts_lang = (
+                            find_key_by_partial_string(EDGE_TTS_DICT, query)
+                            or self.config.edge_tts_voice
+                        )
+                        # tts with edge_tts
+                        await self.edge_tts(self.ask_gpt(query), tts_lang)
                     print("回答完毕")
                 except Exception as e:
                     print(f"GPT回答出错 {str(e)}")
