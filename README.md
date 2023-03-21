@@ -60,7 +60,7 @@ python3 xiaogpt.py --hardware LX06
 # or
 python3 xiaogpt.py --hardware LX06 --cookie ${cookie}
 # 如果你想直接输入账号密码
-python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password}
+python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
 # 如果你想 mute 小米的回答
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai
 # 使用流式响应，获得更快的响应
