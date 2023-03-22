@@ -105,22 +105,22 @@ https://www.youtube.com/watch?v=K4YA8YwzOOA
 ## Docker
 
 ### 常规用法
-X86/ARM Docker Image
-- X86: pengjianqing/xiaogpt-x86:latest
-- ARM: pengjianqing/xiaogpt-arm64:latest
+X86/ARM Docker Image: `yihong0618/xiaogpt`
 
-docker run -e OPENAI_API_KEY=< your-openapi-key > pengjianqing/xiaogpt-x86 < 命令行参数 >
+```shell
+docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt <命令行参数>
+```
 
 如
 
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> pengjianqing/xiaogpt-x86 --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
+docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
 ```
 
 ### 使用配置文件
 xiaogpt的配置文件可通过指定volume /config，以及指定参数--config来处理，如
 ```shell
-docker run  -v <your-config-dir>:/config pengjianqing/xiaogpt-x86 config=/config/config.json
+docker run  -v <your-config-dir>:/config yihong0618/xiaogpt config=/config/config.json
 ```
 
 ### 本地编译Docker Image

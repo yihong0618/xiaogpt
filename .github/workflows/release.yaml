@@ -1,34 +1,45 @@
-name: CI
+name: Release and Build Docker Image
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    tags:
+      - "*"
 
 jobs:
-  testing:
+  release-pypi:
+    name: Build and Release PyPI
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - name: install python 3.9
-        uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          cache: 'pip' # caching pip dependencies
-      - name: Check formatting (black)
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Build artifacts
         run: |
-          pip install black
-          black . --check
-      - name: Check install
-        run: |
-          pip install .
-          xiaogpt --help
+          pip install build
+          python -m build
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - run: npx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   build-image:
     runs-on: ubuntu-latest
-    needs: testing
+    needs: release-pypi
     # run unless event type is pull_request
     if: github.event_name != 'pull_request'
     steps:
@@ -48,4 +59,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: yihong0618/xiaogpt:latest
+          tags: yihong0618/xiaogpt:${{ github.ref_name }}
