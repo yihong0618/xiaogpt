@@ -120,7 +120,7 @@ docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<yo
 ### 使用配置文件
 xiaogpt的配置文件可通过指定volume /config，以及指定参数--config来处理，如
 ```shell
-docker run  -v <your-config-dir>:/config yihong0618/xiaogpt config=/config/config.json
+docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/config.json
 ```
 
 ### 本地编译Docker Image
