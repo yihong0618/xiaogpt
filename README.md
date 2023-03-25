@@ -95,6 +95,35 @@ cp xiao_config.json.example xiao_config.json
 python3 xiaogpt.py
 ```
 
+## 配置文件注释及使用
+
+关于自定义唤醒词以及自定义prompt，可以通过添加 --config 来指定一个配置文件，
+你可以把自带的xiao_config.json.example重命名为xiao_config.json并使用shell启动 
+
+例如
+```shell
+xiaogpt --config xiao_config.json --api_base https://xxx.com/v1
+```
+以下为xiao_config.json 常用配置信息注释，如没有可自行添加，注意请不要在.json文件里直接复制#以及#后面的注释！
+```shell
+"hardware": "",                             #设备型号
+"account": "",                              #小爱账户
+"password": "",                             #小爱账户密码
+"openai_key": "",                           #openai的apikey
+"cookie": "",                               #小爱账户cookie （如果用上面密码登录可以不填）
+"mi_did": "",                               #设备did
+"use_command": false,        
+"mute_xiaoai": true,                        #快速停掉小爱自己的回答
+"verbose": false,
+"bot": "chatgptapi",
+"enable_edge_tts": false,                   #使用更好的tts引擎
+"edge_tts_voice": "zh-CN-XiaoxiaoNeural", 
+"prompt": "请用猫娘的语气回答",               #自定义prompt
+"keyword": ["请问"],                         #自定义请求词
+"start_conversation": "开始持续对话", 
+"end_conversation": "结束持续对话",
+"stream": false                              #使用流式响应
+```
 ## 注意
 
 1. 请开启小爱同学的蓝牙
