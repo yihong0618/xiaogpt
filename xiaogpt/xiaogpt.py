@@ -321,7 +321,7 @@ class MiGPT:
         if not self.config.stream:
             async with ClientSession(trust_env=True) as session:
                 openai.aiosession.set(session)
-                answer = await self.chatbot.ask(query)
+                answer = await self.chatbot.ask(query, **self.config.gpt_options)
                 message = self._normalize(answer) if answer else ""
                 yield message
                 return
@@ -329,7 +329,9 @@ class MiGPT:
         async def collect_stream(queue):
             async with ClientSession(trust_env=True) as session:
                 openai.aiosession.set(session)
-                async for message in self.chatbot.ask_stream(query):
+                async for message in self.chatbot.ask_stream(
+                    query, **self.config.gpt_options
+                ):
                     await queue.put(message)
 
         self.polling_event.set()

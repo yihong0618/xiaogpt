@@ -12,14 +12,14 @@ class ChatGPTBot(BaseBot):
         if api_base:
             openai.api_base = api_base
 
-    async def ask(self, query):
+    async def ask(self, query, **options):
         ms = []
         for h in self.history:
             ms.append({"role": "user", "content": h[0]})
             ms.append({"role": "assistant", "content": h[1]})
         ms.append({"role": "user", "content": f"{query}"})
         completion = await openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=ms
+            model="gpt-3.5-turbo", messages=ms, **options
         )
         message = (
             completion["choices"][0]
@@ -34,14 +34,14 @@ class ChatGPTBot(BaseBot):
         print(message)
         return message
 
-    async def ask_stream(self, query):
+    async def ask_stream(self, query, **options):
         ms = []
         for h in self.history:
             ms.append({"role": "user", "content": h[0]})
             ms.append({"role": "assistant", "content": h[1]})
         ms.append({"role": "user", "content": f"{query}"})
         completion = await openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=ms, stream=True
+            model="gpt-3.5-turbo", messages=ms, stream=True, **options
         )
 
         async def text_gen():

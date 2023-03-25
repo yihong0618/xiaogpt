@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from dataclasses import dataclass
-from typing import Iterable
+from dataclasses import dataclass, field
+from typing import Iterable, Any
 
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
@@ -68,6 +68,7 @@ class Config:
     stream: bool = False
     enable_edge_tts: bool = False
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
+    gpt_options: dict[str, Any] = field(default_factory=dict)
 
     @property
     def tts_command(self) -> str:
