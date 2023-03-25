@@ -6,6 +6,8 @@ import os
 from dataclasses import dataclass, field
 from typing import Iterable, Any
 
+from xiaogpt.utils import validate_proxy
+
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
 WAKEUP_KEYWORD = "小爱同学"
@@ -55,6 +57,7 @@ class Config:
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
     change_prompt_keyword: Iterable[str] = CHANGE_PROMPT_KEY_WORD
@@ -105,4 +108,6 @@ class Config:
                         key, value = "bot", "chatgptapi"
                     elif key == "use_gpt3":
                         key, value = "bot", "gpt3"
+                    elif key == "proxy":
+                        validate_proxy(value)
                     setattr(self, key, value)

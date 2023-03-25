@@ -6,11 +6,13 @@ from xiaogpt.utils import split_sentences
 
 
 class ChatGPTBot(BaseBot):
-    def __init__(self, openai_key, api_base=None):
+    def __init__(self, openai_key, api_base=None, proxy=None):
         self.history = []
         openai.api_key = openai_key
         if api_base:
             openai.api_base = api_base
+        if proxy:
+            openai.proxy = proxy
 
     async def ask(self, query, **options):
         ms = []
