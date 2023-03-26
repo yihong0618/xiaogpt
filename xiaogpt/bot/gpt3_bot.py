@@ -10,19 +10,20 @@ class GPT3Bot:
         if api_base:
             openai.api_base = api_base
 
-    async def ask(self, query):
+    async def ask(self, query, **options):
         data = {
             "prompt": query,
             "model": "text-davinci-003",
             "max_tokens": 1024,
             "temperature": 1,
             "top_p": 1,
+            **options,
         }
         completion = await openai.Completion.acreate(**data)
         print(completion["choices"][0]["text"])
         return completion["choices"][0]["text"]
 
-    async def ask_stream(self, query):
+    async def ask_stream(self, query, **options):
         data = {
             "prompt": query,
             "model": "text-davinci-003",
@@ -30,6 +31,7 @@ class GPT3Bot:
             "temperature": 1,
             "top_p": 1,
             "stream": True,
+            **options,
         }
         completion = await openai.Completion.acreate(**data)
 

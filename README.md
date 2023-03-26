@@ -80,7 +80,7 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
 ```
 
 ## config.json
-如果想通过单一配置文件启动也是可以的, 可以通过 --config 参数指定配置文件, config 文件必须是合法的 JSON 格式
+如果想通过单一配置文件启动也是可以的, 可以通过 `--config` 参数指定配置文件, config 文件必须是合法的 JSON 格式
 参数优先级
 - cli args > default > config
 
@@ -95,35 +95,42 @@ cp xiao_config.json.example xiao_config.json
 python3 xiaogpt.py
 ```
 
-## 配置文件注释及使用
+若要指定 OpenAI 的模型参数，如 model, temporature, top_p, 请在config.json中指定：
 
-关于自定义唤醒词以及自定义prompt，可以通过添加 --config 来指定一个配置文件，
-你可以把自带的xiao_config.json.example重命名为xiao_config.json并使用shell启动 
+```json
+{
+    ...
+    "gpt_options": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+    }
+}
+```
 
-例如
-```shell
-xiaogpt --config xiao_config.json --api_base https://xxx.com/v1
-```
-以下为xiao_config.json 常用配置信息注释，如没有可自行添加，注意请不要在.json文件里直接复制#以及#后面的注释！
-```shell
-"hardware": "",                             #设备型号
-"account": "",                              #小爱账户
-"password": "",                             #小爱账户密码
-"openai_key": "",                           #openai的apikey
-"cookie": "",                               #小爱账户cookie （如果用上面密码登录可以不填）
-"mi_did": "",                               #设备did
-"use_command": false,        
-"mute_xiaoai": true,                        #快速停掉小爱自己的回答
-"verbose": false,
-"bot": "chatgptapi",
-"enable_edge_tts": false,                   #使用更好的tts引擎
-"edge_tts_voice": "zh-CN-XiaoxiaoNeural", 
-"prompt": "请用猫娘的语气回答",               #自定义prompt
-"keyword": ["请问"],                         #自定义请求词
-"start_conversation": "开始持续对话", 
-"end_conversation": "结束持续对话",
-"stream": false                              #使用流式响应
-```
+具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
+## 配置项说明
+
+| 参数               | 说明                                          | 默认值                 |
+| ------------------ | --------------------------------------------- | ---------------------- |
+| hardware           | 设备型号                                      |                        |
+| account            | 小爱账户                                      |                        |
+| password           | 小爱账户密码                                  |                        |
+| openai_key         | openai的apikey                                |                        |
+| cookie             | 小爱账户cookie （如果用上面密码登录可以不填） |                        |
+| mi_did             | 设备did                                       |                        |
+| use_command        | 使用 MI command 与小爱交互                    | `false`                |
+| mute_xiaoai        | 快速停掉小爱自己的回答                        | `true`                 |
+| verbose            | 是否打印详细日志                              | `false`                |
+| bot                | 使用的 bot 类型，目前仅支持gpt3和chatgptapi   | `chatgptapi`           |
+| enable_edge_tts    | 使用Edge TTS                                  | `false`                |
+| edge_tts_voice     | Edge TTS 的嗓音                               | `zh-CN-XiaoxiaoNeural` |
+| prompt             | 自定义prompt                                  | `请用100字以内回答`    |
+| keyword            | 自定义请求词列表                              | `["请问"]`             |
+| start_conversation | 开始持续对话关键词                            | `开始持续对话`         |
+| end_conversation   | 结束持续对话关键词                            | `结束持续对话`         |
+| stream             | 使用流式响应，获得更快的响应                  | `false`                |
+| gpt_options        | OpenAI API 的参数字典                         | `{}`                   |
+
 ## 注意
 
 1. 请开启小爱同学的蓝牙
