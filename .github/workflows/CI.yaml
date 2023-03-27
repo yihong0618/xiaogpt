@@ -32,8 +32,8 @@ jobs:
       - name: test
         run: |
            nohup xiaogpt --hardware LX06 --account ${{ secrets.MI_USERNAME }} --password ${{ secrets.MI_PASSWORD }} --use_chatgpt_api --mute_xiaoai --enable_edge_tts --stream!! &
-           sleep 2
-           ps aux| grep xiaogpt
+           wait $!
+           exit $?
 
   build-image:
     runs-on: ubuntu-latest
