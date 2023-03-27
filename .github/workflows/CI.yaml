@@ -2,10 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, better_prompt]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+
+env:
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
 jobs:
   testing:
@@ -25,6 +28,12 @@ jobs:
         run: |
           pip install .
           xiaogpt --help
+
+      - name: test
+        run: |
+           nohup xiaogpt --hardware LX06 --account ${{ secrets.MI_USERNAME }} --password ${{ secrets.MI_PASSWORD }} --use_chatgpt_api --mute_xiaoai --enable_edge_tts --stream!! &
+           sleep 2
+           ps aux| grep xiaogpt
 
   build-image:
     runs-on: ubuntu-latest

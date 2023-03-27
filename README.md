@@ -126,6 +126,7 @@ python3 xiaogpt.py
 | edge_tts_voice     | Edge TTS 的嗓音                               | `zh-CN-XiaoxiaoNeural` |
 | prompt             | 自定义prompt                                  | `请用100字以内回答`    |
 | keyword            | 自定义请求词列表                              | `["请问"]`             |
+| keyword            | 更改提示词触发列表                              | `["更改提示词"]`             |
 | start_conversation | 开始持续对话关键词                            | `开始持续对话`         |
 | end_conversation   | 结束持续对话关键词                            | `结束持续对话`         |
 | stream             | 使用流式响应，获得更快的响应                  | `false`                |

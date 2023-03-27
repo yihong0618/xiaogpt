@@ -9,6 +9,7 @@ class GPT3Bot:
         openai.api_key = openai_key
         if api_base:
             openai.api_base = api_base
+        self.history = []
 
     async def ask(self, query, **options):
         data = {
