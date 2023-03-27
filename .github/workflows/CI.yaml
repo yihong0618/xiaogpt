@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main, better_prompt]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
 
       - name: test
         run: |
-           nohup xiaogpt --hardware LX06 --account ${{ secrets.MI_USERNAME }} --password ${{ secrets.MI_PASSWORD }} --use_chatgpt_api --mute_xiaoai --enable_edge_tts --stream!! &
+           nohup xiaogpt --hardware LX06 --account ${{ secrets.MI_USERNAME }} --password ${{ secrets.MI_PASSWORD }} --use_chatgpt_api --mute_xiaoai --enable_edge_tts --stream &
            wait $!
            exit $?
 
