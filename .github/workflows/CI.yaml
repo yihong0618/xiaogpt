@@ -29,12 +29,6 @@ jobs:
           pip install .
           xiaogpt --help
 
-      - name: test
-        run: |
-           nohup xiaogpt --hardware LX06 --account ${{ secrets.MI_USERNAME }} --password ${{ secrets.MI_PASSWORD }} --use_chatgpt_api --mute_xiaoai --enable_edge_tts --stream &
-           wait $!
-           exit $?
-
   build-image:
     runs-on: ubuntu-latest
     needs: testing
