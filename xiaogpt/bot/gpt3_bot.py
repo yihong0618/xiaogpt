@@ -5,10 +5,12 @@ from xiaogpt.utils import split_sentences
 
 
 class GPT3Bot:
-    def __init__(self, openai_key, api_base=None):
+    def __init__(self, openai_key, api_base=None, proxy=None):
         openai.api_key = openai_key
         if api_base:
             openai.api_base = api_base
+        if proxy:
+            openai.proxy = proxy
         self.history = []
 
     async def ask(self, query, **options):

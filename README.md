@@ -130,6 +130,7 @@ python3 xiaogpt.py
 | start_conversation | 开始持续对话关键词                            | `开始持续对话`         |
 | end_conversation   | 结束持续对话关键词                            | `结束持续对话`         |
 | stream             | 使用流式响应，获得更快的响应                  | `false`                |
+| proxy              | 支持 HTTP 代理，传入 http proxy URL         | ""                     |
 | gpt_options        | OpenAI API 的参数字典                         | `{}`                   |
 
 ## 注意

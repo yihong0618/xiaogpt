@@ -28,6 +28,11 @@ def main():
         help="openai api key",
     )
     parser.add_argument(
+        "--proxy",
+        dest="proxy",
+        help="http proxy url like http://localhost:8080",
+    )
+    parser.add_argument(
         "--cookie",
         dest="cookie",
         help="xiaomi cookie",
