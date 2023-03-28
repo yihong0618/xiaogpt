@@ -33,6 +33,7 @@ from xiaogpt.config import (
 from xiaogpt.utils import (
     calculate_tts_elapse,
     find_key_by_partial_string,
+    get_hostname,
     parse_cookie_string,
 )
 
@@ -277,7 +278,7 @@ class MiGPT:
         # set the port range
         port_range = range(8050, 8090)
         # get a random port from the range
-        self.port = random.choice(port_range)
+        self.port = int(os.getenv("XIAOGPT_PORT", random.choice(port_range)))
         self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
         # create the server
         handler = functools.partial(HTTPRequestHandler, directory=self.temp_dir.name)
@@ -287,12 +288,8 @@ class MiGPT:
         server_thread.daemon = True
         server_thread.start()
 
-        # local ip
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        self.local_ip = s.getsockname()[0]
-        s.close()
-        self.log.info(f"Serving on {self.local_ip}:{self.port}")
+        self.hostname = get_hostname()
+        self.log.info(f"Serving on {self.hostname}:{self.port}")
 
     async def text2mp3(self, text, tts_lang):
         communicate = edge_tts.Communicate(text, tts_lang)
@@ -308,7 +305,7 @@ class MiGPT:
             if duration == 0:
                 raise RuntimeError(f"Failed to get tts from edge with voice={tts_lang}")
             return (
-                f"http://{self.local_ip}:{self.port}/{os.path.basename(f.name)}",
+                f"http://{self.hostname}:{self.port}/{os.path.basename(f.name)}",
                 duration,
             )
 

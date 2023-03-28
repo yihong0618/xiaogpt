@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import os
 import re
+import socket
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
 
@@ -59,3 +61,12 @@ def validate_proxy(proxy_str: str) -> bool:
         raise ValueError("Proxy hostname and port must be set")
 
     return True
+
+
+def get_hostname():
+    if "XIAOGPT_HOSTNAME" in os.environ:
+        return os.environ["XIAOGPT_HOSTNAME"]
+
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        s.connect(("8.8.8.8", 80))
+        return s.getsockname()[0]
