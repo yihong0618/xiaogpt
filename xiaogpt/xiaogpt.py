@@ -129,7 +129,9 @@ class MiGPT:
                 self.device_id = h.get("deviceID")
                 break
         else:
-            raise Exception(f"we have no hardware: {self.config.hardware} please check")
+            raise Exception(
+                f"we have no hardware: {self.config.hardware} please use `micli mina` to check"
+            )
         if not self.config.mi_did:
             devices = await self.miio_service.device_list()
             try:
@@ -194,6 +196,27 @@ class MiGPT:
             and not query.startswith(WAKEUP_KEYWORD)
             or query.startswith(tuple(self.config.keyword))
         )
+
+    def need_change_prompt(self, record):
+        if self.config.bot == "gpt3":
+            return False
+        query = record.get("query", "")
+        return (
+            self.in_conversation
+            and not query.startswith(WAKEUP_KEYWORD)
+            or query.startswith(tuple(self.config.change_prompt_keyword))
+        )
+
+    def _change_prompt(self, new_prompt):
+        new_prompt = re.sub(
+            rf"^({'|'.join(self.config.change_prompt_keyword)})", "", new_prompt
+        )
+        new_prompt = "以下都" + new_prompt
+        print(f"Prompt from {self.config.prompt} change to {new_prompt}")
+        self.config.prompt = new_prompt
+        if self.chatbot.history:
+            print(self.chatbot.history)
+            self.chatbot.history[0][0] = new_prompt
 
     async def get_latest_ask_from_xiaoai(self, session):
         retries = 2
@@ -406,6 +429,10 @@ class MiGPT:
                     await self.stop_if_xiaoai_is_playing()
                     continue
 
+                # we can change prompt
+                if self.need_change_prompt(new_record):
+                    self._change_prompt(new_record.get("query", ""))
+
                 if not self.need_ask_gpt(new_record):
                     self.log.debug("No new xiao ai record")
                     continue
@@ -415,8 +442,8 @@ class MiGPT:
 
                 print("-" * 20)
                 print("问题：" + query + "？")
-
-                query = f"{query}，{self.config.prompt}"
+                if not self.chatbot.history:
+                    query = f"{query}，{self.config.prompt}"
                 if self.config.mute_xiaoai:
                     await self.stop_if_xiaoai_is_playing()
                 else:

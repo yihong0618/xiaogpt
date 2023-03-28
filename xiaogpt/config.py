@@ -39,7 +39,8 @@ EDGE_TTS_DICT = {
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
-PROMPT = "请用100字以内回答"
+CHANGE_PROMPT_KEY_WORD = ("更改提示词",)
+PROMPT = "以下请用100字以内回答"
 # simulate_xiaoai_question
 MI_ASK_SIMULATE_DATA = {
     "code": 0,
@@ -56,6 +57,7 @@ class Config:
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
+    change_prompt_keyword: Iterable[str] = CHANGE_PROMPT_KEY_WORD
     prompt: str = PROMPT
     mute_xiaoai: bool = False
     bot: str = "chatgpt"
