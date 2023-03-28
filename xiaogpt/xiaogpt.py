@@ -167,9 +167,13 @@ class MiGPT:
     def chatbot(self):
         if self._chatbot is None:
             if self.config.bot == "gpt3":
-                self._chatbot = GPT3Bot(self.config.openai_key, self.config.api_base)
+                self._chatbot = GPT3Bot(
+                    self.config.openai_key, self.config.api_base, self.config.proxy
+                )
             elif self.config.bot == "chatgptapi":
-                self._chatbot = ChatGPTBot(self.config.openai_key, self.config.api_base)
+                self._chatbot = ChatGPTBot(
+                    self.config.openai_key, self.config.api_base, self.config.proxy
+                )
             else:
                 raise Exception(f"Do not support {self.config.bot}")
         return self._chatbot
