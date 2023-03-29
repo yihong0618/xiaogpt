@@ -4,7 +4,7 @@ import argparse
 import json
 import os
 from dataclasses import dataclass, field
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 from xiaogpt.utils import validate_proxy
 
@@ -75,6 +75,10 @@ class Config:
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
     gpt_options: dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        if self.proxy:
+            validate_proxy(self.proxy)
+
     @property
     def tts_command(self) -> str:
         return HARDWARE_COMMAND_DICT.get(self.hardware, DEFAULT_COMMAND)[0]
@@ -108,6 +112,4 @@ class Config:
                         key, value = "bot", "chatgptapi"
                     elif key == "use_gpt3":
                         key, value = "bot", "gpt3"
-                    elif key == "proxy":
-                        validate_proxy(value)
                     setattr(self, key, value)
