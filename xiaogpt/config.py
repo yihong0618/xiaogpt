@@ -26,6 +26,8 @@ HARDWARE_COMMAND_DICT = {
     "LX05A": ("5-1", "5-5"),  # 小爱红外版
     "LX5A": ("5-1", "5-5"),  # 小爱红外版
     "L07A": ("5-1", "5-5"),  # Redmi小爱音箱Play(l7a)
+    "L07A": ("5-1", "5-5"),  # Redmi小爱音箱Play(l7a)
+    "L15A": ("7-1", "7-4"),
     # add more here
 }
 
