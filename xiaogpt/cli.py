@@ -88,6 +88,13 @@ def main():
         help="if use openai chatgpt api",
     )
     group.add_argument(
+        "--use_edgegpt",
+        dest="bot",
+        action="store_const",
+        const="edgegpt",
+        help="if use edgegpt",
+    )
+    group.add_argument(
         "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi"]
     )
     parser.add_argument(

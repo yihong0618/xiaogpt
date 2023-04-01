@@ -76,6 +76,8 @@ class Config:
     enable_edge_tts: bool = False
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
     gpt_options: dict[str, Any] = field(default_factory=dict)
+    cookie_file: str = "./cookies.json"
+    conversation_style: str = "creative"
 
     def __post_init__(self) -> None:
         if self.proxy:
@@ -97,7 +99,7 @@ class Config:
         for key, value in vars(options).items():
             if value is not None and key in config.__dataclass_fields__:
                 setattr(config, key, value)
-        if not config.openai_key:
+        if (not config.openai_key) and (not config.cookie_file):
             raise Exception("Use gpt-3 api need openai API key, please google how to")
         return config
 
