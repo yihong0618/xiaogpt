@@ -177,7 +177,7 @@ class MiGPT:
                 )
             elif self.config.bot == "edgegpt":
                 self._chatbot = EdgeGPTBot(
-                    self.config.cookie_file, self.config.conversation_style, self.config.proxy
+                    self.config.proxy, **self.config.gpt_options
                 )
             else:
                 raise Exception(f"Do not support {self.config.bot}")
