@@ -12,11 +12,15 @@ Play ChatGPT with Xiaomi AI Speaker
 ![image](https://user-images.githubusercontent.com/15976103/220028375-c193a859-48a1-4270-95b6-ef540e54a621.png)
 ![image](https://user-images.githubusercontent.com/15976103/226802344-9c71f543-b73c-4a47-8703-4c200c434dec.png)
 
+## 支持的 AI 类型
+
+- GPT3
+- ChatGPT
+- New Bing
 
 ## 一点原理
 
 [不用 root 使用小爱同学和 ChatGPT 交互折腾记](https://github.com/yihong0618/gitblog/issues/258)
-
 
 ## 准备
 
@@ -110,28 +114,32 @@ python3 xiaogpt.py
 具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
 ## 配置项说明
 
-| 参数               | 说明                                          | 默认值                 |
-| ------------------ | --------------------------------------------- | ---------------------- |
-| hardware           | 设备型号                                      |                        |
-| account            | 小爱账户                                      |                        |
-| password           | 小爱账户密码                                  |                        |
-| openai_key         | openai的apikey                                |                        |
-| cookie             | 小爱账户cookie （如果用上面密码登录可以不填） |                        |
-| mi_did             | 设备did                                       |                        |
-| use_command        | 使用 MI command 与小爱交互                    | `false`                |
-| mute_xiaoai        | 快速停掉小爱自己的回答                        | `true`                 |
-| verbose            | 是否打印详细日志                              | `false`                |
-| bot                | 使用的 bot 类型，目前仅支持gpt3和chatgptapi   | `chatgptapi`           |
-| enable_edge_tts    | 使用Edge TTS                                  | `false`                |
-| edge_tts_voice     | Edge TTS 的嗓音                               | `zh-CN-XiaoxiaoNeural` |
-| prompt             | 自定义prompt                                  | `请用100字以内回答`    |
-| keyword            | 自定义请求词列表                              | `["请问"]`             |
-| change_prompt_keyword  | 更改提示词触发列表                              | `["更改提示词"]`             |
-| start_conversation | 开始持续对话关键词                            | `开始持续对话`         |
-| end_conversation   | 结束持续对话关键词                            | `结束持续对话`         |
-| stream             | 使用流式响应，获得更快的响应                  | `false`                |
-| proxy              | 支持 HTTP 代理，传入 http proxy URL         | ""                     |
-| gpt_options        | OpenAI API 的参数字典                         | `{}`                   |
+| 参数                  | 说明                                              | 默认值                              |
+| --------------------- | ------------------------------------------------- | ----------------------------------- |
+| hardware              | 设备型号                                          |                                     |
+| account               | 小爱账户                                          |                                     |
+| password              | 小爱账户密码                                      |                                     |
+| openai_key            | openai的apikey                                    |                                     |
+| cookie                | 小爱账户cookie （如果用上面密码登录可以不填）     |                                     |
+| mi_did                | 设备did                                           |                                     |
+| use_command           | 使用 MI command 与小爱交互                        | `false`                             |
+| mute_xiaoai           | 快速停掉小爱自己的回答                            | `true`                              |
+| verbose               | 是否打印详细日志                                  | `false`                             |
+| bot                   | 使用的 bot 类型，目前支持gpt3,chatgptapi和newbing | `chatgptapi`                        |
+| enable_edge_tts       | 使用Edge TTS                                      | `false`                             |
+| edge_tts_voice        | Edge TTS 的嗓音                                   | `zh-CN-XiaoxiaoNeural`              |
+| prompt                | 自定义prompt                                      | `请用100字以内回答`                 |
+| keyword               | 自定义请求词列表                                  | `["请问"]`                          |
+| change_prompt_keyword | 更改提示词触发列表                                | `["更改提示词"]`                    |
+| start_conversation    | 开始持续对话关键词                                | `开始持续对话`                      |
+| end_conversation      | 结束持续对话关键词                                | `结束持续对话`                      |
+| stream                | 使用流式响应，获得更快的响应                      | `false`                             |
+| proxy                 | 支持 HTTP 代理，传入 http proxy URL               | ""                                  |
+| gpt_options           | OpenAI API 的参数字典                             | `{}`                                |
+| bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取           | 也可通过环境变量 `COOKIE_FILE` 设置 |
+| bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
+
+[这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
 
 ## 注意
 

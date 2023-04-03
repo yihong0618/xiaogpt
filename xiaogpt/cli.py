@@ -95,7 +95,7 @@ def main():
         help="if use newbing",
     )
     group.add_argument(
-        "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi"]
+        "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi", "newbing"]
     )
     parser.add_argument(
         "--config",

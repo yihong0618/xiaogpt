@@ -177,7 +177,9 @@ class MiGPT:
                 )
             elif self.config.bot == "newbing":
                 self._chatbot = NewBingBot(
-                    self.config.proxy, self.config.bing_cookie_path
+                    bing_cookie_path=self.config.bing_cookie_path,
+                    bing_cookies=self.config.bing_cookies,
+                    proxy=self.config.proxy,
                 )
             else:
                 raise Exception(f"Do not support {self.config.bot}")
@@ -362,11 +364,16 @@ class MiGPT:
                 ):
                     await queue.put(message)
 
+        def done_callback(future):
+            queue.put_nowait(EOF)
+            if future.exception():
+                self.log.error(future.exception())
+
         self.polling_event.set()
         queue = asyncio.Queue()
         is_eof = False
         task = asyncio.create_task(collect_stream(queue))
-        task.add_done_callback(lambda _: queue.put_nowait(EOF))
+        task.add_done_callback(done_callback)
         while True:
             if is_eof or self.new_record_event.is_set():
                 break
