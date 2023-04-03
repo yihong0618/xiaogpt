@@ -76,6 +76,7 @@ class Config:
     enable_edge_tts: bool = False
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
     gpt_options: dict[str, Any] = field(default_factory=dict)
+    bing_cookie_path: str = "./cookies.json"
 
     def __post_init__(self) -> None:
         if self.proxy:
@@ -97,8 +98,16 @@ class Config:
         for key, value in vars(options).items():
             if value is not None and key in config.__dataclass_fields__:
                 setattr(config, key, value)
-        if not config.openai_key:
-            raise Exception("Use gpt-3 api need openai API key, please google how to")
+        if config.bot == "newbing":
+            if not config.bing_cookie_path:
+                raise Exception(
+                    "Use new bing bot need bing_cookie_path, read this: https://github.com/acheong08/EdgeGPT#getting-authentication-required"
+                )
+        else:
+            if not config.openai_key:
+                raise Exception(
+                    "Use gpt-3 api need openai API key, please google how to"
+                )
         return config
 
     def read_from_config(self, config_path: str) -> None:

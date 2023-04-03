@@ -88,6 +88,13 @@ def main():
         help="if use openai chatgpt api",
     )
     group.add_argument(
+        "--use_newbing",
+        dest="bot",
+        action="store_const",
+        const="newbing",
+        help="if use newbing",
+    )
+    group.add_argument(
         "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi"]
     )
     parser.add_argument(
