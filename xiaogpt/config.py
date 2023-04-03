@@ -21,13 +21,13 @@ HARDWARE_COMMAND_DICT = {
     "L06A": ("5-1", "5-5"),
     "LX04": ("5-1", "5-4"),
     "L05C": ("5-3", "5-4"),
-    "L17A": ("7-3", "5-4"),
-    "X08E": ("7-3", "5-4"),
+    "L17A": ("7-3", "7-4"),
+    "X08E": ("7-3", "7-4"),
     "LX05A": ("5-1", "5-5"),  # 小爱红外版
     "LX5A": ("5-1", "5-5"),  # 小爱红外版
     "L07A": ("5-1", "5-5"),  # Redmi小爱音箱Play(l7a)
-    "L15A": ("7-1", "7-4"),
-    "X6A": ("7-3", "7-1"),  # 小米智能家庭屏6
+    "L15A": ("7-3", "7-4"),
+    "X6A": ("7-3", "7-4"),  # 小米智能家庭屏6
     # add more here
 }
 
@@ -44,7 +44,7 @@ DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
 CHANGE_PROMPT_KEY_WORD = ("更改提示词",)
-PROMPT = "以下请用100字以内回答"
+PROMPT = "以下请用100字以内回答，请只回答文字不要带链接"
 # simulate_xiaoai_question
 MI_ASK_SIMULATE_DATA = {
     "code": 0,
@@ -76,11 +76,20 @@ class Config:
     enable_edge_tts: bool = False
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
     gpt_options: dict[str, Any] = field(default_factory=dict)
-    bing_cookie_path: str = "./cookies.json"
+    bing_cookie_path: str = ""
+    bing_cookies: dict | None = None
 
     def __post_init__(self) -> None:
         if self.proxy:
             validate_proxy(self.proxy)
+        if self.bot == "newbing":
+            if not (self.bing_cookie_path or self.bing_cookies):
+                raise Exception(
+                    "New bing bot needs bing_cookie_path or bing_cookies, read this: "
+                    "https://github.com/acheong08/EdgeGPT#getting-authentication-required"
+                )
+        elif not self.openai_key:
+            raise Exception("Using GPT api needs openai API key, please google how to")
 
     @property
     def tts_command(self) -> str:
@@ -92,29 +101,21 @@ class Config:
 
     @classmethod
     def from_options(cls, options: argparse.Namespace) -> Config:
-        config = cls()
+        config = {}
         if options.config:
-            config.read_from_config(options.config)
+            config = cls.read_from_file(options.config)
         for key, value in vars(options).items():
-            if value is not None and key in config.__dataclass_fields__:
-                setattr(config, key, value)
-        if config.bot == "newbing":
-            if not config.bing_cookie_path:
-                raise Exception(
-                    "Use new bing bot need bing_cookie_path, read this: https://github.com/acheong08/EdgeGPT#getting-authentication-required"
-                )
-        else:
-            if not config.openai_key:
-                raise Exception(
-                    "Use gpt-3 api need openai API key, please google how to"
-                )
-        return config
+            if value is not None and key in cls.__dataclass_fields__:
+                config[key] = value
+        return cls(**config)
 
-    def read_from_config(self, config_path: str) -> None:
+    @classmethod
+    def read_from_file(cls, config_path: str) -> dict:
+        result = {}
         with open(config_path, "rb") as f:
             config = json.load(f)
             for key, value in config.items():
-                if value is not None and key in self.__dataclass_fields__:
+                if value is not None and key in cls.__dataclass_fields__:
                     if key == "keyword":
                         if not isinstance(value, list):
                             value = [value]
@@ -123,4 +124,7 @@ class Config:
                         key, value = "bot", "chatgptapi"
                     elif key == "use_gpt3":
                         key, value = "bot", "gpt3"
-                    setattr(self, key, value)
+                    elif key == "use_newbing":
+                        key, value = "bot", "newbing"
+                    result[key] = value
+        return result

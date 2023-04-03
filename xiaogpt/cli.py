@@ -94,8 +94,13 @@ def main():
         const="newbing",
         help="if use newbing",
     )
+    parser.add_argument(
+        "--bing_cookie_path",
+        dest="bing_cookie_path",
+        help="new bing cookies path if use new bing",
+    )
     group.add_argument(
-        "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi"]
+        "--bot", dest="bot", help="bot type", choices=["gpt3", "chatgptapi", "newbing"]
     )
     parser.add_argument(
         "--config",
