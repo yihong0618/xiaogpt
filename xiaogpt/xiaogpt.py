@@ -125,7 +125,17 @@ class MiGPT:
             # if use cookie do not need init
             return
         hardware_data = await self.mina_service.device_list()
+        # fix multi xiaoai problems we check did first
+        # why we use this way to fix?
+        # some videos and articles already in the Internet
+        # we do not want to change old way, so we check if miotDID in `env` first
+        # to set device id
+
         for h in hardware_data:
+            if did := os.getenv("MI_DID"):
+                if h.get("miotDID", "") == str(did):
+                    self.device_id = h.get("deviceID")
+                    break
             if h.get("hardware", "") == self.config.hardware:
                 self.device_id = h.get("deviceID")
                 break
@@ -212,11 +222,7 @@ class MiGPT:
         if self.config.bot == "gpt3":
             return False
         query = record.get("query", "")
-        return (
-            self.in_conversation
-            and not query.startswith(WAKEUP_KEYWORD)
-            or query.startswith(tuple(self.config.change_prompt_keyword))
-        )
+        return query.startswith(tuple(self.config.change_prompt_keyword))
 
     def _change_prompt(self, new_prompt):
         new_prompt = re.sub(
@@ -443,6 +449,7 @@ class MiGPT:
 
                 # we can change prompt
                 if self.need_change_prompt(new_record):
+                    print(new_record)
                     self._change_prompt(new_record.get("query", ""))
 
                 if not self.need_ask_gpt(new_record):
