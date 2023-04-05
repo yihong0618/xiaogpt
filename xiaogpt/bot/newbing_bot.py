@@ -29,17 +29,15 @@ class NewBingBot:
         return s.strip()
 
     async def ask(self, query, **options):
-        completion = await self._bot.ask(
-            prompt=query, conversation_style=ConversationStyle.balanced, **options
-        )
+        kwargs = {"conversation_style": ConversationStyle.balanced, **options}
+        completion = await self._bot.ask(prompt=query, **kwargs)
         text = self.clean_text(completion["item"]["messages"][1]["text"])
         print(text)
         return text
 
     async def ask_stream(self, query, **options):
-        completion = self._bot.ask_stream(
-            prompt=query, conversation_style=ConversationStyle.balanced, **options
-        )
+        kwargs = {"conversation_style": ConversationStyle.balanced, **options}
+        completion = self._bot.ask_stream(prompt=query, **kwargs)
 
         async def text_gen():
             current = ""
