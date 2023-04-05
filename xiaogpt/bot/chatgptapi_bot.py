@@ -20,9 +20,8 @@ class ChatGPTBot(BaseBot):
             ms.append({"role": "user", "content": h[0]})
             ms.append({"role": "assistant", "content": h[1]})
         ms.append({"role": "user", "content": f"{query}"})
-        completion = await openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=ms, **options
-        )
+        kwargs = {"model": "gpt-3.5-turbo", **options}
+        completion = await openai.ChatCompletion.acreate(messages=ms, **kwargs)
         message = (
             completion["choices"][0]
             .get("message")
@@ -43,8 +42,9 @@ class ChatGPTBot(BaseBot):
             ms.append({"role": "user", "content": h[0]})
             ms.append({"role": "assistant", "content": h[1]})
         ms.append({"role": "user", "content": f"{query}"})
+        kwargs = {"model": "gpt-3.5-turbo", **options}
         completion = await openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo", messages=ms, stream=True, **options
+            messages=ms, stream=True, **kwargs
         )
 
         async def text_gen():
