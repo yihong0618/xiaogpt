@@ -132,8 +132,7 @@ class MiGPT:
         # to set device id
 
         for h in hardware_data:
-            did = os.getenv("MI_DID") or (self.config.mi_did if self.config.mi_did != '' else None)
-            if did:
+            if did := self.config.mi_did:
                 if h.get("miotDID", "") == str(did):
                     self.device_id = h.get("deviceID")
                     break
