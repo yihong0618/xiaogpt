@@ -68,6 +68,7 @@ class Config:
     bot: str = "chatgpt"
     cookie: str = ""
     api_base: str | None = None
+    deployment_id: str | None = None
     use_command: bool = False
     verbose: bool = False
     start_conversation: str = "开始持续对话"
@@ -90,6 +91,14 @@ class Config:
                 )
         elif not self.openai_key:
             raise Exception("Using GPT api needs openai API key, please google how to")
+        if (
+            self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
+            and not self.deployment_id
+        ):
+            raise Exception(
+                "Using Azure OpenAI needs deployment_id, read this: "
+                "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions"
+            )
 
     @property
     def tts_command(self) -> str:

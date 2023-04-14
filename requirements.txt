@@ -16,7 +16,7 @@ markdown-it-py==2.2.0
 mdurl==0.1.2
 miservice-fork==2.1.1
 multidict==6.0.4
-openai==0.27.2
+openai==0.27.4
 prompt-toolkit==3.0.38
 pygments==2.14.0
 regex==2022.10.31

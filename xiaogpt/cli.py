@@ -114,6 +114,12 @@ def main():
         help="specify base url other than the OpenAI's official API address",
     )
 
+    parser.add_argument(
+        "--deployment_id",
+        dest="deployment_id",
+        help="specify deployment id, only used when api_base points to azure",
+    )
+
     options = parser.parse_args()
     config = Config.from_options(options)
 
