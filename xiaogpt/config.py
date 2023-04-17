@@ -92,7 +92,8 @@ class Config:
         elif not self.openai_key:
             raise Exception("Using GPT api needs openai API key, please google how to")
         if (
-            self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
+            self.api_base
+            and self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
             and not self.deployment_id
         ):
             raise Exception(
