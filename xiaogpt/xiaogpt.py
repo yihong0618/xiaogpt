@@ -185,7 +185,10 @@ class MiGPT:
                 )
             elif self.config.bot == "chatgptapi":
                 self._chatbot = ChatGPTBot(
-                    self.config.openai_key, self.config.api_base, self.config.proxy
+                    self.config.openai_key,
+                    self.config.api_base,
+                    self.config.proxy,
+                    self.config.deployment_id,
                 )
             elif self.config.bot == "newbing":
                 self._chatbot = NewBingBot(
