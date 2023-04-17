@@ -7,6 +7,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.event.number || github.run_id }}
+  cancel-in-progress: true
+
 env:
   OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
