@@ -6,6 +6,8 @@ from xiaogpt.utils import split_sentences
 
 
 class ChatGPTBot(BaseBot):
+    default_options = {"model": "gpt-3.5-turbo"}
+
     def __init__(self, openai_key, api_base=None, proxy=None, deployment_id=None):
         self.history = []
         openai.api_key = openai_key
@@ -15,7 +17,10 @@ class ChatGPTBot(BaseBot):
             if api_base.endswith(("openai.azure.com/", "openai.azure.com")):
                 openai.api_type = "azure"
                 openai.api_version = "2023-03-15-preview"
-                self.deployment_id = deployment_id
+                self.default_options = {
+                    **self.default_options,
+                    "engine": deployment_id,
+                }
         if proxy:
             openai.proxy = proxy
 
@@ -25,9 +30,7 @@ class ChatGPTBot(BaseBot):
             ms.append({"role": "user", "content": h[0]})
             ms.append({"role": "assistant", "content": h[1]})
         ms.append({"role": "user", "content": f"{query}"})
-        kwargs = {"model": "gpt-3.5-turbo", **options}
-        if openai.api_type == "azure":
-            kwargs["deployment_id"] = self.deployment_id
+        kwargs = {**self.default_options, **options}
         completion = await openai.ChatCompletion.acreate(messages=ms, **kwargs)
         message = (
             completion["choices"][0]

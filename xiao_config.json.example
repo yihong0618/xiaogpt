@@ -20,5 +20,6 @@
   "proxy": "",
   "gpt_options": {},
   "bing_cookie_path": "",
-  "bing_cookies": {}
+  "bing_cookies": {},
+  "deployment_id": ""
 }

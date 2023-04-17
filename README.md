@@ -138,6 +138,7 @@ python3 xiaogpt.py
 | gpt_options           | OpenAI API 的参数字典                             | `{}`                                |
 | bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取           | 也可通过环境变量 `COOKIE_FILE` 设置 |
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
+| deployment_id         | Azure OpenAI 服务的 deployment ID                 |                                     |
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
 
