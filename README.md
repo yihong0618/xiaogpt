@@ -139,7 +139,7 @@ python3 xiaogpt.py
 | bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取           | 也可通过环境变量 `COOKIE_FILE` 设置 |
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
 | deployment_id         | Azure OpenAI 服务的 deployment ID                 |                                     |
-| localhost             | 是否使用本地服务器提供EdgeTTS的输出文件           | `true`                              |
+| localhost             | 是否通过本地服务器加载EdgeTTS的音频输出           | `true`                              |
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
 
