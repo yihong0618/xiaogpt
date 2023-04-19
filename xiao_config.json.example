@@ -21,5 +21,6 @@
   "gpt_options": {},
   "bing_cookie_path": "",
   "bing_cookies": {},
-  "deployment_id": ""
+  "deployment_id": "",
+  "localhost": true
 }

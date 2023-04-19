@@ -2,11 +2,13 @@
 import asyncio
 import functools
 import http.server
+import io
 import json
 import logging
 import os
 import random
 import re
+import shutil
 import socket
 import socketserver
 import tempfile
@@ -78,6 +80,8 @@ class MiGPT:
         self.polling_event = asyncio.Event()
         self.new_record_event = asyncio.Event()
         self.temp_dir = None
+        if self.config.enable_edge_tts:
+            self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
 
         # setup logger
         self.log = logging.getLogger("xiaogpt")
@@ -105,7 +109,7 @@ class MiGPT:
         await self._init_data_hardware()
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
-        if self.config.enable_edge_tts:
+        if self.config.enable_edge_tts and self.config.localhost:
             self.start_http_server()
 
     async def login_miboy(self, session):
@@ -296,7 +300,6 @@ class MiGPT:
         port_range = range(8050, 8090)
         # get a random port from the range
         self.port = int(os.getenv("XIAOGPT_PORT", random.choice(port_range)))
-        self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
         # create the server
         handler = functools.partial(HTTPRequestHandler, directory=self.temp_dir.name)
         httpd = ThreadedHTTPServer(("", self.port), handler)
@@ -308,31 +311,40 @@ class MiGPT:
         self.hostname = get_hostname()
         self.log.info(f"Serving on {self.hostname}:{self.port}")
 
+    async def get_file_url(self, stream):
+        if self.config.localhost:
+            with tempfile.NamedTemporaryFile(
+                "wb", suffix=".mp3", delete=False, dir=self.temp_dir.name
+            ) as f:
+                shutil.copyfileobj(stream, f)
+                return f"http://{self.hostname}:{self.port}/{os.path.basename(f.name)}"
+        async with ClientSession("https://transfer.sh") as session:
+            resp = await session.put(
+                "/edge_tts.mp3", data=stream, proxy=self.config.proxy
+            )
+            return (await resp.text()).strip()
+
     async def text2mp3(self, text, tts_lang):
         communicate = edge_tts.Communicate(text, tts_lang)
         duration = 0
-        with tempfile.NamedTemporaryFile(
-            "wb", suffix=".mp3", delete=False, dir=self.temp_dir.name
-        ) as f:
-            async for chunk in communicate.stream():
-                if chunk["type"] == "audio":
-                    f.write(chunk["data"])
-                elif chunk["type"] == "WordBoundary":
-                    duration = (chunk["offset"] + chunk["duration"]) / 1e7
-            if duration == 0:
-                raise RuntimeError(f"Failed to get tts from edge with voice={tts_lang}")
-            return (
-                f"http://{self.hostname}:{self.port}/{os.path.basename(f.name)}",
-                duration,
-            )
+        stream = io.BytesIO()
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                stream.write(chunk["data"])
+            elif chunk["type"] == "WordBoundary":
+                duration = (chunk["offset"] + chunk["duration"]) / 1e7
+        if duration == 0:
+            raise RuntimeError(f"Failed to get tts from edge with voice={tts_lang}")
+        stream.seek(0)
+        return (await self.get_file_url(stream), duration)
 
     async def edge_tts(self, text_stream, tts_lang):
         async def run_tts(text_stream, tts_lang, queue):
             async for text in text_stream:
                 try:
                     url, duration = await self.text2mp3(text, tts_lang)
-                except Exception as e:
-                    self.log.error(e)
+                except Exception:
+                    self.log.exception("haha")
                     continue
                 await queue.put((url, duration))
 

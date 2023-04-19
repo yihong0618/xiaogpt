@@ -139,6 +139,7 @@ python3 xiaogpt.py
 | bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取           | 也可通过环境变量 `COOKIE_FILE` 设置 |
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
 | deployment_id         | Azure OpenAI 服务的 deployment ID                 |                                     |
+| localhost             | 是否通过本地服务器加载EdgeTTS的音频输出           | `true`                              |
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
 
@@ -215,6 +216,8 @@ docker run -v <your-config-dir>:/config yihong0618/xiaogpt -p 9527:9527 -e XIAOG
 ```
 
 注意端口必须映射为与容器内一致，XIAOGPT_HOSTNAME 需要设置为宿主机的 IP 地址，否则小爱无法正常播放语音。
+
+如果不想使用本地的HTTP服务器，可以将配置中的 `localhost` 设置为 `false`，这样 Edge TTS 会通过一个网络上的三方服务器加载输出音频文件，但是这样会导致响应速度变慢。
 
 ## 推荐的 fork
 

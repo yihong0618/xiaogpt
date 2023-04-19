@@ -75,6 +75,7 @@ class Config:
     end_conversation: str = "结束持续对话"
     stream: bool = False
     enable_edge_tts: bool = False
+    localhost: bool = True
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
     gpt_options: dict[str, Any] = field(default_factory=dict)
     bing_cookie_path: str = ""
