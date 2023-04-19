@@ -17,7 +17,7 @@ dependencies = [
     "aiohttp",
     "rich",
     "edge-tts>=6.1.3",
-    "EdgeGPT",
+    "EdgeGPT==0.1.26",
 ]
 license = {text = "MIT"}
 dynamic = ["version"]
