@@ -4,12 +4,13 @@ import re
 
 from EdgeGPT import Chatbot, ConversationStyle
 
+from xiaogpt.bot.base_bot import BaseBot
 from xiaogpt.utils import split_sentences
 
 _reference_link_re = re.compile(r"\[\d+\]: .+?\n+")
 
 
-class NewBingBot:
+class NewBingBot(BaseBot):
     def __init__(
         self,
         bing_cookie_path: str = "",
@@ -19,6 +20,14 @@ class NewBingBot:
         self.history = []
         self._bot = Chatbot(
             cookiePath=bing_cookie_path, cookies=bing_cookies, proxy=proxy
+        )
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            bing_cookie_path=config.bing_cookie_path,
+            bing_cookies=config.bing_cookies,
+            proxy=config.proxy,
         )
 
     @staticmethod

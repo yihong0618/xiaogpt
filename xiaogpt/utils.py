@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import os
 import re
 import socket
 from http.cookies import SimpleCookie
+from typing import AsyncIterator
 from urllib.parse import urlparse
 
 from requests.utils import cookiejar_from_dict
@@ -12,18 +15,14 @@ from requests.utils import cookiejar_from_dict
 def parse_cookie_string(cookie_string):
     cookie = SimpleCookie()
     cookie.load(cookie_string)
-    cookies_dict = {}
-    cookiejar = None
-    for k, m in cookie.items():
-        cookies_dict[k] = m.value
-        cookiejar = cookiejar_from_dict(cookies_dict, cookiejar=None, overwrite=True)
-    return cookiejar
+    cookies_dict = {k: m.value for k, m in cookie.items()}
+    return cookiejar_from_dict(cookies_dict, cookiejar=None, overwrite=True)
 
 
 _no_elapse_chars = re.compile(r"([「」『』《》“”'\"()（）]|(?<!-)-(?!-))", re.UNICODE)
 
 
-def calculate_tts_elapse(text):
+def calculate_tts_elapse(text: str) -> float:
     # for simplicity, we use a fixed speed
     speed = 4.5  # this value is picked by trial and error
     # Exclude quotes and brackets that do not affect the total elapsed time
@@ -33,7 +32,7 @@ def calculate_tts_elapse(text):
 _ending_punctuations = ("。", "？", "！", "；", ".", "?", "!", ";")
 
 
-async def split_sentences(text_stream):
+async def split_sentences(text_stream: AsyncIterator[str]) -> AsyncIterator[str]:
     cur = ""
     async for text in text_stream:
         cur += text
@@ -45,7 +44,7 @@ async def split_sentences(text_stream):
 
 
 ### for edge-tts utils ###
-def find_key_by_partial_string(dictionary, partial_key):
+def find_key_by_partial_string(dictionary: dict[str, str], partial_key: str) -> str:
     for key, value in dictionary.items():
         if key in partial_key:
             return value
@@ -63,7 +62,7 @@ def validate_proxy(proxy_str: str) -> bool:
     return True
 
 
-def get_hostname():
+def get_hostname() -> str:
     if "XIAOGPT_HOSTNAME" in os.environ:
         return os.environ["XIAOGPT_HOSTNAME"]
 
