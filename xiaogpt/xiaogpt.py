@@ -23,7 +23,7 @@ from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
 from rich.logging import RichHandler
 
-from xiaogpt.bot import ChatGPTBot, GPT3Bot, NewBingBot
+from xiaogpt.bot import get_bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
     EDGE_TTS_DICT,
@@ -183,25 +183,7 @@ class MiGPT:
     @property
     def chatbot(self):
         if self._chatbot is None:
-            if self.config.bot == "gpt3":
-                self._chatbot = GPT3Bot(
-                    self.config.openai_key, self.config.api_base, self.config.proxy
-                )
-            elif self.config.bot == "chatgptapi":
-                self._chatbot = ChatGPTBot(
-                    self.config.openai_key,
-                    self.config.api_base,
-                    self.config.proxy,
-                    self.config.deployment_id,
-                )
-            elif self.config.bot == "newbing":
-                self._chatbot = NewBingBot(
-                    bing_cookie_path=self.config.bing_cookie_path,
-                    bing_cookies=self.config.bing_cookies,
-                    proxy=self.config.proxy,
-                )
-            else:
-                raise Exception(f"Do not support {self.config.bot}")
+            self._chatbot = get_bot(self.config)
         return self._chatbot
 
     async def simulate_xiaoai_question(self):

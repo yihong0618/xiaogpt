@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import openai
 from rich import print
 
@@ -8,7 +10,13 @@ from xiaogpt.utils import split_sentences
 class ChatGPTBot(BaseBot):
     default_options = {"model": "gpt-3.5-turbo"}
 
-    def __init__(self, openai_key, api_base=None, proxy=None, deployment_id=None):
+    def __init__(
+        self,
+        openai_key: str,
+        api_base: str | None = None,
+        proxy: str | None = None,
+        deployment_id: str | None = None,
+    ) -> None:
         self.history = []
         openai.api_key = openai_key
         if api_base:
@@ -23,6 +31,15 @@ class ChatGPTBot(BaseBot):
                 }
         if proxy:
             openai.proxy = proxy
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            openai_key=config.openai_key,
+            api_base=config.api_base,
+            proxy=config.proxy,
+            deployment_id=config.deployment_id,
+        )
 
     async def ask(self, query, **options):
         ms = []

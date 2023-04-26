@@ -60,6 +60,16 @@ requires_python = ">=3.6"
 summary = "Classes Without Boilerplate"
 
 [[package]]
+name = "bingimagecreator"
+version = "0.1.3"
+summary = "High quality image generation by Microsoft. Reverse engineered API."
+dependencies = [
+    "aiohttp",
+    "regex",
+    "requests",
+]
+
+[[package]]
 name = "certifi"
 version = "2022.12.7"
 requires_python = ">=3.6"
@@ -88,13 +98,13 @@ dependencies = [
 
 [[package]]
 name = "edgegpt"
-version = "0.1.21"
+version = "0.1.26"
 summary = "Reverse engineered Edge Chat API"
 dependencies = [
+    "BingImageCreator>=0.1.1.1",
     "certifi",
     "httpx",
     "prompt-toolkit",
-    "regex",
     "requests",
     "rich",
     "websockets",
@@ -297,8 +307,9 @@ dependencies = [
 ]
 
 [metadata]
-lock_version = "4.1"
-content_hash = "sha256:71461a2ac2fe83c7a4477424405a445e07c9d5905ae3fc180e1f7127ac79f133"
+lock_version = "4.2"
+groups = ["default"]
+content_hash = "sha256:ea20baf3ead9875f6bbe656d9f488f9187de0a7cfebb245cfa296a8b0aac0992"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -410,6 +421,10 @@ content_hash = "sha256:71461a2ac2fe83c7a4477424405a445e07c9d5905ae3fc180e1f7127a
     {url = "https://files.pythonhosted.org/packages/21/31/3f468da74c7de4fcf9b25591e682856389b3400b4b62f201e65f15ea3e07/attrs-22.2.0.tar.gz", hash = "sha256:c9227bfc2f01993c03f68db37d1d15c9690188323c067c641f1a35ca58185f99"},
     {url = "https://files.pythonhosted.org/packages/fb/6e/6f83bf616d2becdf333a1640f1d463fef3150e2e926b7010cb0f81c95e88/attrs-22.2.0-py3-none-any.whl", hash = "sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836"},
 ]
+"bingimagecreator 0.1.3" = [
+    {url = "https://files.pythonhosted.org/packages/25/28/e05903262689ee7026e97fd79d1690c7cffdffc68b04b3b48087e9525586/BingImageCreator-0.1.3-py3-none-any.whl", hash = "sha256:b3dede15cdc6ba5b79e856e1d7cf3ed9ac682e853b04923b350ab9b6b06cb3e0"},
+    {url = "https://files.pythonhosted.org/packages/80/e0/2dcab940013acc759ff0e1d6a5140c7a4db89f1422da1578c2f154ac9ac1/BingImageCreator-0.1.3.tar.gz", hash = "sha256:73832f9a71b9f419d2b368976c8ddb1ddac3361532d4e6731d98d8e711a667ee"},
+]
 "certifi 2022.12.7" = [
     {url = "https://files.pythonhosted.org/packages/37/f7/2b1b0ec44fdc30a3d31dfebe52226be9ddc40cd6c0f34ffc8923ba423b69/certifi-2022.12.7.tar.gz", hash = "sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3"},
     {url = "https://files.pythonhosted.org/packages/71/4c/3db2b8021bd6f2f0ceb0e088d6b2d49147671f25832fb17970e9b583d742/certifi-2022.12.7-py3-none-any.whl", hash = "sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18"},
@@ -499,9 +514,9 @@ content_hash = "sha256:71461a2ac2fe83c7a4477424405a445e07c9d5905ae3fc180e1f7127a
     {url = "https://files.pythonhosted.org/packages/3d/51/c69910d5ce0c87498919b1c66158e0ceacf581e879b43c55fe9875078351/edge_tts-6.1.3-py3-none-any.whl", hash = "sha256:2f1f4c12516576971264243186a278159dae69bd98bbf14763a057e3b3871ef7"},
     {url = "https://files.pythonhosted.org/packages/84/2c/5a6f5d2a5f2cd393533eeab239177c1ce4f5c05b36de4048e2281e3d1c57/edge-tts-6.1.3.tar.gz", hash = "sha256:4eb0e782626d06211256c726e42e4e42c3315c0f4fee2fc2394763b1aa8a80e7"},
 ]
-"edgegpt 0.1.21" = [
-    {url = "https://files.pythonhosted.org/packages/50/49/3133f0097010876e202fbc8d924713b3937fa24006f7cfcc9c75db00aebf/EdgeGPT-0.1.21.tar.gz", hash = "sha256:808ac08d3c3f918620b648bc461aac9dfdeb6059a4cdaf47f69d2b9de063d3d6"},
-    {url = "https://files.pythonhosted.org/packages/a0/05/04d1d3aaf419b7b458c55166d499776d788f50fe1c4c0bbb9c13a2b57ce4/EdgeGPT-0.1.21-py3-none-any.whl", hash = "sha256:abc2adf8505c56bb1272577ee694fb70558975944402334062549a109cfa42a8"},
+"edgegpt 0.1.26" = [
+    {url = "https://files.pythonhosted.org/packages/76/f8/58d0adef82a475e0c624a6e31db8808fb555c4062a8f91b92055c171acc4/EdgeGPT-0.1.26-py3-none-any.whl", hash = "sha256:496891260f0242b5507baaf5ba150badac49d7bb1722f1a38668411f84969900"},
+    {url = "https://files.pythonhosted.org/packages/8c/cc/2b127ed1575168c396a4d2edd5a8e798979a37bb7f32d5c4435e2b5677e2/EdgeGPT-0.1.26.tar.gz", hash = "sha256:39fef9ccfa82f4c3351e33c4c9260e118a624ee23ebc85cf313a9a602e3bdf3d"},
 ]
 "frozenlist 1.3.3" = [
     {url = "https://files.pythonhosted.org/packages/01/a3/a3c18bfd7bd2a56831b985140f98eb6dda684a2d8b2a54b1077b45c7f9d9/frozenlist-1.3.3-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:23d16d9f477bb55b6154654e0e74557040575d9d19fe78a161bd33d7d76808e8"},
