@@ -1,3 +1,4 @@
+sudo docker run tczhong24/xiaogpt --config=/app/xiaogpt.config --use_chatgpt_api --use_command
 # xiaogpt
 
 [![PyPI](https://img.shields.io/pypi/v/xiaogpt?style=flat-square)](https://pypi.org/project/xiaogpt)

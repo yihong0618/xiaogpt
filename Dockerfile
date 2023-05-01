@@ -8,6 +8,7 @@ FROM python:3.10-slim
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 COPY xiaogpt/ ./xiaogpt/
+COPY xiaogpt.config .
 COPY xiaogpt.py .
 ENV OPENAI_API_KEY=$OPENAI_API_KEY
 ENV XDG_CONFIG_HOME=/config
