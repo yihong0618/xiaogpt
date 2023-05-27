@@ -18,7 +18,7 @@ Play ChatGPT with Xiaomi AI Speaker
 - ChatGPT
 - New Bing
 ## Windows 获取DID
-```git clone Miservice
+
 1. `git clone https://github.com/yihong0618/MiService`
 2. set MI_USER=xxxx
 3. set MI_PASS=xxx
