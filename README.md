@@ -16,7 +16,8 @@ Play ChatGPT with Xiaomi AI Speaker
 
 - GPT3
 - ChatGPT
-- New Bing
+- New Bing 
+
 ## Windows 获取小米音响DID
 
 1. `pip install miservice_fork`
