@@ -19,7 +19,7 @@ Play ChatGPT with Xiaomi AI Speaker
 - New Bing
 ## Windows 获取小米音响DID
 
-1. `git clone https://github.com/yihong0618/MiService`
+1. `pip install miservice_fork`
 2. `set MI_USER=xxxx`
 3. `set MI_PASS=xxx`
 4. 得到did
