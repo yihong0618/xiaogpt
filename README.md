@@ -157,14 +157,14 @@ python3 xiaogpt.py
 
 1. 请开启小爱同学的蓝牙
 2. 如果要更改提示词和 PROMPT 在代码最上面自行更改
-3. 目前已知 LX04 和 L05B L05C 可能需要使用 `--use_command`
+3. 目前已知 LX04、X10A 和 L05B L05C 可能需要使用 `--use_command`，否则可能会出现终端能输出GPT的回复但小爱同学不回答GPT的情况
 
 ## QA
 
 1. 用破解么？不用
 2. 你做这玩意也没用啊？确实。。。但是挺好玩的，有用对你来说没用，对我们来说不一定呀
 3. 想把它变得更好？PR Issue always welcome.
-4. 还有问题？提 Issuse 哈哈
+4. 还有问题？提 Issue 哈哈
 
 ## 视频教程
 https://www.youtube.com/watch?v=K4YA8YwzOOA
