@@ -25,7 +25,7 @@ Play ChatGPT with Xiaomi AI Speaker
 3. `set MI_PASS=xxx`
 4. 得到did
 5. `set MI_DID=xxxx`
-6. 具体可参考 `一键启动.bat` 脚本
+6. 具体可参考 `one_click.bat` 脚本
 - 如果获取did报错时，请更换一下无线网络，有很大概率解决问题。
 
 ## 一点原理
