@@ -8,7 +8,7 @@ from xiaogpt.utils import split_sentences
 
 
 class ChatGPTBot(BaseBot):
-    default_options = {"model": "gpt-3.5-turbo"}
+    default_options = {"model": "gpt-3.5-turbo-0613"}
 
     def __init__(
         self,
