@@ -1,9 +1,9 @@
-FROM python:3.10 AS builder
+FROM python:3.10-alpine AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN python3 -m venv .venv && .venv/bin/pip install --no-cache-dir -r requirements.txt
 
-FROM python:3.10-slim
+FROM python:3.10-alpine
 
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
