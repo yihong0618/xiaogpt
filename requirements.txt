@@ -34,3 +34,4 @@ wcwidth==0.2.6
 websockets==11.0
 yarl==1.8.2
 edge-tts==6.1.5
+zhipuai

@@ -3,6 +3,7 @@
   "account": "",
   "password": "",
   "openai_key": "",
+  "glm_key": "",
   "cookie": "",
   "mi_did": "",
   "use_command": false,

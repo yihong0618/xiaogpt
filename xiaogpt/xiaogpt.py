@@ -356,7 +356,10 @@ class MiGPT:
         if not self.config.stream:
             async with ClientSession(trust_env=True) as session:
                 openai.aiosession.set(session)
-                answer = await self.chatbot.ask(query, **self.config.gpt_options)
+                if self.config.bot == "glm":
+                    answer = self._chatbot.ask(query, **self.config.gpt_options)
+                else:
+                    answer = await self.chatbot.ask(query, **self.config.gpt_options)
                 message = self._normalize(answer) if answer else ""
                 yield message
                 return
