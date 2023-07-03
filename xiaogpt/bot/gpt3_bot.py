@@ -47,8 +47,9 @@ class GPT3Bot(BaseBot):
 
         async def text_gen():
             async for event in completion:
-                print(event["text"], end="")
-                yield event["text"]
+                text = event["choices"][0]["text"]
+                print(text, end="")
+                yield text
 
         try:
             async for sentence in split_sentences(text_gen()):
