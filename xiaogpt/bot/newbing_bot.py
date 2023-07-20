@@ -40,13 +40,20 @@ class NewBingBot(BaseBot):
     async def ask(self, query, **options):
         kwargs = {"conversation_style": ConversationStyle.balanced, **options}
         completion = await self._bot.ask(prompt=query, **kwargs)
-        text = self.clean_text(completion["item"]["messages"][1]["text"])
+        try:
+            text = self.clean_text(completion["item"]["messages"][1]["text"])
+        except Exception as e:
+            print(str(e))
+            return
         print(text)
         return text
 
     async def ask_stream(self, query, **options):
         kwargs = {"conversation_style": ConversationStyle.balanced, **options}
-        completion = self._bot.ask_stream(prompt=query, **kwargs)
+        try:
+            completion = self._bot.ask_stream(prompt=query, **kwargs)
+        except Exception as e:
+            return
 
         async def text_gen():
             current = ""

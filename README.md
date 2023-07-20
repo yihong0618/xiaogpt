@@ -95,6 +95,8 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
 
 # 如果你想使用 ChatGLM api
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_glm --glm_key ${glm_key}
+# 如果你想使用 google 的 bard
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_bard --bard_token ${bard_token}
 ```
 
 ## config.json
@@ -127,6 +129,7 @@ python3 xiaogpt.py
 
 具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
 ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
+Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 ## 配置项说明
 
 | 参数                  | 说明                                              | 默认值                              |
@@ -136,6 +139,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | password              | 小爱账户密码                                      |                                     |
 | openai_key            | openai的apikey                                    |                                     |
 | glm_key               | chatglm 的 apikey                                    |                                     |
+| bard_token            | bard 的 token 参考 [Bard-API](https://github.com/dsdanielpark/Bard-API)                                 |                                     |
 | cookie                | 小爱账户cookie （如果用上面密码登录可以不填）     |                                     |
 | mi_did                | 设备did                                           |                                     |
 | use_command           | 使用 MI command 与小爱交互                        | `false`                             |

@@ -421,6 +421,7 @@ class MiGPT:
         )
 
     async def run_forever(self):
+        ask_name = self.config.bot.upper()
         async with ClientSession() as session:
             await self.init_all_data(session)
             task = asyncio.create_task(self.poll_latest_ask())
@@ -470,7 +471,7 @@ class MiGPT:
                 else:
                     # waiting for xiaoai speaker done
                     await asyncio.sleep(8)
-                await self.do_tts("正在问GPT请耐心等待")
+                await self.do_tts(f"正在问{ask_name}请耐心等待")
                 try:
                     print(
                         "以下是小爱的回答: ",
@@ -478,7 +479,7 @@ class MiGPT:
                     )
                 except IndexError:
                     print("小爱没回")
-                print("以下是GPT的回答: ", end="")
+                print(f"以下是 {ask_name} 的回答: ", end="")
                 try:
                     if not self.config.enable_edge_tts:
                         async for message in self.ask_gpt(query):
@@ -492,7 +493,7 @@ class MiGPT:
                         await self.edge_tts(self.ask_gpt(query), tts_lang)
                     print("回答完毕")
                 except Exception as e:
-                    print(f"GPT回答出错 {str(e)}")
+                    print(f"{ask_name} 回答出错 {str(e)}")
                 if self.in_conversation:
                     print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
                     await self.wakeup_xiaoai()
