@@ -61,6 +61,7 @@ class Config:
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
     glm_key: str = os.getenv("CHATGLM_KEY", "")
+    bard_token: str = os.getenv("BARD_TOKEN", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
@@ -139,5 +140,9 @@ class Config:
                         key, value = "bot", "gpt3"
                     elif key == "use_newbing":
                         key, value = "bot", "newbing"
+                    elif key == "use_glm":
+                        key, value = "bot", "glm"
+                    elif key == "use_bard":
+                        key, value = "bot", "bard"
                     result[key] = value
         return result

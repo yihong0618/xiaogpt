@@ -30,7 +30,11 @@ class GLMBot(BaseBot):
         kwargs = {**self.default_options, **options}
         kwargs["prompt"] = ms
         ms.append({"role": "user", "content": f"{query}"})
-        r = zhipuai.model_api.sse_invoke(**kwargs)
+        try:
+            r = zhipuai.model_api.sse_invoke(**kwargs)
+        except Exception as e:
+            print(str(e))
+            return
         message = ""
         for i in r.events():
             message += str(i.data)
@@ -43,4 +47,4 @@ class GLMBot(BaseBot):
         return message
 
     def ask_stream(self, query: str, **options: Any):
-        pass
+        raise Exception("GLM do not support stream")

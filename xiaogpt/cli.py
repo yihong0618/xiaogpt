@@ -33,6 +33,11 @@ def main():
         help="chatglm api key",
     )
     parser.add_argument(
+        "--bard_token",
+        dest="bard_token",
+        help="google bard token see https://github.com/dsdanielpark/Bard-API",
+    )
+    parser.add_argument(
         "--proxy",
         dest="proxy",
         help="http proxy url like http://localhost:8080",
@@ -106,6 +111,13 @@ def main():
         const="glm",
         help="if use chatglm",
     )
+    group.add_argument(
+        "--use_bard",
+        dest="bot",
+        action="store_const",
+        const="bard",
+        help="if use bard",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -115,7 +127,7 @@ def main():
         "--bot",
         dest="bot",
         help="bot type",
-        choices=["gpt3", "chatgptapi", "newbing", "glm"],
+        choices=["gpt3", "chatgptapi", "newbing", "glm", "bard"],
     )
     parser.add_argument(
         "--config",
@@ -144,7 +156,7 @@ def main():
     )
 
     options = parser.parse_args()
-    if options.bot == "glm" and options.stream:
+    if options.bot in ["glm", "bard"] and options.stream:
         raise Exception("For now ChatGLM do not support stream")
     config = Config.from_options(options)
 
