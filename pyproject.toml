@@ -1,6 +1,6 @@
 [project]
 name = "xiaogpt"
-description = "Play ChatGPT with xiaomi AI speaker"
+description = "Play ChatGPT or other LLM with xiaomi AI speaker"
 readme = "README.md"
 authors = [
     {name = "yihong0618", email = "zouzou0208@gmail.com"},
