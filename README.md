@@ -7,7 +7,7 @@
 https://user-images.githubusercontent.com/15976103/226803357-72f87a41-a15b-409e-94f5-e2d262eecd53.mp4
 
 
-Play ChatGPT with Xiaomi AI Speaker
+Play ChatGPT and other LLM with Xiaomi AI Speaker
 
 ![image](https://user-images.githubusercontent.com/15976103/220028375-c193a859-48a1-4270-95b6-ef540e54a621.png)
 ![image](https://user-images.githubusercontent.com/15976103/226802344-9c71f543-b73c-4a47-8703-4c200c434dec.png)
