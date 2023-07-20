@@ -18,6 +18,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - ChatGPT
 - New Bing 
 - [ChatGLM](http://open.bigmodel.cn/)
+- [Bard](https://github.com/dsdanielpark/Bard-API)
 
 ## Windows 获取小米音响DID
 
