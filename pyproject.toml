@@ -30,6 +30,9 @@ Homepage = "https://github.com/yihong0618/xiaogpt"
 [project.scripts]
 xiaogpt = "xiaogpt.cli:main"
 
+[tool.pdm]
+plugins = ["pdm-autoexport"]
+
 [tool.pdm.version]
 source = "scm"
 
