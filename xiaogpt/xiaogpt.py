@@ -18,7 +18,7 @@ from pathlib import Path
 
 import edge_tts
 import openai
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
 from rich.logging import RichHandler
@@ -94,14 +94,15 @@ class MiGPT:
             session._cookie_jar = self.cookie_jar
             while True:
                 self.log.debug(
-                    "Now listening xiaoai new message timestamp: %s",
-                    self.last_timestamp,
+                    "Listening new message, timestamp: %s", self.last_timestamp
                 )
                 await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
+                self.log.debug("Polling_event, timestamp: %s", self.last_timestamp)
                 await self.polling_event.wait()
                 if (d := time.perf_counter() - start) < 1:
                     # sleep to avoid too many request
+                    self.log.debug("Sleep %f, timestamp: %s", d, self.last_timestamp)
                     await asyncio.sleep(1 - d)
 
     async def init_all_data(self, session):
@@ -229,12 +230,20 @@ class MiGPT:
     async def get_latest_ask_from_xiaoai(self, session):
         retries = 2
         for _ in range(retries):
-            r = await session.get(
-                LATEST_ASK_API.format(
-                    hardware=self.config.hardware,
-                    timestamp=str(int(time.time() * 1000)),
+            try:
+                timeout = ClientTimeout(total=15)
+                r = await session.get(
+                    LATEST_ASK_API.format(
+                        hardware=self.config.hardware,
+                        timestamp=str(int(time.time() * 1000)),
+                    ),
+                    timeout=timeout,
                 )
-            )
+            except Exception as e:
+                self.log.warning(
+                    "Execption when get latest ask from xiaoai: %s", str(e)
+                )
+                continue
             try:
                 data = await r.json()
             except Exception:
