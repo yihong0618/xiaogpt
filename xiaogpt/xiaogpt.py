@@ -231,7 +231,6 @@ class MiGPT:
         retries = 3
         for i in range(retries):
             try:
-                await self.init_all_data(self.session)
                 timeout = ClientTimeout(total=15)
                 r = await session.get(
                     LATEST_ASK_API.format(
@@ -251,6 +250,7 @@ class MiGPT:
                 self.log.warning("get latest ask from xiaoai error, retry")
                 if i == 2:
                     # tricky way to fix #282 #272 # if it is the third time we re init all data
+                    print("Maybe outof date trying to re init it")
                     await self.init_all_data(self.session)
             else:
                 return self._get_last_query(data)
