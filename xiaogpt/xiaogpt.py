@@ -228,8 +228,8 @@ class MiGPT:
             self.chatbot.history[0][0] = new_prompt
 
     async def get_latest_ask_from_xiaoai(self, session):
-        retries = 2
-        for _ in range(retries):
+        retries = 3
+        for i in range(retries):
             try:
                 timeout = ClientTimeout(total=15)
                 r = await session.get(
@@ -248,6 +248,10 @@ class MiGPT:
                 data = await r.json()
             except Exception:
                 self.log.warning("get latest ask from xiaoai error, retry")
+                if i == 2:
+                    # tricky way to fix #282 #272 # if it is the third time we re init all data
+                    print("Maybe outof date trying to re init it")
+                    await self.init_all_data(self.session)
             else:
                 return self._get_last_query(data)
 
@@ -432,6 +436,7 @@ class MiGPT:
     async def run_forever(self):
         ask_name = self.config.bot.upper()
         async with ClientSession() as session:
+            self.session = session
             await self.init_all_data(session)
             task = asyncio.create_task(self.poll_latest_ask())
             assert task is not None  # to keep the reference to task, do not remove this
