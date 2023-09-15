@@ -93,8 +93,6 @@ class Config:
                     "New bing bot needs bing_cookie_path or bing_cookies, read this: "
                     "https://github.com/acheong08/EdgeGPT#getting-authentication-required"
                 )
-        elif not self.openai_key:
-            raise Exception("Using GPT api needs openai API key, please google how to")
         if (
             self.api_base
             and self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
@@ -104,6 +102,11 @@ class Config:
                 "Using Azure OpenAI needs deployment_id, read this: "
                 "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions"
             )
+        if self.bot in ["chatgptapi", "gpt3"]:
+            if not self.openai_key:
+                raise Exception(
+                    "Using GPT api needs openai API key, please google how to"
+                )
 
     @property
     def tts_command(self) -> str:
