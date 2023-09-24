@@ -28,6 +28,7 @@ HARDWARE_COMMAND_DICT = {
     "L07A": ("5-1", "5-5"),  # Redmi小爱音箱Play(l7a)
     "L15A": ("7-3", "7-4"),
     "X6A": ("7-3", "7-4"),  # 小米智能家庭屏6
+    "X10A": ("7-3", "7-4"),  # 小米智能家庭屏10
     # add more here
 }
 
@@ -59,6 +60,8 @@ class Config:
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    glm_key: str = os.getenv("CHATGLM_KEY", "")
+    bard_token: str = os.getenv("BARD_TOKEN", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
@@ -90,8 +93,6 @@ class Config:
                     "New bing bot needs bing_cookie_path or bing_cookies, read this: "
                     "https://github.com/acheong08/EdgeGPT#getting-authentication-required"
                 )
-        elif not self.openai_key:
-            raise Exception("Using GPT api needs openai API key, please google how to")
         if (
             self.api_base
             and self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
@@ -101,6 +102,11 @@ class Config:
                 "Using Azure OpenAI needs deployment_id, read this: "
                 "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions"
             )
+        if self.bot in ["chatgptapi", "gpt3"]:
+            if not self.openai_key:
+                raise Exception(
+                    "Using GPT api needs openai API key, please google how to"
+                )
 
     @property
     def tts_command(self) -> str:
@@ -137,5 +143,9 @@ class Config:
                         key, value = "bot", "gpt3"
                     elif key == "use_newbing":
                         key, value = "bot", "newbing"
+                    elif key == "use_glm":
+                        key, value = "bot", "glm"
+                    elif key == "use_bard":
+                        key, value = "bot", "bard"
                     result[key] = value
         return result

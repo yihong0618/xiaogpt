@@ -29,7 +29,11 @@ class GPT3Bot(BaseBot):
             "top_p": 1,
             **options,
         }
-        completion = await openai.Completion.acreate(**data)
+        try:
+            completion = await openai.Completion.acreate(**data)
+        except Exception as e:
+            print(str(e))
+            return ""
         print(completion["choices"][0]["text"])
         return completion["choices"][0]["text"]
 
@@ -43,12 +47,17 @@ class GPT3Bot(BaseBot):
             "stream": True,
             **options,
         }
-        completion = await openai.Completion.acreate(**data)
+        try:
+            completion = await openai.Completion.acreate(**data)
+        except Exception as e:
+            print(str(e))
+            return
 
         async def text_gen():
             async for event in completion:
-                print(event["text"], end="")
-                yield event["text"]
+                text = event["choices"][0]["text"]
+                print(text, end="")
+                yield text
 
         try:
             async for sentence in split_sentences(text_gen()):

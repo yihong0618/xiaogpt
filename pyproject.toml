@@ -1,6 +1,6 @@
 [project]
 name = "xiaogpt"
-description = "Play ChatGPT with xiaomi AI speaker"
+description = "Play ChatGPT or other LLM with xiaomi AI speaker"
 readme = "README.md"
 authors = [
     {name = "yihong0618", email = "zouzou0208@gmail.com"},
@@ -16,6 +16,8 @@ dependencies = [
     "openai",
     "aiohttp",
     "rich",
+    "zhipuai",
+    "bardapi",
     "edge-tts>=6.1.3",
     "EdgeGPT==0.1.26",
 ]
@@ -27,6 +29,9 @@ Homepage = "https://github.com/yihong0618/xiaogpt"
 
 [project.scripts]
 xiaogpt = "xiaogpt.cli:main"
+
+[tool.pdm]
+plugins = ["pdm-autoexport"]
 
 [tool.pdm.version]
 source = "scm"

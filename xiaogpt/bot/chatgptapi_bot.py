@@ -8,7 +8,7 @@ from xiaogpt.utils import split_sentences
 
 
 class ChatGPTBot(BaseBot):
-    default_options = {"model": "gpt-3.5-turbo"}
+    default_options = {"model": "gpt-3.5-turbo-0613"}
 
     def __init__(
         self,
@@ -48,7 +48,11 @@ class ChatGPTBot(BaseBot):
             ms.append({"role": "assistant", "content": h[1]})
         ms.append({"role": "user", "content": f"{query}"})
         kwargs = {**self.default_options, **options}
-        completion = await openai.ChatCompletion.acreate(messages=ms, **kwargs)
+        try:
+            completion = await openai.ChatCompletion.acreate(messages=ms, **kwargs)
+        except Exception as e:
+            print(str(e))
+            return ""
         message = (
             completion["choices"][0]
             .get("message")
@@ -72,9 +76,13 @@ class ChatGPTBot(BaseBot):
         kwargs = {"model": "gpt-3.5-turbo", **options}
         if openai.api_type == "azure":
             kwargs["deployment_id"] = self.deployment_id
-        completion = await openai.ChatCompletion.acreate(
-            messages=ms, stream=True, **kwargs
-        )
+        try:
+            completion = await openai.ChatCompletion.acreate(
+                messages=ms, stream=True, **kwargs
+            )
+        except Exception as e:
+            print(str(e))
+            return
 
         async def text_gen():
             async for event in completion:

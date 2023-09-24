@@ -18,7 +18,7 @@ from pathlib import Path
 
 import edge_tts
 import openai
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
 from rich.logging import RichHandler
@@ -94,14 +94,15 @@ class MiGPT:
             session._cookie_jar = self.cookie_jar
             while True:
                 self.log.debug(
-                    "Now listening xiaoai new message timestamp: %s",
-                    self.last_timestamp,
+                    "Listening new message, timestamp: %s", self.last_timestamp
                 )
                 await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
+                self.log.debug("Polling_event, timestamp: %s", self.last_timestamp)
                 await self.polling_event.wait()
                 if (d := time.perf_counter() - start) < 1:
                     # sleep to avoid too many request
+                    self.log.debug("Sleep %f, timestamp: %s", d, self.last_timestamp)
                     await asyncio.sleep(1 - d)
 
     async def init_all_data(self, session):
@@ -227,18 +228,30 @@ class MiGPT:
             self.chatbot.history[0][0] = new_prompt
 
     async def get_latest_ask_from_xiaoai(self, session):
-        retries = 2
-        for _ in range(retries):
-            r = await session.get(
-                LATEST_ASK_API.format(
-                    hardware=self.config.hardware,
-                    timestamp=str(int(time.time() * 1000)),
+        retries = 3
+        for i in range(retries):
+            try:
+                timeout = ClientTimeout(total=15)
+                r = await session.get(
+                    LATEST_ASK_API.format(
+                        hardware=self.config.hardware,
+                        timestamp=str(int(time.time() * 1000)),
+                    ),
+                    timeout=timeout,
                 )
-            )
+            except Exception as e:
+                self.log.warning(
+                    "Execption when get latest ask from xiaoai: %s", str(e)
+                )
+                continue
             try:
                 data = await r.json()
             except Exception:
                 self.log.warning("get latest ask from xiaoai error, retry")
+                if i == 2:
+                    # tricky way to fix #282 #272 # if it is the third time we re init all data
+                    print("Maybe outof date trying to re init it")
+                    await self.init_all_data(self.session)
             else:
                 return self._get_last_query(data)
 
@@ -356,7 +369,10 @@ class MiGPT:
         if not self.config.stream:
             async with ClientSession(trust_env=True) as session:
                 openai.aiosession.set(session)
-                answer = await self.chatbot.ask(query, **self.config.gpt_options)
+                if self.config.bot == "glm":
+                    answer = self._chatbot.ask(query, **self.config.gpt_options)
+                else:
+                    answer = await self.chatbot.ask(query, **self.config.gpt_options)
                 message = self._normalize(answer) if answer else ""
                 yield message
                 return
@@ -418,7 +434,9 @@ class MiGPT:
         )
 
     async def run_forever(self):
+        ask_name = self.config.bot.upper()
         async with ClientSession() as session:
+            self.session = session
             await self.init_all_data(session)
             task = asyncio.create_task(self.poll_latest_ask())
             assert task is not None  # to keep the reference to task, do not remove this
@@ -467,7 +485,7 @@ class MiGPT:
                 else:
                     # waiting for xiaoai speaker done
                     await asyncio.sleep(8)
-                await self.do_tts("正在问GPT请耐心等待")
+                await self.do_tts(f"正在问{ask_name}请耐心等待")
                 try:
                     print(
                         "以下是小爱的回答: ",
@@ -475,7 +493,7 @@ class MiGPT:
                     )
                 except IndexError:
                     print("小爱没回")
-                print("以下是GPT的回答: ", end="")
+                print(f"以下是 {ask_name} 的回答: ", end="")
                 try:
                     if not self.config.enable_edge_tts:
                         async for message in self.ask_gpt(query):
@@ -489,7 +507,7 @@ class MiGPT:
                         await self.edge_tts(self.ask_gpt(query), tts_lang)
                     print("回答完毕")
                 except Exception as e:
-                    print(f"GPT回答出错 {str(e)}")
+                    print(f"{ask_name} 回答出错 {str(e)}")
                 if self.in_conversation:
                     print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
                     await self.wakeup_xiaoai()
