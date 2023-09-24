@@ -449,7 +449,6 @@ class MiGPT:
                 new_record = self.last_record
                 self.polling_event.clear()  # stop polling when processing the question
                 query = new_record.get("query", "").strip()
-
                 if query == self.config.start_conversation:
                     if not self.in_conversation:
                         print("开始对话")
