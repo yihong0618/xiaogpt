@@ -14,12 +14,12 @@ class LangChainBot(BaseBot):
     def __init__(
         self,
     ) -> None:
-        # todo，建议在langchain内实现聊天历史对话
-        self.history = [] 
+        # todo，建议在langchain内实现
+        self.history = []
 
     @classmethod
     def from_config(cls, config):
-        pass
+        return cls()
 
     async def ask(self, query, **options):
         # todo，目前仅支持stream
