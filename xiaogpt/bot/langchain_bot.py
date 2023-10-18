@@ -9,20 +9,27 @@ from xiaogpt.utils import split_sentences
 from xiaogpt.langchain.chain import agent_search
 from xiaogpt.langchain.stream_call_back import streaming_call_queue
 
+import os
+
 
 class LangChainBot(BaseBot):
     def __init__(
         self,
+        openai_key: str,
+        serpapi_api_key: str,
     ) -> None:
-        # todo，建议在langchain内实现
+        # Set environment indicators
+        os.environ["OPENAI_API_KEY"] = openai_key
+        os.environ["SERPAPI_API_KEY"] = serpapi_api_key
+        # todo，Plan to implement within langchain
         self.history = []
 
     @classmethod
     def from_config(cls, config):
-        return cls()
+        return cls(openai_key=config.openai_key, serpapi_api_key=config.serpapi_api_key)
 
     async def ask(self, query, **options):
-        # todo，目前仅支持stream
+        # todo，Currently only supports stream
         raise Exception("The bot does not support it. Please use 'ask_stream'.")
 
     async def ask_stream(self, query, **options):

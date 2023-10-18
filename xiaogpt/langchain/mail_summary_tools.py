@@ -1,6 +1,7 @@
 from langchain.tools import BaseTool
 from xiaogpt.langchain.mail_box import Mailbox
 
+
 # 总结日志工具
 class MailSummaryTool(BaseTool):
     name = "MailSumary"

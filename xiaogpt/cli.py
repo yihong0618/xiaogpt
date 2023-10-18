@@ -28,11 +28,6 @@ def main():
         help="openai api key",
     )
     parser.add_argument(
-        "--serpapi_api_key",
-        dest="serpapi_api_key",
-        help="serp api key see https://serpapi.com/",
-    )
-    parser.add_argument(
         "--glm_key",
         dest="glm_key",
         help="chatglm api key",
@@ -41,6 +36,11 @@ def main():
         "--bard_token",
         dest="bard_token",
         help="google bard token see https://github.com/dsdanielpark/Bard-API",
+    )
+    parser.add_argument(
+        "--serpapi_api_key",
+        dest="serpapi_api_key",
+        help="serp api key see https://serpapi.com/",
     )
     parser.add_argument(
         "--proxy",

@@ -10,40 +10,40 @@ from email.mime.text import MIMEText
 
 
 class Mailbox:
-    # 需要配置Gmail帐号设置
+    # Gmail account settings need to be configured
     gmail_address = ""
     gmail_password = ""
 
-    # 连接到IMAP服务器
+    # Connect to IMAP server
     imap_server = "imap.gmail.com"
     imap_port = 993
 
-    # 定义邮件接收人，支持添加多个收件人邮箱地址
+    # Define email recipients and support adding multiple required email addresses
     to_addresses = [""]
 
-    # 定义总结的邮件数目
+    # Define the number of emails to summarize
     max_emails = 3
 
     def get_all_work_summary(self):
-        print("正在获取邮件...")
+        print("Getting mail...")
         try:
-            # 建立IMAP连接
+            # Establish an IMAP connection
             mailbox = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
-            # 登录Gmail帐号
+            # Log in to your Gmail account
             mailbox.login(self.gmail_address, self.gmail_password)
-            # 选择邮箱
+            # Select email
             mailbox.select("INBOX")
-            # 获取今天的日期
+            # Get today's date
             today = datetime.now().strftime("%d-%b-%Y")
-            # 构建搜索条件
+            # Build search criteria
             search_criteria = f'(SINCE "{today}")'
-            # 搜索符合条件的邮件
+            # Search for matching messages
             status, email_ids = mailbox.search(None, search_criteria)
 
             if status == "OK":
                 email_ids = email_ids[0].split()
-                print(f"今天收到的邮件数量：{len(email_ids)}")
-                # 限制最多获取15封邮件
+                print(f"Number of emails received today: {len(email_ids)}")
+                # Limit fetching up to max_emails emails
                 max_emails = min(len(email_ids), self.max_emails)
                 all_email_content = ""
 
@@ -55,29 +55,29 @@ class Mailbox:
 
                 # print(all_email_content)
 
-            # 关闭连接
+            # close connection
             mailbox.logout()
 
             return all_email_content
         except Exception as e:
-            print("获取邮件失败:", str(e))
+            print("Failed to get email:", str(e))
 
     def get_email_content(self, mailbox, email_id):
-        # 获取邮件内容
+        # Get email content
         status, email_data = mailbox.fetch(email_id, "(RFC822)")
         if status == "OK":
             raw_email = email_data[0][1]
             msg = email.message_from_bytes(raw_email)
 
-            # 获取发件人
+            # Get sender
             sender = msg["From"]
-            # 提取尖括号（<>）内的发件人
+            # Extract senders within angle brackets (<>)
             sender = re.findall(r"<(.*?)>", sender)
             sender = sender[0] if sender else ""
 
-            # 检查发件人的邮箱地址是否以 '@addcn.com' 结尾
-            if sender.lower().endswith("@addcn.com") and not msg["In-Reply-To"]:
-                # 获取邮件内容
+            # Check whether the sender's email address ends with '.com', expand the field, and use it for email sender filtering
+            if sender.lower().endswith(".com") and not msg["In-Reply-To"]:
+                # Get email content
                 email_content = ""
                 if msg.is_multipart():
                     for part in msg.walk():
@@ -91,31 +91,33 @@ class Mailbox:
                             email_content = part.get_payload(decode=True).decode(
                                 "utf-8"
                             )
-                            email_content = html.unescape(email_content)  # 过滤HTML代码
+                            email_content = html.unescape(
+                                email_content
+                            )  # Filter HTML code
                             break
                 else:
                     email_content = msg.get_payload(decode=True).decode("utf-8")
 
-                # 如果仍然包含html代码，则使用BeautifulSoup过滤html代码
+                # Use BeautifulSoup to filter the html code if it still contains it
                 if "html" in email_content.lower():
                     soup = BeautifulSoup(email_content, "html.parser")
                     email_content = soup.get_text()
 
-                # 输出文本格式
+                # Output text format
                 email_content = re.sub(r"\s+", "", email_content)
-                # 过滤 = 号之间的内容
+                # Filter content between = signs
                 email_content = re.sub(r"=\?.*?\?=", "", email_content)
-                # 过滤 --符号之后的内容
+                # Filter --content after the symbol
                 email_content = re.sub(r"---.*", "", email_content)
 
-                return f"{sender}发送邮件，内容是{email_content}"
+                return f"{sender}Send an email with the content{email_content}"
 
         return ""
 
     def get_summary_by_ai(self, email_content: str, prompt: str) -> str:
-        print("正在请AI总结邮件内容...")
+        print("Asking AI to summarize email content...")
 
-        # 请求ChatGPT进行总结
+        # Request ChatGPT for summary
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=[
@@ -124,43 +126,43 @@ class Mailbox:
             ],
         )
 
-        # 提取ChatGPT生成的总结
+        # Extract summary generated by ChatGPT
         summary = response.choices[0].message.content.strip()
         # print(summary)
         return summary
 
-    def send_mail(self, summary, theme="邮件摘要汇总"):
-        # 设置发件人和收件人
+    def send_mail(self, summary, theme="Email summary summary"):
+        # Set senders and recipients
         from_address = self.gmail_address
-        to_addresses = self.to_addresses  # 添加多个收件人邮箱地址
+        to_addresses = self.to_addresses  # Add multiple recipient email addresses
 
-        # 构建邮件内容
+        # Build email content
         yesterday = (datetime.now() - timedelta(days=0)).strftime("%Y-%m-%d")
         subject = yesterday + theme
         body = summary
 
         try:
-            # 连接到SMTP服务器
+            # Connect to SMTP server
             smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
             smtp_server.ehlo()
             smtp_server.starttls()
-            # 登录邮箱
+            # Login E-mail
             smtp_server.login(self.gmail_address, self.gmail_password)
 
             for to_address in to_addresses:
-                # 创建纯文本邮件消息对象
+                # Create a plain text mail message object
                 message = MIMEText(body, "plain", "utf-8")
                 message["Subject"] = subject
                 message["From"] = from_address
                 message["To"] = to_address
 
-                # 发送邮件
+                # send email
                 smtp_server.sendmail(from_address, to_address, message.as_string())
-                print("邮件发送成功至:", to_address)
+                print("Email sent successfully to:", to_address)
 
-            # 关闭连接
+            # close connection
             smtp_server.quit()
-            print("所有邮件已成功发送！")
+            print("All emails have been sent successfully!")
             return True
         except Exception as e:
-            print("邮件发送失败:", str(e))
+            print("Email sending failed:", str(e))

@@ -11,7 +11,8 @@ from langchain.utilities.zapier import ZapierNLAWrapper
 from xiaogpt.langchain.mail_box import Mailbox
 from xiaogpt.langchain.mail_summary_tools import MailSummaryTool
 from langchain.memory import ConversationBufferMemory
-from xiaogpt.config import Config
+
+# from xiaogpt.config import Config
 
 
 def agent_search(query):
@@ -22,12 +23,12 @@ def agent_search(query):
         callbacks=[StreamCallbackHandler()],
     )
 
-    # 初始化：搜索链、数学计算链、自定义总结邮件链
+    # Initialization: search chain, mathematical calculation chain, custom summary email chain
     search = SerpAPIWrapper()
     llm_math_chain = LLMMathChain(llm=llm, verbose=False)
     mail_summary = MailSummaryTool()
 
-    # 工具列表：搜索、数学计算、自定义总结邮件
+    # Tool list: search, mathematical calculations, custom summary emails
     tools = [
         Tool(name="Search", func=search.run, description="如果你不知道或不确定答案，可以使用这个搜索引擎检索答案"),
         Tool(name="Calculator", func=llm_math_chain.run, description="在需要回答数学问题时非常有用"),
@@ -38,7 +39,6 @@ def agent_search(query):
         ),
     ]
 
-    # 初始化 agent
     agent = initialize_agent(
         tools, llm, agent=AgentType.OPENAI_FUNCTIONS, verbose=False
     )
