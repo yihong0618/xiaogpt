@@ -2,12 +2,10 @@ from langchain.tools import BaseTool
 from xiaogpt.langchain.mail_box import Mailbox
 
 
-# 总结日志工具
 class MailSummaryTool(BaseTool):
     name = "MailSumary"
     description = "当被问到总结邮件相关时，会触发这个工具，进行今日邮件总结和发送。当调用工具完毕，只需要回复总结成功或失败即可，立即结束本次回答"
 
-    # 新增日志总结工具
     def get_mail_summary(self) -> str:
         """
         总结邮件：对邮箱内收到的邮件进行总结，并发送到指定邮箱
