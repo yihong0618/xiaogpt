@@ -24,7 +24,7 @@ class MailSummaryTool(BaseTool):
         is_success = mailbox.send_mail(gpt_content)
         if is_success:
             return "总结邮件成功"
-        else:   
+        else:
             return "总结邮件失败，请检查邮箱配置"
 
     def _run(self, query: str) -> str:

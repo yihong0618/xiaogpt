@@ -28,7 +28,7 @@ def main():
         help="openai api key",
     )
     parser.add_argument(
-        "--serpapi_api_key", 
+        "--serpapi_api_key",
         dest="serpapi_api_key",
         help="serp api key see https://serpapi.com/",
     )

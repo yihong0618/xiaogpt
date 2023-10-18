@@ -9,8 +9,8 @@ from xiaogpt.utils import split_sentences
 from xiaogpt.langchain.chain import agent_search
 from xiaogpt.langchain.stream_call_back import streaming_call_queue
 
-class LangChainBot(BaseBot):
 
+class LangChainBot(BaseBot):
     def __init__(
         self,
     ) -> None:
@@ -31,7 +31,7 @@ class LangChainBot(BaseBot):
             while True:
                 if not streaming_call_queue.empty():
                     token = streaming_call_queue.get()
-                    print(token, end='')
+                    print(token, end="")
                     yield token
                 else:
                     break

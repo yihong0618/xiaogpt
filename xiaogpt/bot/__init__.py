@@ -26,4 +26,12 @@ def get_bot(config: Config) -> BaseBot:
         raise ValueError(f"Unsupported bot {config.bot}, must be one of {list(BOTS)}")
 
 
-__all__ = ["GPT3Bot", "ChatGPTBot", "NewBingBot", "GLMBot", "BardBot", "get_bot", "LangChainBot"]
+__all__ = [
+    "GPT3Bot",
+    "ChatGPTBot",
+    "NewBingBot",
+    "GLMBot",
+    "BardBot",
+    "get_bot",
+    "LangChainBot",
+]
