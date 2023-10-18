@@ -60,6 +60,7 @@ class Config:
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
     glm_key: str = os.getenv("CHATGLM_KEY", "")
     bard_token: str = os.getenv("BARD_TOKEN", "")
     proxy: str | None = None
@@ -147,5 +148,7 @@ class Config:
                         key, value = "bot", "glm"
                     elif key == "use_bard":
                         key, value = "bot", "bard"
+                    elif key == "use_langchain":
+                        key, value = "bot", "langchain"
                     result[key] = value
         return result
