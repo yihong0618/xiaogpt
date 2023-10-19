@@ -62,4 +62,6 @@ yarl==1.8.2
 zhipuai==1.0.7
 langchain==0.0.314
 datetime==5.2
-bs4=0.0.1
+bs4==0.0.1
+chardet==5.1.0
+typing==3.7.4.3

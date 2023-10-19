@@ -23,6 +23,8 @@ dependencies = [
     "langchain",
     "datetime",
     "bs4",
+    "chardet",
+    "typing"
 ]
 license = {text = "MIT"}
 dynamic = ["version"]
