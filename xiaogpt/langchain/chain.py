@@ -12,8 +12,6 @@ from xiaogpt.langchain.mail_box import Mailbox
 from xiaogpt.langchain.mail_summary_tools import MailSummaryTool
 from langchain.memory import ConversationBufferMemory
 
-# from xiaogpt.config import Config
-
 
 def agent_search(query):
     llm = ChatOpenAI(
