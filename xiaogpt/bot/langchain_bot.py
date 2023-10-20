@@ -30,7 +30,9 @@ class LangChainBot(BaseBot):
 
     async def ask(self, query, **options):
         # todo，Currently only supports stream
-        raise Exception("The bot does not support it. Please use 'ask_stream'.")
+        raise Exception(
+            "The bot does not support it. Please use 'ask_stream，add： --stream'"
+        )
 
     async def ask_stream(self, query, **options):
         agent_search(query)
@@ -43,5 +45,4 @@ class LangChainBot(BaseBot):
                 else:
                     break
         except Exception as e:
-            # 处理异常的代码
             print("An error occurred:", str(e))

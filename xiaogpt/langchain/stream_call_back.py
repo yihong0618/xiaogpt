@@ -12,5 +12,5 @@ class StreamCallbackHandler(StreamingStdOutCallbackHandler):
         token_copy = token
         code = chardet.detect(token_copy.encode())["encoding"]
         if code is not None:
-            # 接收流消息入队，在ask_stream时出队
+            # Receive stream messages into the queue and dequeue when ask_stream
             streaming_call_queue.put(token)

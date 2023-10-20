@@ -20,11 +20,13 @@ dependencies = [
     "bardapi",
     "edge-tts>=6.1.3",
     "EdgeGPT==0.1.26",
-    "langchain",
-    "datetime",
-    "bs4",
-    "chardet",
-    "typing"
+    "langchain==0.0.301",
+    "datetime==5.2",
+    "bs4==0.0.1",
+    "chardet==5.1.0",
+    "typing==3.7.4.3",
+    "google-search-results==2.4.2",
+    "numexpr==2.8.6"
 ]
 license = {text = "MIT"}
 dynamic = ["version"]
