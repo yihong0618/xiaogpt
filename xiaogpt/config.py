@@ -69,7 +69,7 @@ class Config:
     change_prompt_keyword: Iterable[str] = CHANGE_PROMPT_KEY_WORD
     prompt: str = PROMPT
     mute_xiaoai: bool = False
-    bot: str = "chatgpt"
+    bot: str = "chatgptapi"
     cookie: str = ""
     api_base: str | None = None
     deployment_id: str | None = None

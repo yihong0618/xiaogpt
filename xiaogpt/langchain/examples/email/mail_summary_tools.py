@@ -1,5 +1,5 @@
 from langchain.tools import BaseTool
-from xiaogpt.langchain.mail_box import Mailbox
+from xiaogpt.langchain.examples.email.mail_box import Mailbox
 
 
 class MailSummaryTool(BaseTool):
