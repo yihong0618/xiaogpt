@@ -62,13 +62,14 @@ class Config:
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
     glm_key: str = os.getenv("CHATGLM_KEY", "")
     bard_token: str = os.getenv("BARD_TOKEN", "")
+    serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
     change_prompt_keyword: Iterable[str] = CHANGE_PROMPT_KEY_WORD
     prompt: str = PROMPT
     mute_xiaoai: bool = False
-    bot: str = "chatgpt"
+    bot: str = "chatgptapi"
     cookie: str = ""
     api_base: str | None = None
     deployment_id: str | None = None
@@ -147,5 +148,7 @@ class Config:
                         key, value = "bot", "glm"
                     elif key == "use_bard":
                         key, value = "bot", "bard"
+                    elif key == "use_langchain":
+                        key, value = "bot", "langchain"
                     result[key] = value
         return result

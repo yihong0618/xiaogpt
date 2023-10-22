@@ -57,6 +57,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--enable_edge_tts` 来获取更好的 tts 能力
+- 可以使用 `--use_langchain` 替代 `--use_chatgpt_api` 来调用 LangChain（默认 chatgpt）服务，实现上网检索、数学运算..
 
 e.g.
 
@@ -76,6 +77,10 @@ export OPENAI_API_KEY=${your_api_key}
 xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
 # 如果你想用 edge-tts
 xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --enable_edge_tts
+# 如果你想使用 LangChain + SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
+export OPENAI_API_KEY=${your_api_key}
+export SERPAPI_API_KEY=${your_serpapi_key}
+xiaogpt --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
 ```
 使用 git clone 运行
 
@@ -93,11 +98,14 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 gpt3 ai
 export OPENAI_API_KEY=${your_api_key}
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
-
 # 如果你想使用 ChatGLM api
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_glm --glm_key ${glm_key}
 # 如果你想使用 google 的 bard
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_bard --bard_token ${bard_token}
+# 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
+export OPENAI_API_KEY=${your_api_key}
+export SERPAPI_API_KEY=${your_serpapi_key}
+python3 xiaogpt.py --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
 ```
 
 ## config.json
@@ -139,6 +147,7 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | account               | 小爱账户                                          |                                     |
 | password              | 小爱账户密码                                      |                                     |
 | openai_key            | openai的apikey                                    |                                     |
+| serpapi_api_key            | serpapi的key  参考 [SerpAPI](https://serpapi.com/)                                  |                                     |
 | glm_key               | chatglm 的 apikey                                    |                                     |
 | bard_token            | bard 的 token 参考 [Bard-API](https://github.com/dsdanielpark/Bard-API)                                 |                                     |
 | cookie                | 小爱账户cookie （如果用上面密码登录可以不填）     |                                     |

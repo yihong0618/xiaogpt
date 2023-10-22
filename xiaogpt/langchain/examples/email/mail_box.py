@@ -1,0 +1,168 @@
+import imaplib
+import email
+from datetime import datetime, timedelta
+import html
+from bs4 import BeautifulSoup
+import re
+import openai
+import smtplib
+from email.mime.text import MIMEText
+
+
+class Mailbox:
+    # Gmail account settings need to be configured
+    gmail_address = ""
+    gmail_password = ""
+
+    # Connect to IMAP server
+    imap_server = "imap.gmail.com"
+    imap_port = 993
+
+    # Define email recipients and support adding multiple required email addresses
+    to_addresses = [""]
+
+    # Define the number of emails to summarize
+    max_emails = 3
+
+    def get_all_work_summary(self):
+        print("Getting mail...")
+        try:
+            # Establish an IMAP connection
+            mailbox = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
+            # Log in to your Gmail account
+            mailbox.login(self.gmail_address, self.gmail_password)
+            # Select email
+            mailbox.select("INBOX")
+            # Get today's date
+            today = datetime.now().strftime("%d-%b-%Y")
+            # Build search criteria
+            search_criteria = f'(SINCE "{today}")'
+            # Search for matching messages
+            status, email_ids = mailbox.search(None, search_criteria)
+
+            if status == "OK":
+                email_ids = email_ids[0].split()
+                print(f"Number of emails received today: {len(email_ids)}")
+                # Limit fetching up to max_emails emails
+                max_emails = min(len(email_ids), self.max_emails)
+                all_email_content = ""
+
+                for i in range(max_emails):
+                    email_id = email_ids[i]
+                    email_content = self.get_email_content(mailbox, email_id)
+                    if email_content:
+                        all_email_content += f"{i+1}、{email_content}\n"
+
+                # print(all_email_content)
+
+            # close connection
+            mailbox.logout()
+
+            return all_email_content
+        except Exception as e:
+            print("Failed to get email:", str(e))
+
+    def get_email_content(self, mailbox, email_id):
+        # Get email content
+        status, email_data = mailbox.fetch(email_id, "(RFC822)")
+        if status == "OK":
+            raw_email = email_data[0][1]
+            msg = email.message_from_bytes(raw_email)
+
+            # Get sender
+            sender = msg["From"]
+            # Extract senders within angle brackets (<>)
+            sender = re.findall(r"<(.*?)>", sender)
+            sender = sender[0] if sender else ""
+
+            # Check whether the sender's email address ends with '.com', expand the field, and use it for email sender filtering
+            if sender.lower().endswith(".com") and not msg["In-Reply-To"]:
+                # Get email content
+                email_content = ""
+                if msg.is_multipart():
+                    for part in msg.walk():
+                        content_type = part.get_content_type()
+                        if content_type == "text/plain":
+                            email_content = part.get_payload(decode=True).decode(
+                                "utf-8"
+                            )
+                            break
+                        elif content_type == "text/html":
+                            email_content = part.get_payload(decode=True).decode(
+                                "utf-8"
+                            )
+                            email_content = html.unescape(
+                                email_content
+                            )  # Filter HTML code
+                            break
+                else:
+                    email_content = msg.get_payload(decode=True).decode("utf-8")
+
+                # Use BeautifulSoup to filter the html code if it still contains it
+                if "html" in email_content.lower():
+                    soup = BeautifulSoup(email_content, "html.parser")
+                    email_content = soup.get_text()
+
+                # Output text format
+                email_content = re.sub(r"\s+", "", email_content)
+                # Filter content between = signs
+                email_content = re.sub(r"=\?.*?\?=", "", email_content)
+                # Filter --content after the symbol
+                email_content = re.sub(r"---.*", "", email_content)
+
+                return f"{sender}Send an email with the content{email_content}"
+
+        return ""
+
+    def get_summary_by_ai(self, email_content: str, prompt: str) -> str:
+        print("Asking AI to summarize email content...")
+
+        # Request ChatGPT for summary
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613",
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": email_content},
+            ],
+        )
+
+        # Extract summary generated by ChatGPT
+        summary = response.choices[0].message.content.strip()
+        # print(summary)
+        return summary
+
+    def send_mail(self, summary, theme="Email summary summary"):
+        # Set senders and recipients
+        from_address = self.gmail_address
+        to_addresses = self.to_addresses  # Add multiple recipient email addresses
+
+        # Build email content
+        yesterday = (datetime.now() - timedelta(days=0)).strftime("%Y-%m-%d")
+        subject = yesterday + theme
+        body = summary
+
+        try:
+            # Connect to SMTP server
+            smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
+            smtp_server.ehlo()
+            smtp_server.starttls()
+            # Login E-mail
+            smtp_server.login(self.gmail_address, self.gmail_password)
+
+            for to_address in to_addresses:
+                # Create a plain text mail message object
+                message = MIMEText(body, "plain", "utf-8")
+                message["Subject"] = subject
+                message["From"] = from_address
+                message["To"] = to_address
+
+                # send email
+                smtp_server.sendmail(from_address, to_address, message.as_string())
+                print("Email sent successfully to:", to_address)
+
+            # close connection
+            smtp_server.quit()
+            print("All emails have been sent successfully!")
+            return True
+        except Exception as e:
+            print("Email sending failed:", str(e))

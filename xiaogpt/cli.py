@@ -38,6 +38,11 @@ def main():
         help="google bard token see https://github.com/dsdanielpark/Bard-API",
     )
     parser.add_argument(
+        "--serpapi_api_key",
+        dest="serpapi_api_key",
+        help="serp api key see https://serpapi.com/",
+    )
+    parser.add_argument(
         "--proxy",
         dest="proxy",
         help="http proxy url like http://localhost:8080",
@@ -98,6 +103,13 @@ def main():
         help="if use openai chatgpt api",
     )
     group.add_argument(
+        "--use_langchain",
+        dest="bot",
+        action="store_const",
+        const="langchain",
+        help="if use langchain",
+    )
+    group.add_argument(
         "--use_newbing",
         dest="bot",
         action="store_const",
@@ -127,7 +139,7 @@ def main():
         "--bot",
         dest="bot",
         help="bot type",
-        choices=["gpt3", "chatgptapi", "newbing", "glm", "bard"],
+        choices=["gpt3", "chatgptapi", "newbing", "glm", "bard", "langchain"],
     )
     parser.add_argument(
         "--config",

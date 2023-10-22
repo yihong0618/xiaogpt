@@ -6,6 +6,7 @@ from xiaogpt.bot.gpt3_bot import GPT3Bot
 from xiaogpt.bot.newbing_bot import NewBingBot
 from xiaogpt.bot.glm_bot import GLMBot
 from xiaogpt.bot.bard_bot import BardBot
+from xiaogpt.bot.langchain_bot import LangChainBot
 from xiaogpt.config import Config
 
 BOTS: dict[str, type[BaseBot]] = {
@@ -14,6 +15,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "chatgptapi": ChatGPTBot,
     "glm": GLMBot,
     "bard": BardBot,
+    "langchain": LangChainBot,
 }
 
 
@@ -24,4 +26,12 @@ def get_bot(config: Config) -> BaseBot:
         raise ValueError(f"Unsupported bot {config.bot}, must be one of {list(BOTS)}")
 
 
-__all__ = ["GPT3Bot", "ChatGPTBot", "NewBingBot", "GLMBot", "BardBot", "get_bot"]
+__all__ = [
+    "GPT3Bot",
+    "ChatGPTBot",
+    "NewBingBot",
+    "GLMBot",
+    "BardBot",
+    "get_bot",
+    "LangChainBot",
+]
