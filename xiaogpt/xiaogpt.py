@@ -100,9 +100,16 @@ class MiGPT:
                 start = time.perf_counter()
                 self.log.debug("Polling_event, timestamp: %s", self.last_timestamp)
                 await self.polling_event.wait()
+                if (
+                    self.config.mute_xiaoai
+                    and self.last_record
+                    and self.need_ask_gpt(self.last_record)
+                ):
+                    await self.stop_if_xiaoai_is_playing()
                 if (d := time.perf_counter() - start) < 1:
                     # sleep to avoid too many request
                     self.log.debug("Sleep %f, timestamp: %s", d, self.last_timestamp)
+                    # if you want force mute xiaoai, comment this line below.
                     await asyncio.sleep(1 - d)
 
     async def init_all_data(self, session):
