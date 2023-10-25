@@ -17,19 +17,30 @@ class LangChainBot(BaseBot):
         self,
         openai_key: str,
         serpapi_api_key: str,
+        proxy: str | None = None,
+        api_base: str | None = None,
     ) -> None:
         # Set environment indicators
         os.environ["OPENAI_API_KEY"] = openai_key
         os.environ["SERPAPI_API_KEY"] = serpapi_api_key
-        # todo，Plan to implement within langchain
+        if api_base:
+            os.environ["OPENAI_API_BASE"] = api_base
+        if proxy:
+            os.environ["OPENAI_PROXY"] = proxy
+        # Todo，Plan to implement within langchain
         self.history = []
 
     @classmethod
     def from_config(cls, config):
-        return cls(openai_key=config.openai_key, serpapi_api_key=config.serpapi_api_key)
+        return cls(
+            openai_key=config.openai_key,
+            serpapi_api_key=config.serpapi_api_key,
+            proxy=config.proxy,
+            api_base=config.api_base,
+        )
 
     async def ask(self, query, **options):
-        # todo，Currently only supports stream
+        # Todo，Currently only supports stream
         raise Exception(
             "The bot does not support it. Please use 'ask_stream，add： --stream'"
         )
