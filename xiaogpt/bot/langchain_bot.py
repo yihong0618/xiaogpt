@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-import openai
+import asyncio
+import os
+
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot
-from xiaogpt.utils import split_sentences
-
+from xiaogpt.langchain.callbacks import AsyncIteratorCallbackHandler
 from xiaogpt.langchain.chain import agent_search
-from xiaogpt.langchain.stream_call_back import streaming_call_queue
-
-import os
+from xiaogpt.utils import split_sentences
 
 
 class LangChainBot(BaseBot):
@@ -42,18 +41,17 @@ class LangChainBot(BaseBot):
     async def ask(self, query, **options):
         # Todo，Currently only supports stream
         raise Exception(
-            "The bot does not support it. Please use 'ask_stream，add： --stream'"
+            "The bot does not support it. Please use 'ask_stream, add: --stream'"
         )
 
     async def ask_stream(self, query, **options):
-        agent_search(query)
+        callback = AsyncIteratorCallbackHandler()
+        task = asyncio.create_task(agent_search(query, callback))
         try:
-            while True:
-                if not streaming_call_queue.empty():
-                    token = streaming_call_queue.get()
-                    print(token, end="")
-                    yield token
-                else:
-                    break
+            async for message in split_sentences(callback.aiter()):
+                yield message
         except Exception as e:
             print("An error occurred:", str(e))
+        finally:
+            print()
+            await task
