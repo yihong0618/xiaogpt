@@ -29,7 +29,7 @@ def calculate_tts_elapse(text: str) -> float:
     return len(_no_elapse_chars.sub("", text)) / speed
 
 
-_ending_punctuations = ("。", "？", "！", "；", ".", "?", "!", ";")
+_ending_punctuations = ("。", "？", "！", "；", "\n", "?", "!", ";")
 
 
 async def split_sentences(text_stream: AsyncIterator[str]) -> AsyncIterator[str]:
