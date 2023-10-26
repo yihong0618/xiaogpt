@@ -1,23 +1,15 @@
-from langchain.agents import initialize_agent, Tool
-from langchain.agents import AgentType
-from langchain.tools import BaseTool
-from langchain.llms import OpenAI
+from langchain.agents import AgentType, Tool, initialize_agent
+from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chains import LLMMathChain
-from langchain.utilities import SerpAPIWrapper
 from langchain.chat_models import ChatOpenAI
-from langchain.memory import ChatMessageHistory
-from xiaogpt.langchain.stream_call_back import StreamCallbackHandler
-from langchain.agents.agent_toolkits import ZapierToolkit
-from langchain.utilities.zapier import ZapierNLAWrapper
-from langchain.memory import ConversationBufferMemory
+from langchain.utilities import SerpAPIWrapper
 
 
-def agent_search(query):
+async def agent_search(query: str, callback: BaseCallbackHandler) -> None:
     llm = ChatOpenAI(
         streaming=True,
         temperature=0,
         model="gpt-3.5-turbo-0613",
-        callbacks=[StreamCallbackHandler()],
     )
 
     # Initialization: search chain, mathematical calculation chain
@@ -35,4 +27,4 @@ def agent_search(query):
     )
 
     # query eg：'杭州亚运会中国队获得了多少枚金牌？' // '计算3的2次方'
-    agent.run(query)
+    await agent.arun(query, callbacks=[callback])

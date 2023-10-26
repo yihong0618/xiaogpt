@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import asyncio
 import functools
 import http.server
@@ -69,7 +71,6 @@ class MiGPT:
 
         self.mi_token_home = Path.home() / ".mi.token"
         self.last_timestamp = int(time.time() * 1000)  # timestamp last call mi speaker
-        self.last_record = None
         self.cookie_jar = None
         self._chatbot = None
         self.device_id = ""
@@ -78,7 +79,7 @@ class MiGPT:
         self.miio_service = None
         self.in_conversation = False
         self.polling_event = asyncio.Event()
-        self.new_record_event = asyncio.Event()
+        self.last_record = asyncio.Queue(1)
         self.temp_dir = None
         if self.config.enable_edge_tts:
             self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
@@ -96,14 +97,14 @@ class MiGPT:
                 self.log.debug(
                     "Listening new message, timestamp: %s", self.last_timestamp
                 )
-                await self.get_latest_ask_from_xiaoai(session)
+                new_record = await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
                 self.log.debug("Polling_event, timestamp: %s", self.last_timestamp)
                 await self.polling_event.wait()
                 if (
                     self.config.mute_xiaoai
-                    and self.last_record
-                    and self.need_ask_gpt(self.last_record)
+                    and new_record
+                    and self.need_ask_gpt(new_record)
                 ):
                     await self.stop_if_xiaoai_is_playing()
                 if (d := time.perf_counter() - start) < 1:
@@ -234,7 +235,7 @@ class MiGPT:
             print(self.chatbot.history)
             self.chatbot.history[0][0] = new_prompt
 
-    async def get_latest_ask_from_xiaoai(self, session):
+    async def get_latest_ask_from_xiaoai(self, session: ClientSession) -> dict | None:
         retries = 3
         for i in range(retries):
             try:
@@ -261,18 +262,23 @@ class MiGPT:
                     await self.init_all_data(self.session)
             else:
                 return self._get_last_query(data)
+        return None
 
-    def _get_last_query(self, data):
+    def _get_last_query(self, data: dict) -> dict | None:
         if d := data.get("data"):
             records = json.loads(d).get("records")
             if not records:
-                return
+                return None
             last_record = records[0]
             timestamp = last_record.get("time")
             if timestamp > self.last_timestamp:
-                self.last_timestamp = timestamp
-                self.last_record = last_record
-                self.new_record_event.set()
+                try:
+                    self.last_record.put_nowait(last_record)
+                    self.last_timestamp = timestamp
+                    return last_record
+                except asyncio.QueueFull:
+                    pass
+        return None
 
     async def do_tts(self, value, wait_for_finish=False):
         if not self.config.use_command:
@@ -403,7 +409,7 @@ class MiGPT:
         task = asyncio.create_task(collect_stream(queue))
         task.add_done_callback(done_callback)
         while True:
-            if is_eof or self.new_record_event.is_set():
+            if is_eof or not self.last_record.empty():
                 break
             message = await queue.get()
             if message is EOF:
@@ -451,9 +457,7 @@ class MiGPT:
             print(f"或用`{self.config.start_conversation}`开始持续对话")
             while True:
                 self.polling_event.set()
-                await self.new_record_event.wait()
-                self.new_record_event.clear()
-                new_record = self.last_record
+                new_record = await self.last_record.get()
                 self.polling_event.clear()  # stop polling when processing the question
                 query = new_record.get("query", "").strip()
 
