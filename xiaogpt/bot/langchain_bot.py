@@ -27,7 +27,7 @@ class LangChainBot(BaseBot):
             os.environ["OPENAI_API_BASE"] = api_base
         if proxy:
             os.environ["OPENAI_PROXY"] = proxy
-        self.memory = ConversationBufferWindowMemory()
+        self.memory = ConversationBufferWindowMemory(return_messages=True)
 
     def has_history(self) -> bool:
         return len(self.memory.chat_memory.messages) > 0

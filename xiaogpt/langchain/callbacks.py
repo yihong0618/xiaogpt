@@ -33,7 +33,7 @@ class AsyncIteratorCallbackHandler(AsyncCallbackHandler):
 
     async def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         if token is not None and token != "":
-            print(token, end="")
+            print(token, end="", flush=True)
             self.queue.put_nowait(token)
 
     async def on_chain_end(
