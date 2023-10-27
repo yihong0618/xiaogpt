@@ -231,9 +231,7 @@ class MiGPT:
         new_prompt = "以下都" + new_prompt
         print(f"Prompt from {self.config.prompt} change to {new_prompt}")
         self.config.prompt = new_prompt
-        if self.chatbot.history:
-            print(self.chatbot.history)
-            self.chatbot.history[0][0] = new_prompt
+        self.chatbot.change_prompt(new_prompt)
 
     async def get_latest_ask_from_xiaoai(self, session: ClientSession) -> dict | None:
         retries = 3
@@ -489,7 +487,7 @@ class MiGPT:
 
                 print("-" * 20)
                 print("问题：" + query + "？")
-                if not self.chatbot.history:
+                if not self.chatbot.has_history():
                     query = f"{query}，{self.config.prompt}"
                 if self.config.mute_xiaoai:
                     await self.stop_if_xiaoai_is_playing()

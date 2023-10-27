@@ -1,11 +1,11 @@
 import openai
 from rich import print
 
-from xiaogpt.bot.base_bot import BaseBot
+from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 from xiaogpt.utils import split_sentences
 
 
-class GPT3Bot(BaseBot):
+class GPT3Bot(ChatHistoryMixin, BaseBot):
     def __init__(self, openai_key, api_base=None, proxy=None):
         openai.api_key = openai_key
         if api_base:

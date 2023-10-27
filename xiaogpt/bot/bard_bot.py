@@ -1,14 +1,15 @@
 """ChatGLM bot"""
 from __future__ import annotations
+
 from typing import Any
 
 from bardapi import BardAsync
 from rich import print
 
-from xiaogpt.bot.base_bot import BaseBot
+from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 
 
-class BardBot(BaseBot):
+class BardBot(ChatHistoryMixin, BaseBot):
     def __init__(
         self,
         bard_token: str,
