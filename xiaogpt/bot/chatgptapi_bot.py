@@ -3,11 +3,11 @@ from __future__ import annotations
 import openai
 from rich import print
 
-from xiaogpt.bot.base_bot import BaseBot
+from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 from xiaogpt.utils import split_sentences
 
 
-class ChatGPTBot(BaseBot):
+class ChatGPTBot(ChatHistoryMixin, BaseBot):
     default_options = {"model": "gpt-3.5-turbo-0613"}
 
     def __init__(
@@ -42,10 +42,7 @@ class ChatGPTBot(BaseBot):
         )
 
     async def ask(self, query, **options):
-        ms = []
-        for h in self.history:
-            ms.append({"role": "user", "content": h[0]})
-            ms.append({"role": "assistant", "content": h[1]})
+        ms = self.get_messages()
         ms.append({"role": "user", "content": f"{query}"})
         kwargs = {**self.default_options, **options}
         try:
@@ -60,18 +57,12 @@ class ChatGPTBot(BaseBot):
             .encode("utf8")
             .decode()
         )
-        self.history.append([f"{query}", message])
-        # only keep 5 history
-        first_history = self.history.pop(0)
-        self.history = [first_history] + self.history[-5:]
+        self.add_message(query, message)
         print(message)
         return message
 
     async def ask_stream(self, query, **options):
-        ms = []
-        for h in self.history:
-            ms.append({"role": "user", "content": h[0]})
-            ms.append({"role": "assistant", "content": h[1]})
+        ms = self.get_messages()
         ms.append({"role": "user", "content": f"{query}"})
         kwargs = {"model": "gpt-3.5-turbo", **options}
         if openai.api_type == "azure":
@@ -99,6 +90,4 @@ class ChatGPTBot(BaseBot):
                 yield sentence
         finally:
             print()
-            self.history.append([f"{query}", message])
-            first_history = self.history.pop(0)
-            self.history = [first_history] + self.history[-5:]
+            self.add_message(query, message)

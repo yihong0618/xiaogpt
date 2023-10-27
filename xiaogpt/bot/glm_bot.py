@@ -1,21 +1,18 @@
 """ChatGLM bot"""
 from __future__ import annotations
 
-from typing import Any, AsyncGenerator
+from typing import Any
 
 import zhipuai
 from rich import print
 
-from xiaogpt.bot.base_bot import BaseBot
+from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 
 
-class GLMBot(BaseBot):
+class GLMBot(ChatHistoryMixin, BaseBot):
     default_options = {"model": "chatglm_130b"}
 
-    def __init__(
-        self,
-        glm_key: str,
-    ) -> None:
+    def __init__(self, glm_key: str) -> None:
         self.history = []
         zhipuai.api_key = glm_key
 
@@ -24,10 +21,7 @@ class GLMBot(BaseBot):
         return cls(glm_key=config.glm_key)
 
     def ask(self, query, **options):
-        ms = []
-        for h in self.history:
-            ms.append({"role": "user", "content": h[0]})
-            ms.append({"role": "assistant", "content": h[1]})
+        ms = self.get_messages()
         kwargs = {**self.default_options, **options}
         kwargs["prompt"] = ms
         ms.append({"role": "user", "content": f"{query}"})
@@ -40,10 +34,7 @@ class GLMBot(BaseBot):
         for i in r.events():
             message += str(i.data)
 
-        self.history.append([f"{query}", message])
-        # only keep 5 history
-        first_history = self.history.pop(0)
-        self.history = [first_history] + self.history[-5:]
+        self.add_message(query, message)
         print(message)
         return message
 

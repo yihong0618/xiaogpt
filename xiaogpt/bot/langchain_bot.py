@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 
+from langchain.memory import ConversationBufferWindowMemory
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot
@@ -26,8 +27,14 @@ class LangChainBot(BaseBot):
             os.environ["OPENAI_API_BASE"] = api_base
         if proxy:
             os.environ["OPENAI_PROXY"] = proxy
-        # Todo，Plan to implement within langchain
-        self.history = []
+        self.memory = ConversationBufferWindowMemory()
+
+    def has_history(self) -> bool:
+        return len(self.memory.chat_memory.messages) > 0
+
+    def change_prompt(self, new_prompt: str) -> None:
+        self.memory.clear()
+        self.memory.chat_memory.add_user_message(new_prompt)
 
     @classmethod
     def from_config(cls, config):
@@ -39,14 +46,11 @@ class LangChainBot(BaseBot):
         )
 
     async def ask(self, query, **options):
-        # Todo，Currently only supports stream
-        raise Exception(
-            "The bot does not support it. Please use 'ask_stream, add: --stream'"
-        )
+        return await agent_search(query, self.memory)
 
     async def ask_stream(self, query, **options):
         callback = AsyncIteratorCallbackHandler()
-        task = asyncio.create_task(agent_search(query, callback))
+        task = asyncio.create_task(agent_search(query, self.memory, callback))
         try:
             async for message in split_sentences(callback.aiter()):
                 yield message

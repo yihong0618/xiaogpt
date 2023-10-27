@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 from langchain.agents import AgentType, Tool, initialize_agent
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chains import LLMMathChain
 from langchain.chat_models import ChatOpenAI
+from langchain.schema.memory import BaseMemory
 from langchain.utilities import SerpAPIWrapper
 
 
-async def agent_search(query: str, callback: BaseCallbackHandler) -> None:
+async def agent_search(
+    query: str, memeory: BaseMemory, callback: BaseCallbackHandler | None = None
+) -> str:
     llm = ChatOpenAI(
         streaming=True,
         temperature=0,
@@ -23,8 +28,8 @@ async def agent_search(query: str, callback: BaseCallbackHandler) -> None:
     ]
 
     agent = initialize_agent(
-        tools, llm, agent=AgentType.OPENAI_FUNCTIONS, verbose=False
+        tools, llm, agent=AgentType.OPENAI_FUNCTIONS, verbose=False, memory=memeory
     )
-
+    callbacks = [callback] if callback else None
     # query eg：'杭州亚运会中国队获得了多少枚金牌？' // '计算3的2次方'
-    await agent.arun(query, callbacks=[callback])
+    return await agent.arun(query, callbacks=callbacks)
