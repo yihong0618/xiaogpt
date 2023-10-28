@@ -78,7 +78,7 @@ tqdm==4.65.0
 typing==3.7.4.3
 typing-extensions==4.8.0
 typing-inspect==0.9.0
-urllib3==1.26.15
+urllib3==1.26.18
 wcwidth==0.2.6
 websockets==11.0
 yarl==1.8.2
