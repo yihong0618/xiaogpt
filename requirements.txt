@@ -60,7 +60,7 @@ pyasn1-modules==0.3.0
 pycryptodomex==3.18.0
 pydantic==2.4.2
 pydantic-core==2.10.1
-pygments==2.14.0
+pygments==2.15.0
 PyJWT==2.8.0
 pytz==2023.3.post1
 PyYAML==6.0.1
