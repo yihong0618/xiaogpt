@@ -66,7 +66,7 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
         ms.append({"role": "user", "content": f"{query}"})
         kwargs = {"model": "gpt-3.5-turbo", **options}
         if openai.api_type == "azure":
-            kwargs["deployment_id"] = self.deployment_id
+            kwargs["deployment_id"] = self.default_options["engine"]
         try:
             completion = await openai.ChatCompletion.acreate(
                 messages=ms, stream=True, **kwargs
