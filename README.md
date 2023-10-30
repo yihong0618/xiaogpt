@@ -54,7 +54,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
 - 使用 `--use_chatgpt_api` 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, [openai api](https://platform.openai.com/account/api-keys), 命令 `--use_chatgpt_api`
 - 使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
-- 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
+- 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/`'的字样，域名需要用引号包裹**
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--enable_edge_tts` 来获取更好的 tts 能力
 - 可以使用 `--use_langchain` 替代 `--use_chatgpt_api` 来调用 LangChain（默认 chatgpt）服务，实现上网检索、数学运算..
@@ -168,7 +168,8 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | gpt_options           | OpenAI API 的参数字典                             | `{}`                                |
 | bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取           | 也可通过环境变量 `COOKIE_FILE` 设置 |
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
-| deployment_id         | Azure OpenAI 服务的 deployment ID                 |                                     |
+| deployment_id         | Azure OpenAI 服务的 deployment ID                 |  参考这个[如何找到deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784)                                   |
+| api_base         | 如果需要替换默认的api,或者使用Azure OpenAI 服务                |   例如：`https://abc-def.openai.azure.com/`                                  |
 | localhost             | 是否通过本地服务器加载EdgeTTS的音频输出           | `true`                              |
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
