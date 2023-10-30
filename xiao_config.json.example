@@ -24,6 +24,7 @@
   "gpt_options": {},
   "bing_cookie_path": "",
   "bing_cookies": {},
+  "api_base": "https://abc-def.openai.azure.com/",
   "deployment_id": "",
   "localhost": true
 }

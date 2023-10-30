@@ -168,7 +168,8 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | gpt_options           | OpenAI API 的参数字典                             | `{}`                                |
 | bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取           | 也可通过环境变量 `COOKIE_FILE` 设置 |
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
-| deployment_id         | Azure OpenAI 服务的 deployment ID                 |                                     |
+| deployment_id         | Azure OpenAI 服务的 deployment ID                 |  参考这个[如何找到deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784)                                   |
+| api_base         | 如果需要替换默认的api,或者使用Azure OpenAI 服务                |   例如：`https://abc-def.openai.azure.com/`                                  |
 | localhost             | 是否通过本地服务器加载EdgeTTS的音频输出           | `true`                              |
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
