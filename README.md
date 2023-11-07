@@ -187,6 +187,11 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 2. 你做这玩意也没用啊？确实。。。但是挺好玩的，有用对你来说没用，对我们来说不一定呀
 3. 想把它变得更好？PR Issue always welcome.
 4. 还有问题？提 Issue 哈哈
+5. Exception: Error https://api2.mina.mi.com/admin/v2/device_list?master=0&requestId=app_ios_xxx: Login failed [@KJZH001](https://github.com/KJZH001)<br>
+    这是由于小米风控导致，海外地区无法登录大陆的账户，请尝试cookie登录
+    无法抓包的可以在本地部署完毕项目后再用户文件夹`C:\Users\用户名`下面找到.mi.token，然后扔到你无法登录的服务器去<br>
+    若是linux则请放到当前用户的home文件夹，此时你可以重新执行先前的命令，不出意外即可正常登录（但cookie可能会过一段时间失效，需要重新获取）<br>
+    详情请见 [https://github.com/yihong0618/xiaogpt/issues/332](https://github.com/yihong0618/xiaogpt/issues/332)
 
 ## 视频教程
 https://www.youtube.com/watch?v=K4YA8YwzOOA
