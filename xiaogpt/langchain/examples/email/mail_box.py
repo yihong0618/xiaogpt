@@ -118,7 +118,7 @@ class Mailbox:
         print("Asking AI to summarize email content...")
 
         # Request ChatGPT for summary
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model="gpt-3.5-turbo-0613",
             messages=[
                 {"role": "system", "content": prompt},
