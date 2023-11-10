@@ -1,4 +1,4 @@
-from __future__ import  annotations
+from __future__ import annotations
 import dataclasses
 import openai
 import httpx
@@ -31,7 +31,9 @@ class GPT3Bot(ChatHistoryMixin, BaseBot):
             **options,
         }
         async with httpx.AsyncClient(trust_env=True, proxies=self.proxy) as sess:
-            client = openai.AsyncOpenAI(api_key=self.openai_key, http_client=sess, base_url=self.api_base)
+            client = openai.AsyncOpenAI(
+                api_key=self.openai_key, http_client=sess, base_url=self.api_base
+            )
             try:
                 completion = await client.completions.create(**data)
             except Exception as e:
@@ -51,7 +53,9 @@ class GPT3Bot(ChatHistoryMixin, BaseBot):
             **options,
         }
         async with httpx.AsyncClient(trust_env=True, proxies=self.proxy) as sess:
-            client = openai.AsyncOpenAI(api_key=self.openai_key, http_client=sess, base_url=self.api_base)
+            client = openai.AsyncOpenAI(
+                api_key=self.openai_key, http_client=sess, base_url=self.api_base
+            )
             try:
                 completion = await client.completions.create(**data)
             except Exception as e:
