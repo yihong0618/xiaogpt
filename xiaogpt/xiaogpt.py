@@ -19,7 +19,6 @@ import time
 from pathlib import Path
 
 import edge_tts
-import openai
 from aiohttp import ClientSession, ClientTimeout
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
@@ -378,23 +377,19 @@ class MiGPT:
 
     async def ask_gpt(self, query):
         if not self.config.stream:
-            async with ClientSession(trust_env=True) as session:
-                openai.aiosession.set(session)
-                if self.config.bot == "glm":
-                    answer = self._chatbot.ask(query, **self.config.gpt_options)
-                else:
-                    answer = await self.chatbot.ask(query, **self.config.gpt_options)
-                message = self._normalize(answer) if answer else ""
-                yield message
-                return
+            if self.config.bot == "glm":
+                answer = self._chatbot.ask(query, **self.config.gpt_options)
+            else:
+                answer = await self.chatbot.ask(query, **self.config.gpt_options)
+            message = self._normalize(answer) if answer else ""
+            yield message
+            return
 
         async def collect_stream(queue):
-            async with ClientSession(trust_env=True) as session:
-                openai.aiosession.set(session)
-                async for message in self.chatbot.ask_stream(
-                    query, **self.config.gpt_options
-                ):
-                    await queue.put(message)
+            async for message in self.chatbot.ask_stream(
+                query, **self.config.gpt_options
+            ):
+                await queue.put(message)
 
         def done_callback(future):
             queue.put_nowait(EOF)
