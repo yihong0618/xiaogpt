@@ -169,6 +169,8 @@ class MiGPT:
         return data
 
     def need_ask_gpt(self, record):
+        if not record:
+            return False
         query = record.get("query", "")
         return (
             self.in_conversation
