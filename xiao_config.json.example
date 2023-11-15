@@ -12,7 +12,7 @@
   "mute_xiaoai": true,
   "verbose": false,
   "bot": "chatgptapi",
-  "enable_edge_tts": false,
+  "tts": "mi",
   "edge_tts_voice": "zh-CN-XiaoxiaoNeural",
   "prompt": "请用100字以内回答",
   "keyword": ["请问"],
@@ -26,5 +26,4 @@
   "bing_cookies": {},
   "api_base": "https://abc-def.openai.azure.com/",
   "deployment_id": "",
-  "localhost": true
 }

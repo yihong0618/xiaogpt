@@ -56,7 +56,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
-- 可以使用 `--enable_edge_tts` 来获取更好的 tts 能力
+- 可以使用 `--tts edge` 来获取更好的 tts 能力
 - 可以使用 `--use_langchain` 替代 `--use_chatgpt_api` 来调用 LangChain（默认 chatgpt）服务，实现上网检索、数学运算..
 
 e.g.
@@ -76,7 +76,7 @@ xiaogpt --hardware LX06  --mute_xiaoai --stream
 export OPENAI_API_KEY=${your_api_key}
 xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
 # 如果你想用 edge-tts
-xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --enable_edge_tts
+xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --tts edge
 # 如果你想使用 LangChain + SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
 export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
@@ -156,7 +156,7 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | mute_xiaoai           | 快速停掉小爱自己的回答                            | `true`                              |
 | verbose               | 是否打印详细日志                                  | `false`                             |
 | bot                   | 使用的 bot 类型，目前支持gpt3,chatgptapi和newbing | `chatgptapi`                        |
-| enable_edge_tts       | 使用Edge TTS                                      | `false`                             |
+| tts       | 使用的 TTS 类型（`mi`|`edge`)                                   | `mi`                             |
 | edge_tts_voice        | Edge TTS 的嗓音                                   | `zh-CN-XiaoxiaoNeural`              |
 | prompt                | 自定义prompt                                      | `请用100字以内回答`                 |
 | keyword               | 自定义请求词列表                                  | `["请问"]`                          |
@@ -170,7 +170,6 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取           |                                     |
 | deployment_id         | Azure OpenAI 服务的 deployment ID                 |  参考这个[如何找到deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784)                                   |
 | api_base         | 如果需要替换默认的api,或者使用Azure OpenAI 服务                |   例如：`https://abc-def.openai.azure.com/`                                  |
-| localhost             | 是否通过本地服务器加载EdgeTTS的音频输出           | `true`                              |
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
 
@@ -231,10 +230,10 @@ edge-tts提供了类似微软tts的能力
 - https://github.com/rany2/edge-tts
 
 #### Usage
-你可以通过参数`enable_edge_tts`, 来启用它
+你可以通过参数`tts`, 来启用它
 ```json
 {
-  "enable_edge_tts": true,
+  "tts": "edge",
   "edge_tts_voice": "zh-CN-XiaoxiaoNeural"
 }
 ```
@@ -253,8 +252,6 @@ docker run -v <your-config-dir>:/config yihong0618/xiaogpt -p 9527:9527 -e XIAOG
 ```
 
 注意端口必须映射为与容器内一致，XIAOGPT_HOSTNAME 需要设置为宿主机的 IP 地址，否则小爱无法正常播放语音。
-
-如果不想使用本地的HTTP服务器，可以将配置中的 `localhost` 设置为 `false`，这样 Edge TTS 会通过一个网络上的三方服务器加载输出音频文件，但是这样会导致响应速度变慢。
 
 ## 推荐的 fork
 
