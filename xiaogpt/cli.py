@@ -80,50 +80,53 @@ def main():
         default=None,
         help="show info",
     )
-    parser.add_argument(
+    tts_group = parser.add_mutually_exclusive_group()
+    tts_group.add_argument(
         "--enable_edge_tts",
-        dest="enable_edge_tts",
-        action="store_true",
-        default=None,
+        dest="tts",
+        action="store_const",
+        default="mi",
+        const="edge",
         help="if use edge tts",
     )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
+    tts_group.add_argument("--tts", help="tts type", choices=["mi", "edge"])
+    bot_group = parser.add_mutually_exclusive_group()
+    bot_group.add_argument(
         "--use_gpt3",
         dest="bot",
         action="store_const",
         const="gpt3",
         help="if use openai gpt3 api",
     )
-    group.add_argument(
+    bot_group.add_argument(
         "--use_chatgpt_api",
         dest="bot",
         action="store_const",
         const="chatgptapi",
         help="if use openai chatgpt api",
     )
-    group.add_argument(
+    bot_group.add_argument(
         "--use_langchain",
         dest="bot",
         action="store_const",
         const="langchain",
         help="if use langchain",
     )
-    group.add_argument(
+    bot_group.add_argument(
         "--use_newbing",
         dest="bot",
         action="store_const",
         const="newbing",
         help="if use newbing",
     )
-    group.add_argument(
+    bot_group.add_argument(
         "--use_glm",
         dest="bot",
         action="store_const",
         const="glm",
         help="if use chatglm",
     )
-    group.add_argument(
+    bot_group.add_argument(
         "--use_bard",
         dest="bot",
         action="store_const",
@@ -135,7 +138,7 @@ def main():
         dest="bing_cookie_path",
         help="new bing cookies path if use new bing",
     )
-    group.add_argument(
+    bot_group.add_argument(
         "--bot",
         dest="bot",
         help="bot type",
@@ -151,14 +154,6 @@ def main():
         "--api_base",
         dest="api_base",
         help="specify base url other than the OpenAI's official API address",
-    )
-    parser.add_argument(
-        "--no-localhost",
-        dest="localhost",
-        action="store_false",
-        default=None,
-        help="serve Edge TTS output files via internet. "
-        "This is useful when running in a container",
     )
 
     parser.add_argument(

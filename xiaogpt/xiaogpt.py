@@ -3,22 +3,13 @@ from __future__ import annotations
 
 import asyncio
 import functools
-import http.server
-import io
 import json
 import logging
-import os
-import random
 import re
-import shutil
-import socket
-import socketserver
-import tempfile
-import threading
 import time
 from pathlib import Path
+from typing import AsyncIterator
 
-import edge_tts
 from aiohttp import ClientSession, ClientTimeout
 from miservice import MiAccount, MiIOService, MiNAService, miio_command
 from rich import print
@@ -27,41 +18,17 @@ from rich.logging import RichHandler
 from xiaogpt.bot import get_bot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
-    EDGE_TTS_DICT,
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
     WAKEUP_KEYWORD,
     Config,
 )
+from xiaogpt.tts import TTS, EdgeTTS, MiTTS
 from xiaogpt.utils import (
-    calculate_tts_elapse,
-    find_key_by_partial_string,
-    get_hostname,
     parse_cookie_string,
 )
 
 EOF = object()
-
-
-class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-    pass
-
-
-class HTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-    logger = logging.getLogger("xiaogpt")
-
-    def log_message(self, format, *args):
-        self.logger.debug(f"{self.address_string()} - {format}", *args)
-
-    def log_error(self, format, *args):
-        self.logger.error(f"{self.address_string()} - {format}", *args)
-
-    def copyfile(self, source, outputfile):
-        try:
-            super().copyfile(source, outputfile)
-        except (socket.error, ConnectionResetError, BrokenPipeError):
-            # ignore this or TODO find out why the error later
-            pass
 
 
 class MiGPT:
@@ -71,7 +38,6 @@ class MiGPT:
         self.mi_token_home = Path.home() / ".mi.token"
         self.last_timestamp = int(time.time() * 1000)  # timestamp last call mi speaker
         self.cookie_jar = None
-        self._chatbot = None
         self.device_id = ""
         self.parent_id = None
         self.mina_service = None
@@ -79,10 +45,6 @@ class MiGPT:
         self.in_conversation = False
         self.polling_event = asyncio.Event()
         self.last_record = asyncio.Queue(1)
-        self.temp_dir = None
-        if self.config.enable_edge_tts:
-            self.temp_dir = tempfile.TemporaryDirectory(prefix="xiaogpt-tts-")
-
         # setup logger
         self.log = logging.getLogger("xiaogpt")
         self.log.setLevel(logging.DEBUG if config.verbose else logging.INFO)
@@ -117,8 +79,7 @@ class MiGPT:
         await self._init_data_hardware()
         session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = session.cookie_jar
-        if self.config.enable_edge_tts and self.config.localhost:
-            self.start_http_server()
+        self.tts  # init tts
 
     async def login_miboy(self, session):
         account = MiAccount(
@@ -188,11 +149,9 @@ class MiGPT:
             )
             return parse_cookie_string(cookie_string)
 
-    @property
+    @functools.cached_property
     def chatbot(self):
-        if self._chatbot is None:
-            self._chatbot = get_bot(self.config)
-        return self._chatbot
+        return get_bot(self.config)
 
     async def simulate_xiaoai_question(self):
         data = MI_ASK_SIMULATE_DATA
@@ -277,7 +236,7 @@ class MiGPT:
                     pass
         return None
 
-    async def do_tts(self, value, wait_for_finish=False):
+    async def do_tts(self, value):
         if not self.config.use_command:
             try:
                 await self.mina_service.text_to_speech(self.device_id, value)
@@ -289,10 +248,13 @@ class MiGPT:
                 self.config.mi_did,
                 f"{self.config.tts_command} {value}",
             )
-        if wait_for_finish:
-            elapse = calculate_tts_elapse(value)
-            await asyncio.sleep(elapse)
-            await self.wait_for_tts_finish()
+
+    @functools.cached_property
+    def tts(self) -> TTS:
+        if self.config.tts == "edge":
+            return EdgeTTS(self.mina_service, self.device_id, self.config)
+        else:
+            return MiTTS(self.mina_service, self.device_id, self.config)
 
     async def wait_for_tts_finish(self):
         while True:
@@ -300,85 +262,17 @@ class MiGPT:
                 break
             await asyncio.sleep(1)
 
-    def start_http_server(self):
-        # set the port range
-        port_range = range(8050, 8090)
-        # get a random port from the range
-        self.port = int(os.getenv("XIAOGPT_PORT", random.choice(port_range)))
-        # create the server
-        handler = functools.partial(HTTPRequestHandler, directory=self.temp_dir.name)
-        httpd = ThreadedHTTPServer(("", self.port), handler)
-        # start the server in a new thread
-        server_thread = threading.Thread(target=httpd.serve_forever)
-        server_thread.daemon = True
-        server_thread.start()
-
-        self.hostname = get_hostname()
-        self.log.info(f"Serving on {self.hostname}:{self.port}")
-
-    async def get_file_url(self, stream):
-        if self.config.localhost:
-            with tempfile.NamedTemporaryFile(
-                "wb", suffix=".mp3", delete=False, dir=self.temp_dir.name
-            ) as f:
-                shutil.copyfileobj(stream, f)
-                return f"http://{self.hostname}:{self.port}/{os.path.basename(f.name)}"
-        async with ClientSession("https://transfer.sh") as session:
-            resp = await session.put(
-                "/edge_tts.mp3", data=stream, proxy=self.config.proxy
-            )
-            return (await resp.text()).strip()
-
-    async def text2mp3(self, text, tts_lang):
-        communicate = edge_tts.Communicate(text, tts_lang)
-        duration = 0
-        stream = io.BytesIO()
-        async for chunk in communicate.stream():
-            if chunk["type"] == "audio":
-                stream.write(chunk["data"])
-            elif chunk["type"] == "WordBoundary":
-                duration = (chunk["offset"] + chunk["duration"]) / 1e7
-        if duration == 0:
-            raise RuntimeError(f"Failed to get tts from edge with voice={tts_lang}")
-        stream.seek(0)
-        return (await self.get_file_url(stream), duration)
-
-    async def edge_tts(self, text_stream, tts_lang):
-        async def run_tts(text_stream, tts_lang, queue):
-            async for text in text_stream:
-                try:
-                    url, duration = await self.text2mp3(text, tts_lang)
-                except Exception:
-                    self.log.exception("haha")
-                    continue
-                await queue.put((url, duration))
-
-        queue = asyncio.Queue()
-        self.log.debug("Edge TTS with voice=%s", tts_lang)
-        task = asyncio.create_task(run_tts(text_stream, tts_lang, queue))
-        task.add_done_callback(lambda _: queue.put_nowait(EOF))
-        while True:
-            item = await queue.get()
-            if item is EOF:
-                break
-            url, duration = item
-            self.log.debug(f"play: {url}")
-            await self.mina_service.play_by_url(self.device_id, url)
-            await asyncio.sleep(duration)
-            await self.wait_for_tts_finish()
-        task.cancel()
-
     @staticmethod
-    def _normalize(message):
+    def _normalize(message: str) -> str:
         message = message.strip().replace(" ", "--")
         message = message.replace("\n", "，")
         message = message.replace('"', "，")
         return message
 
-    async def ask_gpt(self, query):
+    async def ask_gpt(self, query: str) -> AsyncIterator[str]:
         if not self.config.stream:
             if self.config.bot == "glm":
-                answer = self._chatbot.ask(query, **self.config.gpt_options)
+                answer = self.chatbot.ask(query, **self.config.gpt_options)
             else:
                 answer = await self.chatbot.ask(query, **self.config.gpt_options)
             message = self._normalize(answer) if answer else ""
@@ -446,8 +340,10 @@ class MiGPT:
             await self.init_all_data(session)
             task = asyncio.create_task(self.poll_latest_ask())
             assert task is not None  # to keep the reference to task, do not remove this
-            print(f"Running xiaogpt now, 用`{'/'.join(self.config.keyword)}`开头来提问")
-            print(f"或用`{self.config.start_conversation}`开始持续对话")
+            print(
+                f"Running xiaogpt now, 用[green]{'/'.join(self.config.keyword)}[/]开头来提问"
+            )
+            print(f"或用[green]{self.config.start_conversation}[/]开始持续对话")
             while True:
                 self.polling_event.set()
                 new_record = await self.last_record.get()
@@ -499,19 +395,11 @@ class MiGPT:
                     print("小爱没回")
                 print(f"以下是 {ask_name} 的回答: ", end="")
                 try:
-                    if not self.config.enable_edge_tts:
-                        async for message in self.ask_gpt(query):
-                            await self.do_tts(message, wait_for_finish=True)
-                    else:
-                        tts_lang = (
-                            find_key_by_partial_string(EDGE_TTS_DICT, query)
-                            or self.config.edge_tts_voice
-                        )
-                        # tts with edge_tts
-                        await self.edge_tts(self.ask_gpt(query), tts_lang)
-                    print("回答完毕")
+                    await self.tts.synthesize(query, self.ask_gpt(query))
                 except Exception as e:
                     print(f"{ask_name} 回答出错 {str(e)}")
+                else:
+                    print("回答完毕")
                 if self.in_conversation:
                     print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
                     await self.wakeup_xiaoai()
