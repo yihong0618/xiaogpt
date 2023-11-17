@@ -85,7 +85,6 @@ def main():
         "--enable_edge_tts",
         dest="tts",
         action="store_const",
-        default="mi",
         const="edge",
         help="if use edge tts",
     )
