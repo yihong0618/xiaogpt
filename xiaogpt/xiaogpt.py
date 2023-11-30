@@ -21,6 +21,7 @@ from xiaogpt.config import (
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
     WAKEUP_KEYWORD,
+    TTS_CALL_NAME,
     Config,
 )
 from xiaogpt.tts import TTS, EdgeTTS, MiTTS
@@ -336,7 +337,7 @@ class MiGPT:
         )
 
     async def run_forever(self):
-        ask_name = self.config.bot.upper()
+        ask_name = TTS_CALL_NAME.get(self.config.bot, self.config.bot.upper())
         async with ClientSession() as session:
             self.session = session
             await self.init_all_data(session)
