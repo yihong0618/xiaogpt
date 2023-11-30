@@ -1,8 +1,9 @@
 from __future__ import annotations
+
 import dataclasses
 from typing import ClassVar
-import httpx
 
+import httpx
 import openai
 from rich import print
 
@@ -12,6 +13,7 @@ from xiaogpt.utils import split_sentences
 
 @dataclasses.dataclass
 class ChatGPTBot(ChatHistoryMixin, BaseBot):
+    name: ClassVar[str] = "ChatGPT"
     default_options: ClassVar[dict[str, str]] = {"model": "gpt-3.5-turbo"}
     openai_key: str
     api_base: str | None = None

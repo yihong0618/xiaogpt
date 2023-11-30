@@ -9,10 +9,13 @@ from xiaogpt.utils import find_key_by_partial_string
 
 
 class EdgeTTS(AudioFileTTS):
+    default_voice = "zh-CN-XiaoxiaoNeural"
+
     async def make_audio_file(self, query: str, text: str) -> tuple[Path, float]:
         voice = (
             find_key_by_partial_string(EDGE_TTS_DICT, query)
-            or self.config.edge_tts_voice
+            or self.config.tts_voice
+            or self.default_voice
         )
         communicate = edge_tts.Communicate(text, voice, proxy=self.config.proxy)
         duration = 0

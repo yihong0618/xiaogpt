@@ -41,13 +41,6 @@ EDGE_TTS_DICT = {
     # add more here
 }
 
-TTS_CALL_NAME = {
-    "chatgptapi": "ChatGPT",
-    "glm": "Chat GLM",
-    "langchain": "Lang Chain",
-    # add more here
-}
-
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
@@ -86,7 +79,7 @@ class Config:
     end_conversation: str = "结束持续对话"
     stream: bool = False
     tts: Literal["mi", "edge"] = "mi"
-    edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
+    tts_voice: str | None = None
     gpt_options: dict[str, Any] = field(default_factory=dict)
     bing_cookie_path: str = ""
     bing_cookies: dict | None = None

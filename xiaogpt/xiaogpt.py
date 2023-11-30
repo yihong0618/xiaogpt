@@ -21,10 +21,10 @@ from xiaogpt.config import (
     LATEST_ASK_API,
     MI_ASK_SIMULATE_DATA,
     WAKEUP_KEYWORD,
-    TTS_CALL_NAME,
     Config,
 )
 from xiaogpt.tts import TTS, EdgeTTS, MiTTS
+from xiaogpt.tts.openai import OpenAITTS
 from xiaogpt.utils import (
     parse_cookie_string,
 )
@@ -256,6 +256,8 @@ class MiGPT:
     def tts(self) -> TTS:
         if self.config.tts == "edge":
             return EdgeTTS(self.mina_service, self.device_id, self.config)
+        elif self.config.tts == "openai":
+            return OpenAITTS(self.mina_service, self.device_id, self.config)
         else:
             return MiTTS(self.mina_service, self.device_id, self.config)
 
@@ -337,7 +339,6 @@ class MiGPT:
         )
 
     async def run_forever(self):
-        ask_name = TTS_CALL_NAME.get(self.config.bot, self.config.bot.upper())
         async with ClientSession() as session:
             self.session = session
             await self.init_all_data(session)
@@ -388,7 +389,7 @@ class MiGPT:
                 else:
                     # waiting for xiaoai speaker done
                     await asyncio.sleep(8)
-                await self.do_tts(f"正在问{ask_name}请耐心等待")
+                await self.do_tts(f"正在问{self.chatbot.name}请耐心等待")
                 try:
                     print(
                         "以下是小爱的回答: ",
@@ -396,11 +397,11 @@ class MiGPT:
                     )
                 except IndexError:
                     print("小爱没回")
-                print(f"以下是 {ask_name} 的回答: ", end="")
+                print(f"以下是 {self.chatbot.name} 的回答: ", end="")
                 try:
                     await self.tts.synthesize(query, self.ask_gpt(query))
                 except Exception as e:
-                    print(f"{ask_name} 回答出错 {str(e)}")
+                    print(f"{self.chatbot.name} 回答出错 {str(e)}")
                 else:
                     print("回答完毕")
                 if self.in_conversation:

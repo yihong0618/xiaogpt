@@ -10,6 +10,8 @@ from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 
 
 class BardBot(ChatHistoryMixin, BaseBot):
+    name = "Bard"
+
     def __init__(
         self,
         bard_token: str,

@@ -9,6 +9,8 @@ T = TypeVar("T", bound="BaseBot")
 
 
 class BaseBot(ABC):
+    name: str
+
     @abstractmethod
     async def ask(self, query: str, **options: Any) -> str:
         pass

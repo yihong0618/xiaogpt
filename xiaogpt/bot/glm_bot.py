@@ -10,6 +10,7 @@ from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 
 
 class GLMBot(ChatHistoryMixin, BaseBot):
+    name = "ChatGLM"
     default_options = {"model": "chatglm_turbo"}
 
     def __init__(self, glm_key: str) -> None:
