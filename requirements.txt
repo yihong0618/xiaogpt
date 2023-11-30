@@ -40,7 +40,7 @@ hyperframe==6.0.1
 idna==3.4
 jsonpatch==1.33
 jsonpointer==2.4
-langchain==0.0.333
+langchain==0.0.343
 langdetect==1.0.9
 langsmith==0.0.63
 lz4==4.3.2

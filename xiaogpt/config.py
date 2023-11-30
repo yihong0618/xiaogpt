@@ -41,6 +41,13 @@ EDGE_TTS_DICT = {
     # add more here
 }
 
+TTS_CALL_NAME = {
+    "chatgptapi": "ChatGPT",
+    "glm": "Chat GLM",
+    "langchain": "Lang Chain",
+    # add more here
+}
+
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
