@@ -43,7 +43,7 @@ EDGE_TTS_DICT = {
 
 DEFAULT_COMMAND = ("5-1", "5-5")
 
-KEY_WORD = ("帮我", "请回答")
+KEY_WORD = ("帮我", "请回答", "请")
 CHANGE_PROMPT_KEY_WORD = ("更改提示词",)
 PROMPT = "以下请用100字以内回答，请只回答文字不要带链接"
 # simulate_xiaoai_question
