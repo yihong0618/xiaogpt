@@ -13,6 +13,8 @@ from xiaogpt.utils import split_sentences
 
 
 class LangChainBot(BaseBot):
+    name = "Lang Chain"
+
     def __init__(
         self,
         openai_key: str,

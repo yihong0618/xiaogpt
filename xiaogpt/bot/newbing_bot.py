@@ -11,6 +11,8 @@ _reference_link_re = re.compile(r"\[\d+\]: .+?\n+")
 
 
 class NewBingBot(ChatHistoryMixin, BaseBot):
+    name = "Bing"
+
     def __init__(
         self,
         bing_cookie_path: str = "",

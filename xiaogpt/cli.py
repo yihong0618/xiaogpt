@@ -88,7 +88,7 @@ def main():
         const="edge",
         help="if use edge tts",
     )
-    tts_group.add_argument("--tts", help="tts type", choices=["mi", "edge"])
+    tts_group.add_argument("--tts", help="tts type", choices=["mi", "edge", "openai"])
     bot_group = parser.add_mutually_exclusive_group()
     bot_group.add_argument(
         "--use_gpt3",
