@@ -15,7 +15,7 @@
   "tts": "mi",
   "edge_tts_voice": "zh-CN-XiaoxiaoNeural",
   "prompt": "请用100字以内回答",
-  "keyword": ["请问"],
+  "keyword": ["请"],
   "change_prompt_keyword": ["更改提示词"],
   "start_conversation": "开始持续对话",
   "end_conversation": "结束持续对话",
@@ -25,5 +25,5 @@
   "bing_cookie_path": "",
   "bing_cookies": {},
   "api_base": "https://abc-def.openai.azure.com/",
-  "deployment_id": "",
+  "deployment_id": ""
 }

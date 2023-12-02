@@ -159,7 +159,7 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | tts                   | 使用的 TTS 类型（`mi`                                                   | `edge`                                                                                                    | `openai`)       | `mi` |
 | tts_voice             | TTS 的嗓音                                                              | `zh-CN-XiaoxiaoNeural`(edge)                                                                              | `alloy`(openai) |
 | prompt                | 自定义prompt                                                            | `请用100字以内回答`                                                                                       |
-| keyword               | 自定义请求词列表                                                        | `["请问"]`                                                                                                |
+| keyword               | 自定义请求词列表                                                        | `["请"]`                                                                                                |
 | change_prompt_keyword | 更改提示词触发列表                                                      | `["更改提示词"]`                                                                                          |
 | start_conversation    | 开始持续对话关键词                                                      | `开始持续对话`                                                                                            |
 | end_conversation      | 结束持续对话关键词                                                      | `结束持续对话`                                                                                            |
