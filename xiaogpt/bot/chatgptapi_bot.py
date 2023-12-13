@@ -48,7 +48,10 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
         ms = self.get_messages()
         ms.append({"role": "user", "content": f"{query}"})
         kwargs = {**self.default_options, **options}
-        async with httpx.AsyncClient(trust_env=True, proxies=self.proxy) as sess:
+        httpx_kwargs = {}
+        if self.proxy:
+            httpx_kwargs["proxies"] = self.proxy
+        async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = self._make_openai_client(sess)
             try:
                 completion = await client.chat.completions.create(messages=ms, **kwargs)
@@ -65,7 +68,10 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
         ms = self.get_messages()
         ms.append({"role": "user", "content": f"{query}"})
         kwargs = {**self.default_options, **options}
-        async with httpx.AsyncClient(trust_env=True, proxies=self.proxy) as sess:
+        httpx_kwargs = {}
+        if self.proxy:
+            httpx_kwargs["proxies"] = self.proxy
+        async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = self._make_openai_client(sess)
             try:
                 completion = await client.chat.completions.create(

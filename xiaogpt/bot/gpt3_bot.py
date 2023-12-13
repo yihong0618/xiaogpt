@@ -34,7 +34,10 @@ class GPT3Bot(ChatHistoryMixin, BaseBot):
             "top_p": 1,
             **options,
         }
-        async with httpx.AsyncClient(trust_env=True, proxies=self.proxy) as sess:
+        httpx_kwargs = {}
+        if self.config.proxy:
+            httpx_kwargs["proxies"] = self.config.proxy
+        async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = openai.AsyncOpenAI(
                 api_key=self.openai_key, http_client=sess, base_url=self.api_base
             )
@@ -56,7 +59,10 @@ class GPT3Bot(ChatHistoryMixin, BaseBot):
             "stream": True,
             **options,
         }
-        async with httpx.AsyncClient(trust_env=True, proxies=self.proxy) as sess:
+        httpx_kwargs = {}
+        if self.config.proxy:
+            httpx_kwargs["proxies"] = self.config.proxy
+        async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = openai.AsyncOpenAI(
                 api_key=self.openai_key, http_client=sess, base_url=self.api_base
             )

@@ -17,7 +17,10 @@ class OpenAITTS(AudioFileTTS):
         output_file = tempfile.NamedTemporaryFile(
             suffix=".mp3", mode="wb", delete=False, dir=self.dirname.name
         )
-        async with httpx.AsyncClient(trust_env=True, proxies=self.config.proxy) as sess:
+        httpx_kwargs = {}
+        if self.config.proxy:
+            httpx_kwargs["proxies"] = self.config.proxy
+        async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = self._make_openai_client(sess)
 
             resp = await client.audio.speech.create(
