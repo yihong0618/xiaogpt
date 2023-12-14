@@ -3,9 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/xiaogpt?style=flat-square)](https://pypi.org/project/xiaogpt)
 [![Docker Image Version (latest by date)](https://img.shields.io/docker/v/yihong0618/xiaogpt?color=%23086DCD&label=docker%20image)](https://hub.docker.com/r/yihong0618/xiaogpt)
 
-
 https://user-images.githubusercontent.com/15976103/226803357-72f87a41-a15b-409e-94f5-e2d262eecd53.mp4
-
 
 Play ChatGPT and other LLM with Xiaomi AI Speaker
 
@@ -25,9 +23,9 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 1. `pip install miservice_fork`
 2. `set MI_USER=xxxx`
 3. `set MI_PASS=xxx`
-4. 得到did
+4. `micli list` 得到did
 5. `set MI_DID=xxxx`
-6. 具体可参考 `one_click.bat` 脚本
+
 - 如果获取did报错时，请更换一下无线网络，有很大概率解决问题。
 
 ## 一点原理
@@ -54,7 +52,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
 - 使用 `--use_chatgpt_api` 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, [openai api](https://platform.openai.com/account/api-keys), 命令 `--use_chatgpt_api`
 - 使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
-- 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。  **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
+- 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。 **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
 - 可以使用 `--use_langchain` 替代 `--use_chatgpt_api` 来调用 LangChain（默认 chatgpt）服务，实现上网检索、数学运算..
@@ -82,6 +80,7 @@ export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
 xiaogpt --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
 ```
+
 使用 git clone 运行
 
 ```shell
@@ -109,8 +108,10 @@ python3 xiaogpt.py --hardware Lx06 --use_langchain --mute_xiaoai --stream --open
 ```
 
 ## config.json
+
 如果想通过单一配置文件启动也是可以的, 可以通过 `--config` 参数指定配置文件, config 文件必须是合法的 JSON 格式
 参数优先级
+
 - cli args > default > config
 
 ```shell
@@ -118,7 +119,9 @@ python3 xiaogpt.py --config xiao_config.json
 # or
 xiaogpt --config xiao_config.json
 ```
+
 或者
+
 ```shell
 cp xiao_config.json.example xiao_config.json
 python3 xiaogpt.py
@@ -139,15 +142,16 @@ python3 xiaogpt.py
 具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
 ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
+
 ## 配置项说明
 
 | 参数                  | 说明                                                                    | 默认值                                                                                                    |
-| --------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| --------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------- | ---- |
 | hardware              | 设备型号                                                                |                                                                                                           |
 | account               | 小爱账户                                                                |                                                                                                           |
 | password              | 小爱账户密码                                                            |                                                                                                           |
 | openai_key            | openai的apikey                                                          |                                                                                                           |
-| serpapi_api_key       | serpapi的key  参考 [SerpAPI](https://serpapi.com/)                      |                                                                                                           |
+| serpapi_api_key       | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                       |                                                                                                           |
 | glm_key               | chatglm 的 apikey                                                       |                                                                                                           |
 | bard_token            | bard 的 token 参考 [Bard-API](https://github.com/dsdanielpark/Bard-API) |                                                                                                           |
 | cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                           |                                                                                                           |
@@ -159,7 +163,7 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | tts                   | 使用的 TTS 类型（`mi`                                                   | `edge`                                                                                                    | `openai`)       | `mi` |
 | tts_voice             | TTS 的嗓音                                                              | `zh-CN-XiaoxiaoNeural`(edge)                                                                              | `alloy`(openai) |
 | prompt                | 自定义prompt                                                            | `请用100字以内回答`                                                                                       |
-| keyword               | 自定义请求词列表                                                        | `["请"]`                                                                                                |
+| keyword               | 自定义请求词列表                                                        | `["请"]`                                                                                                  |
 | change_prompt_keyword | 更改提示词触发列表                                                      | `["更改提示词"]`                                                                                          |
 | start_conversation    | 开始持续对话关键词                                                      | `开始持续对话`                                                                                            |
 | end_conversation      | 结束持续对话关键词                                                      | `结束持续对话`                                                                                            |
@@ -187,17 +191,19 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 3. 想把它变得更好？PR Issue always welcome.
 4. 还有问题？提 Issue 哈哈
 5. Exception: Error https://api2.mina.mi.com/admin/v2/device_list?master=0&requestId=app_ios_xxx: Login failed [@KJZH001](https://github.com/KJZH001)<br>
-    这是由于小米风控导致，海外地区无法登录大陆的账户，请尝试cookie登录
-    无法抓包的可以在本地部署完毕项目后再用户文件夹`C:\Users\用户名`下面找到.mi.token，然后扔到你无法登录的服务器去<br>
-    若是linux则请放到当前用户的home文件夹，此时你可以重新执行先前的命令，不出意外即可正常登录（但cookie可能会过一段时间失效，需要重新获取）<br>
-    详情请见 [https://github.com/yihong0618/xiaogpt/issues/332](https://github.com/yihong0618/xiaogpt/issues/332)
+   这是由于小米风控导致，海外地区无法登录大陆的账户，请尝试cookie登录
+   无法抓包的可以在本地部署完毕项目后再用户文件夹`C:\Users\用户名`下面找到.mi.token，然后扔到你无法登录的服务器去<br>
+   若是linux则请放到当前用户的home文件夹，此时你可以重新执行先前的命令，不出意外即可正常登录（但cookie可能会过一段时间失效，需要重新获取）<br>
+   详情请见 [https://github.com/yihong0618/xiaogpt/issues/332](https://github.com/yihong0618/xiaogpt/issues/332)
 
 ## 视频教程
+
 https://www.youtube.com/watch?v=K4YA8YwzOOA
 
 ## Docker
 
 ### 常规用法
+
 X86/ARM Docker Image: `yihong0618/xiaogpt`
 
 ```shell
@@ -211,27 +217,35 @@ docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<yo
 ```
 
 ### 使用配置文件
+
 xiaogpt的配置文件可通过指定volume /config，以及指定参数--config来处理，如
+
 ```shell
 docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/config.json
 ```
 
 ### 本地编译Docker Image
+
 ```shell
  docker build -t xiaogpt .
 ```
+
 如果需要在Apple M1/M2上编译x86
+
 ```shell
  docker buildx build --platform=linux/amd64 -t xiaogpt-x86 .
 ```
 
 ### 第三方 TTS
+
 我们目前支持两种第三方 TTS：edge/openai
 
 [edge-tts](https://github.com/rany2/edge-tts) 提供了类似微软tts的能力
 
 #### Usage
+
 你可以通过参数 `tts`, 来启用它
+
 ```json
 {
   "tts": "edge",
@@ -240,6 +254,7 @@ docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/conf
 ```
 
 查看更多语言支持, 从中选择一个
+
 ```shell
 edge-tts --list-voices
 ```
