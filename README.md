@@ -145,8 +145,8 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 
 ## 配置项说明
 
-| 参数                  | 说明                                                                    | 默认值                                                                                                    |
-| --------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------- | ---- |
+| 参数                  | 说明                                                                    | 默认值                                                                                                    |可选值            |
+| --------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------- |
 | hardware              | 设备型号                                                                |                                                                                                           |
 | account               | 小爱账户                                                                |                                                                                                           |
 | password              | 小爱账户密码                                                            |                                                                                                           |
@@ -154,14 +154,14 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | serpapi_api_key       | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                       |                                                                                                           |
 | glm_key               | chatglm 的 apikey                                                       |                                                                                                           |
 | bard_token            | bard 的 token 参考 [Bard-API](https://github.com/dsdanielpark/Bard-API) |                                                                                                           |
-| cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                           |                                                                                                           |
+| cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                             |                                                                                                           |
 | mi_did                | 设备did                                                                 |                                                                                                           |
 | use_command           | 使用 MI command 与小爱交互                                              | `false`                                                                                                   |
 | mute_xiaoai           | 快速停掉小爱自己的回答                                                  | `true`                                                                                                    |
 | verbose               | 是否打印详细日志                                                        | `false`                                                                                                   |
 | bot                   | 使用的 bot 类型，目前支持gpt3,chatgptapi和newbing                       | `chatgptapi`                                                                                              |
-| tts                   | 使用的 TTS 类型（`mi`                                                   | `edge`                                                                                                    | `openai`)       | `mi` |
-| tts_voice             | TTS 的嗓音                                                              | `zh-CN-XiaoxiaoNeural`(edge)                                                                              | `alloy`(openai) |
+| tts                   | 使用的 TTS 类型                                                         | `mi`                                                                                                      | `edge`、 `openai` | 
+| tts_voice             | TTS 的嗓音                                                              | `zh-CN-XiaoxiaoNeural`(edge), `alloy`(openai)                                                             |
 | prompt                | 自定义prompt                                                            | `请用100字以内回答`                                                                                       |
 | keyword               | 自定义请求词列表                                                        | `["请"]`                                                                                                  |
 | change_prompt_keyword | 更改提示词触发列表                                                      | `["更改提示词"]`                                                                                          |
