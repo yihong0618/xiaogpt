@@ -29,6 +29,7 @@ safety_settings = [
     },
 ]
 
+
 class GeminiBot(ChatHistoryMixin, BaseBot):
     name = "Gemini"
 
@@ -46,13 +47,13 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
     def from_config(cls, config):
         return cls(gemini_key=config.gemini_key)
 
-    async def ask(self, query, **options): 
+    async def ask(self, query, **options):
         self.convo.send_message(query)
-        message =  self.convo.last.text.strip()
+        message = self.convo.last.text.strip()
         print(message)
         if len(self.convo.history) > 10:
             self.convo.history = self.convo.history[2:]
-        return message 
+        return message
 
     async def ask_stream(self, query: str, **options: Any):
         if len(self.convo.history) > 10:
