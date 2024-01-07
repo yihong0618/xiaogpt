@@ -16,6 +16,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - ChatGPT
 - New Bing
 - [ChatGLM](http://open.bigmodel.cn/)
+- [Gemini](https://makersuite.google.com/app/apikey)
 - [Bard](https://github.com/dsdanielpark/Bard-API)
 
 ## Windows 获取小米音响DID
@@ -73,6 +74,8 @@ xiaogpt --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 gpt3 ai
 export OPENAI_API_KEY=${your_api_key}
 xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
+# 如果你想使用 google 的 gemini
+xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 # 如果你想用 edge-tts
 xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --tts edge
 # 如果你想使用 LangChain + SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
@@ -101,6 +104,8 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_glm --glm_key ${glm_key}
 # 如果你想使用 google 的 bard
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_bard --bard_token ${bard_token}
+# 如果你想使用 google 的 gemini
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 # 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
 export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
@@ -153,6 +158,7 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | openai_key            | openai的apikey                                                          |                                                                                                           |
 | serpapi_api_key       | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                       |                                                                                                           |
 | glm_key               | chatglm 的 apikey                                                       |                                                                                                           |
+| gemini_key            | gemini 的 apikey [参与](https://makersuite.google.com/app/apikey)                                                      |                                                                                                           |
 | bard_token            | bard 的 token 参考 [Bard-API](https://github.com/dsdanielpark/Bard-API) |                                                                                                           |
 | cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                             |                                                                                                           |
 | mi_did                | 设备did                                                                 |                                                                                                           |
