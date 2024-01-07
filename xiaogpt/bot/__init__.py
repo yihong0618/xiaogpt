@@ -6,6 +6,7 @@ from xiaogpt.bot.gpt3_bot import GPT3Bot
 from xiaogpt.bot.newbing_bot import NewBingBot
 from xiaogpt.bot.glm_bot import GLMBot
 from xiaogpt.bot.bard_bot import BardBot
+from xiaogpt.bot.gemini_bot import GeminiBot
 from xiaogpt.bot.langchain_bot import LangChainBot
 from xiaogpt.config import Config
 
@@ -15,6 +16,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "chatgptapi": ChatGPTBot,
     "glm": GLMBot,
     "bard": BardBot,
+    "gemini": GeminiBot,
     "langchain": LangChainBot,
 }
 
@@ -32,6 +34,7 @@ __all__ = [
     "NewBingBot",
     "GLMBot",
     "BardBot",
+    "GeminiBot",
     "get_bot",
     "LangChainBot",
 ]

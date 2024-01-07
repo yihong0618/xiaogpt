@@ -33,6 +33,11 @@ def main():
         help="chatglm api key",
     )
     parser.add_argument(
+        "--gemini_key",
+        dest="gemini_key",
+        help="gemini api key",
+    )
+    parser.add_argument(
         "--bard_token",
         dest="bard_token",
         help="google bard token see https://github.com/dsdanielpark/Bard-API",
@@ -132,6 +137,13 @@ def main():
         const="bard",
         help="if use bard",
     )
+    bot_group.add_argument(
+        "--use_gemini",
+        dest="bot",
+        action="store_const",
+        const="gemini",
+        help="if use gemini",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -141,7 +153,7 @@ def main():
         "--bot",
         dest="bot",
         help="bot type",
-        choices=["gpt3", "chatgptapi", "newbing", "glm", "bard", "langchain"],
+        choices=["gpt3", "chatgptapi", "newbing", "glm", "bard", "gemini", "langchain"],
     )
     parser.add_argument(
         "--config",

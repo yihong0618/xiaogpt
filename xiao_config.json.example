@@ -4,6 +4,7 @@
   "password": "",
   "openai_key": "",
   "glm_key": "",
+  "gemini_key": "",
   "bard_token": "",
   "serpapi_api_key": "",
   "cookie": "",
