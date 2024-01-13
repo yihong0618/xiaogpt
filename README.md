@@ -236,6 +236,12 @@ docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/conf
  docker build -t xiaogpt .
 ```
 
+如果在安装依赖时构建失败或安装缓慢时，可以在构建 Docker 镜像时使用 `--build-arg` 参数来指定国内源地址：
+
+```sh
+docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple -t xiaogpt .
+```
+
 如果需要在Apple M1/M2上编译x86
 
 ```shell
