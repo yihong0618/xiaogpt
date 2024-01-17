@@ -38,6 +38,11 @@ def main():
         help="gemini api key",
     )
     parser.add_argument(
+        "--qwen_key",
+        dest="qwen_key",
+        help="Alibaba Qwen api key",
+    )
+    parser.add_argument(
         "--bard_token",
         dest="bard_token",
         help="google bard token see https://github.com/dsdanielpark/Bard-API",
@@ -138,6 +143,13 @@ def main():
         help="if use bard",
     )
     bot_group.add_argument(
+        "--use_qwen",
+        dest="bot",
+        action="store_const",
+        const="qwen",
+        help="if use qwen",
+    )
+    bot_group.add_argument(
         "--use_gemini",
         dest="bot",
         action="store_const",
@@ -153,7 +165,16 @@ def main():
         "--bot",
         dest="bot",
         help="bot type",
-        choices=["gpt3", "chatgptapi", "newbing", "glm", "bard", "gemini", "langchain"],
+        choices=[
+            "gpt3",
+            "chatgptapi",
+            "newbing",
+            "glm",
+            "bard",
+            "gemini",
+            "langchain",
+            "qwen",
+        ],
     )
     parser.add_argument(
         "--config",
