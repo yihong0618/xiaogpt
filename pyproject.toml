@@ -25,6 +25,7 @@ dependencies = [
     "google-search-results>=2.4.2",
     "google-generativeai",
     "numexpr>=2.8.6",
+    "dashscope==1.10.0",
 ]
 license = {text = "MIT"}
 dynamic = ["version"]

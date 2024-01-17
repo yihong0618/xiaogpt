@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:92bc1157e4ead0813da176e34d75b40a767013a082bb87c643b5e198d8627197"
+content_hash = "sha256:ac4a524e864b0e49972c6b07f78af89126d37a21b947d66484bf16a14332f1ef"
 
 [[package]]
 name = "aiohttp"
@@ -316,6 +316,20 @@ groups = ["default"]
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
+]
+
+[[package]]
+name = "dashscope"
+version = "1.10.0"
+requires_python = ">=3.7.0"
+summary = "dashscope client sdk library"
+groups = ["default"]
+dependencies = [
+    "aiohttp",
+    "requests",
+]
+files = [
+    {file = "dashscope-1.10.0-py3-none-any.whl", hash = "sha256:0dd0a6cfeaf12bfab24825993add3f8e3370c2a36cfdb09b5b1a73c793f372e1"},
 ]
 
 [[package]]
