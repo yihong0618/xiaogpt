@@ -15,6 +15,7 @@ cachetools==5.3.2
 certifi==2023.7.22
 charset-normalizer==3.3.2
 colorama==0.4.6
+dashscope==1.10.0
 dataclasses==0.6
 dataclasses-json==0.6.3
 deep-translator==1.11.4
