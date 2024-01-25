@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 import httpx
-import openai
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 from xiaogpt.utils import split_sentences
+
+if TYPE_CHECKING:
+    import openai
 
 
 @dataclasses.dataclass
@@ -22,6 +24,8 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
     history: list[tuple[str, str]] = dataclasses.field(default_factory=list, init=False)
 
     def _make_openai_client(self, sess: httpx.AsyncClient) -> openai.AsyncOpenAI:
+        import openai
+
         if self.api_base and self.api_base.rstrip("/").endswith("openai.azure.com"):
             return openai.AsyncAzureOpenAI(
                 api_key=self.openai_key,

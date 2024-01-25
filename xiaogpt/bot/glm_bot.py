@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import zhipuai
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
@@ -14,6 +13,8 @@ class GLMBot(ChatHistoryMixin, BaseBot):
     default_options = {"model": "chatglm_turbo"}
 
     def __init__(self, glm_key: str) -> None:
+        import zhipuai
+
         self.history = []
         zhipuai.api_key = glm_key
 
@@ -22,6 +23,8 @@ class GLMBot(ChatHistoryMixin, BaseBot):
         return cls(glm_key=config.glm_key)
 
     def ask(self, query, **options):
+        import zhipuai
+
         ms = self.get_messages()
         kwargs = {**self.default_options, **options}
         kwargs["prompt"] = ms
