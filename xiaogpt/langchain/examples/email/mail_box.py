@@ -1,12 +1,12 @@
-import imaplib
 import email
-from datetime import datetime, timedelta
 import html
-from bs4 import BeautifulSoup
+import imaplib
 import re
-import openai
 import smtplib
+from datetime import datetime, timedelta
 from email.mime.text import MIMEText
+
+from bs4 import BeautifulSoup
 
 
 class Mailbox:
@@ -115,6 +115,8 @@ class Mailbox:
         return ""
 
     def get_summary_by_ai(self, email_content: str, prompt: str) -> str:
+        import openai
+
         print("Asking AI to summarize email content...")
 
         # Request ChatGPT for summary

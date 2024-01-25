@@ -4,7 +4,6 @@ import dataclasses
 from typing import ClassVar
 
 import httpx
-import openai
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
@@ -26,6 +25,8 @@ class GPT3Bot(ChatHistoryMixin, BaseBot):
         )
 
     async def ask(self, query, **options):
+        import openai
+
         data = {
             "prompt": query,
             "model": "text-davinci-003",
@@ -50,6 +51,8 @@ class GPT3Bot(ChatHistoryMixin, BaseBot):
             return completion.choices[0].text
 
     async def ask_stream(self, query, **options):
+        import openai
+
         data = {
             "prompt": query,
             "model": "text-davinci-003",

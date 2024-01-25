@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import re
 
-from EdgeGPT import Chatbot, ConversationStyle
-
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 from xiaogpt.utils import split_sentences
 
@@ -19,6 +17,8 @@ class NewBingBot(ChatHistoryMixin, BaseBot):
         bing_cookies: dict | None = None,
         proxy: str | None = None,
     ):
+        from EdgeGPT import Chatbot
+
         self.history = []
         self._bot = Chatbot(
             cookiePath=bing_cookie_path, cookies=bing_cookies, proxy=proxy
@@ -40,6 +40,8 @@ class NewBingBot(ChatHistoryMixin, BaseBot):
         return s.strip()
 
     async def ask(self, query, **options):
+        from EdgeGPT import ConversationStyle
+
         kwargs = {"conversation_style": ConversationStyle.balanced, **options}
         completion = await self._bot.ask(prompt=query, **kwargs)
         try:
@@ -51,6 +53,8 @@ class NewBingBot(ChatHistoryMixin, BaseBot):
         return text
 
     async def ask_stream(self, query, **options):
+        from EdgeGPT import ConversationStyle
+
         kwargs = {"conversation_style": ConversationStyle.balanced, **options}
         try:
             completion = self._bot.ask_stream(prompt=query, **kwargs)

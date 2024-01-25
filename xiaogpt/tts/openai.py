@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import httpx
-import openai
 
 from xiaogpt.tts.base import AudioFileTTS
 from xiaogpt.utils import calculate_tts_elapse
+
+if TYPE_CHECKING:
+    import openai
 
 
 class OpenAITTS(AudioFileTTS):
@@ -32,6 +35,8 @@ class OpenAITTS(AudioFileTTS):
         return Path(output_file.name), calculate_tts_elapse(text)
 
     def _make_openai_client(self, sess: httpx.AsyncClient) -> openai.AsyncOpenAI:
+        import openai
+
         api_base = self.config.api_base
         if api_base and api_base.rstrip("/").endswith("openai.azure.com"):
             raise NotImplementedError("TTS is not supported for Azure OpenAI")

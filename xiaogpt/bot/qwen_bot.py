@@ -1,12 +1,9 @@
 """ChatGLM bot"""
 from __future__ import annotations
 
+from http import HTTPStatus
 from typing import Any
 
-from http import HTTPStatus
-import dashscope
-from dashscope import Generation
-from dashscope.api_entities.dashscope_response import Role
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
@@ -16,6 +13,9 @@ class QwenBot(ChatHistoryMixin, BaseBot):
     name = "Qian Wen"
 
     def __init__(self, qwen_key: str) -> None:
+        import dashscope
+        from dashscope.api_entities.dashscope_response import Role
+
         self.history = [
             {"role": Role.SYSTEM, "content": "You are a helpful assistant."}
         ]
@@ -26,6 +26,9 @@ class QwenBot(ChatHistoryMixin, BaseBot):
         return cls(qwen_key=config.qwen_key)
 
     async def ask(self, query, **options):
+        from dashscope import Generation
+        from dashscope.api_entities.dashscope_response import Role
+
         # from https://help.aliyun.com/zh/dashscope/developer-reference/api-details
         self.history.append({"role": Role.USER, "content": query})
 
@@ -61,6 +64,9 @@ class QwenBot(ChatHistoryMixin, BaseBot):
             return "没有返回"
 
     async def ask_stream(self, query: str, **options: Any):
+        from dashscope import Generation
+        from dashscope.api_entities.dashscope_response import Role
+
         self.history.append({"role": Role.USER, "content": query})
         responses = Generation.call(
             Generation.Models.qwen_turbo,

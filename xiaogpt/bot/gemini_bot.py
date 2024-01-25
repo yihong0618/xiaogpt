@@ -4,8 +4,6 @@ from __future__ import annotations
 from typing import Any
 
 from rich import print
-import google.generativeai as genai
-from google.generativeai.types.generation_types import StopCandidateException
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 
@@ -34,6 +32,8 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
     name = "Gemini"
 
     def __init__(self, gemini_key: str) -> None:
+        import google.generativeai as genai
+
         genai.configure(api_key=gemini_key)
         self.history = []
         model = genai.GenerativeModel(
