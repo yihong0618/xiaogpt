@@ -16,7 +16,6 @@ certifi==2023.7.22
 charset-normalizer==3.3.2
 colorama==0.4.6
 dashscope==1.10.0
-dataclasses==0.6
 dataclasses-json==0.6.3
 deep-translator==1.11.4
 distro==1.9.0
@@ -88,4 +87,4 @@ urllib3==2.1.0
 wcwidth==0.2.13
 websockets==12.0
 yarl==1.9.4
-zhipuai==1.0.7
+zhipuai==2.0.1
