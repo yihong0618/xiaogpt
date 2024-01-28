@@ -1,4 +1,4 @@
-"""ChatGLM bot"""
+"""Qwen bot"""
 from __future__ import annotations
 
 from http import HTTPStatus
@@ -16,9 +16,7 @@ class QwenBot(ChatHistoryMixin, BaseBot):
         import dashscope
         from dashscope.api_entities.dashscope_response import Role
 
-        self.history = [
-            {"role": Role.SYSTEM, "content": "You are a helpful assistant."}
-        ]
+        self.history = []
         dashscope.api_key = qwen_key
 
     @classmethod

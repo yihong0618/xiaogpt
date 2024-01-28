@@ -195,8 +195,8 @@ def main():
     )
 
     options = parser.parse_args()
-    if options.bot in ["glm", "bard"] and options.stream:
-        raise Exception("For now ChatGLM do not support stream")
+    if options.bot in ["bard"] and options.stream:
+        raise Exception("For now Bard do not support stream")
     config = Config.from_options(options)
 
     miboy = MiGPT(config)
