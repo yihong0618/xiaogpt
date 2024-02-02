@@ -60,6 +60,9 @@ class QwenBot(ChatHistoryMixin, BaseBot):
                     response.message,
                 )
             )
+            # we need to pop the wrong history
+            print(f"Will pop the wrong question {query}")
+            self.history.pop()
             return "没有返回"
 
     async def ask_stream(self, query: str, **options: Any):
