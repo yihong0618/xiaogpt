@@ -51,6 +51,7 @@ class MiGPT:
         self.log.setLevel(logging.DEBUG if config.verbose else logging.INFO)
         self.log.addHandler(RichHandler())
         self.log.debug(config)
+        self.mi_session = ClientSession()
 
     async def poll_latest_ask(self):
         async with ClientSession() as session:
@@ -78,8 +79,8 @@ class MiGPT:
     async def init_all_data(self, session):
         await self.login_miboy(session)
         await self._init_data_hardware()
-        session.cookie_jar.update_cookies(self.get_cookie())
-        self.cookie_jar = session.cookie_jar
+        self.mi_session.cookie_jar.update_cookies(self.get_cookie())
+        self.cookie_jar = self.mi_session.cookie_jar
         self.tts  # init tts
 
     async def login_miboy(self, session):
@@ -215,13 +216,16 @@ class MiGPT:
                 data = await r.json()
             except Exception:
                 self.log.warning("get latest ask from xiaoai error, retry")
-                if i == 2:
+                if i == 1:
                     # tricky way to fix #282 #272 # if it is the third time we re init all data
                     print("Maybe outof date trying to re init it")
-                    await self.init_all_data(self.session)
+                    await self._retry()
             else:
                 return self._get_last_query(data)
         return None
+
+    async def _retry(self):
+        await self.init_all_data(self.mi_session)
 
     def _get_last_query(self, data: dict) -> dict | None:
         if d := data.get("data"):
@@ -339,71 +343,69 @@ class MiGPT:
         )
 
     async def run_forever(self):
-        async with ClientSession() as session:
-            self.session = session
-            await self.init_all_data(session)
-            task = asyncio.create_task(self.poll_latest_ask())
-            assert task is not None  # to keep the reference to task, do not remove this
-            print(
-                f"Running xiaogpt now, 用[green]{'/'.join(self.config.keyword)}[/]开头来提问"
-            )
-            print(f"或用[green]{self.config.start_conversation}[/]开始持续对话")
-            while True:
-                self.polling_event.set()
-                new_record = await self.last_record.get()
-                self.polling_event.clear()  # stop polling when processing the question
-                query = new_record.get("query", "").strip()
+        await self.init_all_data(self.mi_session)
+        task = asyncio.create_task(self.poll_latest_ask())
+        assert task is not None  # to keep the reference to task, do not remove this
+        print(
+            f"Running xiaogpt now, 用[green]{'/'.join(self.config.keyword)}[/]开头来提问"
+        )
+        print(f"或用[green]{self.config.start_conversation}[/]开始持续对话")
+        while True:
+            self.polling_event.set()
+            new_record = await self.last_record.get()
+            self.polling_event.clear()  # stop polling when processing the question
+            query = new_record.get("query", "").strip()
 
-                if query == self.config.start_conversation:
-                    if not self.in_conversation:
-                        print("开始对话")
-                        self.in_conversation = True
-                        await self.wakeup_xiaoai()
-                    await self.stop_if_xiaoai_is_playing()
-                    continue
-                elif query == self.config.end_conversation:
-                    if self.in_conversation:
-                        print("结束对话")
-                        self.in_conversation = False
-                    await self.stop_if_xiaoai_is_playing()
-                    continue
-
-                # we can change prompt
-                if self.need_change_prompt(new_record):
-                    print(new_record)
-                    self._change_prompt(new_record.get("query", ""))
-
-                if not self.need_ask_gpt(new_record):
-                    self.log.debug("No new xiao ai record")
-                    continue
-
-                # drop 帮我回答
-                query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
-
-                print("-" * 20)
-                print("问题：" + query + "？")
-                if not self.chatbot.has_history():
-                    query = f"{query}，{self.config.prompt}"
-                if self.config.mute_xiaoai:
-                    await self.stop_if_xiaoai_is_playing()
-                else:
-                    # waiting for xiaoai speaker done
-                    await asyncio.sleep(8)
-                await self.do_tts(f"正在问{self.chatbot.name}请耐心等待")
-                try:
-                    print(
-                        "以下是小爱的回答: ",
-                        new_record.get("answers", [])[0].get("tts", {}).get("text"),
-                    )
-                except IndexError:
-                    print("小爱没回")
-                print(f"以下是 {self.chatbot.name} 的回答: ", end="")
-                try:
-                    await self.tts.synthesize(query, self.ask_gpt(query))
-                except Exception as e:
-                    print(f"{self.chatbot.name} 回答出错 {str(e)}")
-                else:
-                    print("回答完毕")
-                if self.in_conversation:
-                    print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
+            if query == self.config.start_conversation:
+                if not self.in_conversation:
+                    print("开始对话")
+                    self.in_conversation = True
                     await self.wakeup_xiaoai()
+                await self.stop_if_xiaoai_is_playing()
+                continue
+            elif query == self.config.end_conversation:
+                if self.in_conversation:
+                    print("结束对话")
+                    self.in_conversation = False
+                await self.stop_if_xiaoai_is_playing()
+                continue
+
+            # we can change prompt
+            if self.need_change_prompt(new_record):
+                print(new_record)
+                self._change_prompt(new_record.get("query", ""))
+
+            if not self.need_ask_gpt(new_record):
+                self.log.debug("No new xiao ai record")
+                continue
+
+            # drop 帮我回答
+            query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
+
+            print("-" * 20)
+            print("问题：" + query + "？")
+            if not self.chatbot.has_history():
+                query = f"{query}，{self.config.prompt}"
+            if self.config.mute_xiaoai:
+                await self.stop_if_xiaoai_is_playing()
+            else:
+                # waiting for xiaoai speaker done
+                await asyncio.sleep(8)
+            await self.do_tts(f"正在问{self.chatbot.name}请耐心等待")
+            try:
+                print(
+                    "以下是小爱的回答: ",
+                    new_record.get("answers", [])[0].get("tts", {}).get("text"),
+                )
+            except IndexError:
+                print("小爱没回")
+            print(f"以下是 {self.chatbot.name} 的回答: ", end="")
+            try:
+                await self.tts.synthesize(query, self.ask_gpt(query))
+            except Exception as e:
+                print(f"{self.chatbot.name} 回答出错 {str(e)}")
+            else:
+                print("回答完毕")
+            if self.in_conversation:
+                print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
+                await self.wakeup_xiaoai()
