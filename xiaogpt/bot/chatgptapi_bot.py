@@ -30,7 +30,7 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
             return openai.AsyncAzureOpenAI(
                 api_key=self.openai_key,
                 azure_endpoint=self.api_base,
-                api_version="2023-07-01-preview",
+                api_version="2024-02-15-preview",
                 azure_deployment=self.deployment_id,
                 http_client=sess,
             )
