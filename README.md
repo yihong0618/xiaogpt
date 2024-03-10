@@ -237,6 +237,12 @@ xiaogpt的配置文件可通过指定volume /config，以及指定参数--config
 docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/config.json
 ```
 
+### 网络使用 host 模型
+
+```shell
+docker run -v <your-config-dir>:/config --network=host yihong0618/xiaogpt --config=/config/config.json
+```
+
 ### 本地编译Docker Image
 
 ```shell
