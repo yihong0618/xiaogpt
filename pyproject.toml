@@ -26,6 +26,7 @@ dependencies = [
     "google-generativeai",
     "numexpr>=2.8.6",
     "dashscope==1.10.0",
+    "azure-cognitiveservices-speech>=1.37.0",
 ]
 license = {text = "MIT"}
 dynamic = ["version"]

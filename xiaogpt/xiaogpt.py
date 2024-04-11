@@ -23,7 +23,7 @@ from xiaogpt.config import (
     WAKEUP_KEYWORD,
     Config,
 )
-from xiaogpt.tts import TTS, EdgeTTS, MiTTS
+from xiaogpt.tts import TTS, EdgeTTS, MiTTS, AzureTTS
 from xiaogpt.tts.openai import OpenAITTS
 from xiaogpt.utils import (
     parse_cookie_string,
@@ -260,6 +260,8 @@ class MiGPT:
     def tts(self) -> TTS:
         if self.config.tts == "edge":
             return EdgeTTS(self.mina_service, self.device_id, self.config)
+        elif self.config.tts == "azure":
+            return AzureTTS(self.mina_service, self.device_id, self.config)
         elif self.config.tts == "openai":
             return OpenAITTS(self.mina_service, self.device_id, self.config)
         else:

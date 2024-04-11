@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:255e73e031af7be56dbbde067b3a0b3fd2507d56fdfe217e0629ae7ecce56729"
+content_hash = "sha256:89ba6940ea43273783110a863f29a42b5156894e6cd94d1ecda95d702a75f13f"
 
 [[package]]
 name = "aiohttp"
@@ -148,6 +148,21 @@ groups = ["default"]
 files = [
     {file = "attrs-23.2.0-py3-none-any.whl", hash = "sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1"},
     {file = "attrs-23.2.0.tar.gz", hash = "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30"},
+]
+
+[[package]]
+name = "azure-cognitiveservices-speech"
+version = "1.37.0"
+requires_python = ">=3.7"
+summary = "Microsoft Cognitive Services Speech SDK for Python"
+groups = ["default"]
+files = [
+    {file = "azure_cognitiveservices_speech-1.37.0-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:906d6bf65176e93464e2d763dd074ca00c48cfe1a896371fcdcb155a500910f7"},
+    {file = "azure_cognitiveservices_speech-1.37.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:54ec8dd55d4dbd9058c61909e08485d3761d6d30954da189e1b17d84daf5e2e0"},
+    {file = "azure_cognitiveservices_speech-1.37.0-py3-none-manylinux1_x86_64.whl", hash = "sha256:685424689725d2d4115485998c0888c8b5b502259037ff533e5a834575f80b66"},
+    {file = "azure_cognitiveservices_speech-1.37.0-py3-none-manylinux2014_aarch64.whl", hash = "sha256:384f66786c2335165035270897b34d0b91736a1fdf38f7696e9a227075cb2489"},
+    {file = "azure_cognitiveservices_speech-1.37.0-py3-none-win32.whl", hash = "sha256:343d5f449ccd6c9b53cd37dd46a70ece0905243517df7a0c047779e55072254c"},
+    {file = "azure_cognitiveservices_speech-1.37.0-py3-none-win_amd64.whl", hash = "sha256:a18fb45490cdcd681407ccaad9560fb14dda1c8276de297e219ea1a880467e28"},
 ]
 
 [[package]]
