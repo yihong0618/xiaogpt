@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+import logging
 import tempfile
 from pathlib import Path
 from typing import Optional
 
 import azure.cognitiveservices.speech as speechsdk
+
 from xiaogpt.tts.base import AudioFileTTS
 from xiaogpt.utils import calculate_tts_elapse
 
-
+logger = logging.getLogger(__name__)
 
 
 class AzureTTS(AudioFileTTS):
@@ -29,16 +31,15 @@ class AzureTTS(AudioFileTTS):
             )
         # Check result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
-            print("Speech synthesized for text [{}]".format(text))
+            logger.debug("Speech synthesized for text [{}]".format(text))
             return Path(output_file.name), calculate_tts_elapse(text)
         elif result.reason == speechsdk.ResultReason.Canceled:
             cancellation_details = result.cancellation_details
-            print("Speech synthesis canceled: {}".format(cancellation_details.reason))
+            logger.warning(f"Speech synthesis canceled: {cancellation_details.reason}")
             if cancellation_details.reason == speechsdk.CancellationReason.Error:
-                print("Error details: {}".format(cancellation_details.error_details))
-                raise RuntimeError(
-                    "Error details: {}".format(cancellation_details.error_details)
-                )
+                errmsg = f"Error details: {cancellation_details.error_details}"
+                logger.error(errmsg)
+                raise RuntimeError(errmsg)
         raise RuntimeError(f"Failed to get tts from azure with voice={self.voice_name}")
 
     def _build_speech_synthesizer(self, filename: str):
@@ -49,7 +50,9 @@ class AzureTTS(AudioFileTTS):
         speech_config = speechsdk.SpeechConfig(
             subscription=speech_key, region=service_region
         )
-        speech_config.set_speech_synthesis_output_format(speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
+        speech_config.set_speech_synthesis_output_format(
+            speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
+        )
         if self.config.proxy:
             host, port, username, password = self._parse_proxy(self.config.proxy)
 
@@ -60,7 +63,9 @@ class AzureTTS(AudioFileTTS):
             else:
                 speech_config.set_proxy(hostname=host, port=port)
 
-        speech_config.speech_synthesis_voice_name = self.config.tts_voice or self.voice_name
+        speech_config.speech_synthesis_voice_name = (
+            self.config.tts_voice or self.voice_name
+        )
         speech_synthesizer = speechsdk.SpeechSynthesizer(
             speech_config=speech_config,
             audio_config=speechsdk.audio.AudioOutputConfig(filename=filename),  # type: ignore
