@@ -90,6 +90,16 @@ def main():
         default=None,
         help="show info",
     )
+    parser.add_argument(
+        "--azure_tts_speech_key",
+        dest="azure_tts_speech_key",
+        help="if use azure tts",
+    )
+    parser.add_argument(
+        "--azure_tts_service_region",
+        dest="azure_tts_service_region",
+        help="if use azure tts",
+    )
     tts_group = parser.add_mutually_exclusive_group()
     tts_group.add_argument(
         "--enable_edge_tts",
@@ -98,7 +108,11 @@ def main():
         const="edge",
         help="if use edge tts",
     )
-    tts_group.add_argument("--tts", help="tts type", choices=["mi", "edge", "openai"])
+    tts_group.add_argument(
+        "--tts",
+        help="tts type",
+        choices=["mi", "edge", "openai", "azure"],
+    )
     bot_group = parser.add_mutually_exclusive_group()
     bot_group.add_argument(
         "--use_gpt3",
@@ -197,6 +211,9 @@ def main():
     options = parser.parse_args()
     if options.bot in ["bard"] and options.stream:
         raise Exception("For now Bard do not support stream")
+    if options.tts in ["edge", "openai", "azure"]:
+        print("Will close stream to better tts")
+        options.stream = False
     config = Config.from_options(options)
 
     miboy = MiGPT(config)

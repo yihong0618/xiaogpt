@@ -81,11 +81,13 @@ class Config:
     start_conversation: str = "开始持续对话"
     end_conversation: str = "结束持续对话"
     stream: bool = False
-    tts: Literal["mi", "edge"] = "mi"
+    tts: Literal["mi", "edge", "azure", "openai"] = "mi"
     tts_voice: str | None = None
     gpt_options: dict[str, Any] = field(default_factory=dict)
     bing_cookie_path: str = ""
     bing_cookies: dict | None = None
+    azure_tts_speech_key: str | None = None
+    azure_tts_service_region: str = "eastasia"
 
     def __post_init__(self) -> None:
         if self.proxy:
@@ -110,6 +112,11 @@ class Config:
                 raise Exception(
                     "Using GPT api needs openai API key, please google how to"
                 )
+        if self.tts == "azure" and not self.azure_tts_speech_key:
+            raise Exception("Using Azure TTS needs azure speech key")
+        if self.tts in ["azure", "edge", "openai"]:
+            print("Will close stream when use tts: {self.tts} for better experience")
+            self.stream = False
 
     @property
     def tts_command(self) -> str:

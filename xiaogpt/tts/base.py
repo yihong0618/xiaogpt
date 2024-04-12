@@ -123,7 +123,7 @@ class AudioFileTTS(TTS):
                 break
             else:
                 url, duration = result
-                logger.debug("Playing URL %s(%s seconds)", url, duration)
+                logger.debug("Playing URL %s (%s seconds)", url, duration)
                 await self.mina_service.play_by_url(self.device_id, url)
                 await self.wait_for_duration(duration)
         await task

@@ -27,5 +27,7 @@
   "bing_cookie_path": "",
   "bing_cookies": {},
   "api_base": "https://abc-def.openai.azure.com/",
-  "deployment_id": ""
+  "deployment_id": "",
+  "azure_tts_speech_key": null,
+  "azure_tts_service_region": "eastasia"
 }
