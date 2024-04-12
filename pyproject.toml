@@ -28,6 +28,7 @@ dependencies = [
     "numexpr>=2.8.6",
     "dashscope==1.10.0",
     "httpcore==0.15.0",
+    "idna==3.7",
     "azure-cognitiveservices-speech>=1.37.0",
 ]
 license = {text = "MIT"}
