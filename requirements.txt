@@ -55,7 +55,7 @@ lz4==4.3.3
 markdown-it-py==3.0.0
 marshmallow==3.20.1
 mdurl==0.1.2
-miservice-fork==2.4.1
+miservice-fork==2.4.2
 multidict==6.0.4
 mutagen==1.47.0
 mypy-extensions==1.0.0

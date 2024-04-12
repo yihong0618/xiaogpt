@@ -114,9 +114,6 @@ class Config:
                 )
         if self.tts == "azure" and not self.azure_tts_speech_key:
             raise Exception("Using Azure TTS needs azure speech key")
-        if self.tts in ["azure", "edge", "openai"]:
-            print("Will close stream when use tts: {self.tts} for better experience")
-            self.stream = False
 
     @property
     def tts_command(self) -> str:

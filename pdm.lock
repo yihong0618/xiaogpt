@@ -1096,7 +1096,7 @@ files = [
 
 [[package]]
 name = "miservice-fork"
-version = "2.4.1"
+version = "2.4.2"
 requires_python = ">=3.7"
 summary = "XiaoMi Cloud Service fork from https://github.com/Yonsm/MiService"
 groups = ["default"]
@@ -1106,8 +1106,8 @@ dependencies = [
     "rich",
 ]
 files = [
-    {file = "miservice_fork-2.4.1-py3-none-any.whl", hash = "sha256:ad2e3a29bd36de6cdd09be85c02c4fe5cbf0040c53c462f90c703cdba979de4a"},
-    {file = "miservice_fork-2.4.1.tar.gz", hash = "sha256:b84ddc16dfd8b8189c4cf12fb0bdbf4930167c714554405f52321bbdfaf119c7"},
+    {file = "miservice_fork-2.4.2-py3-none-any.whl", hash = "sha256:a671b9801bd05f301db0b9df74fcb47ee845e612f0ecb944442973aff22faa3f"},
+    {file = "miservice_fork-2.4.2.tar.gz", hash = "sha256:a02cd9366ac2ef879a9137209b13b9b7fc813637fc53e6691de9fe6faf56e0ff"},
 ]
 
 [[package]]
