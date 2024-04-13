@@ -43,11 +43,6 @@ def main():
         help="Alibaba Qwen api key",
     )
     parser.add_argument(
-        "--bard_token",
-        dest="bard_token",
-        help="google bard token see https://github.com/dsdanielpark/Bard-API",
-    )
-    parser.add_argument(
         "--serpapi_api_key",
         dest="serpapi_api_key",
         help="serp api key see https://serpapi.com/",
@@ -115,13 +110,6 @@ def main():
     )
     bot_group = parser.add_mutually_exclusive_group()
     bot_group.add_argument(
-        "--use_gpt3",
-        dest="bot",
-        action="store_const",
-        const="gpt3",
-        help="if use openai gpt3 api",
-    )
-    bot_group.add_argument(
         "--use_chatgpt_api",
         dest="bot",
         action="store_const",
@@ -150,13 +138,6 @@ def main():
         help="if use chatglm",
     )
     bot_group.add_argument(
-        "--use_bard",
-        dest="bot",
-        action="store_const",
-        const="bard",
-        help="if use bard",
-    )
-    bot_group.add_argument(
         "--use_qwen",
         dest="bot",
         action="store_const",
@@ -180,11 +161,9 @@ def main():
         dest="bot",
         help="bot type",
         choices=[
-            "gpt3",
             "chatgptapi",
             "newbing",
             "glm",
-            "bard",
             "gemini",
             "langchain",
             "qwen",
@@ -209,8 +188,6 @@ def main():
     )
 
     options = parser.parse_args()
-    if options.bot in ["bard"] and options.stream:
-        raise Exception("For now Bard do not support stream")
     config = Config.from_options(options)
 
     miboy = MiGPT(config)

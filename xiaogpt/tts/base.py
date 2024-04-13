@@ -106,26 +106,21 @@ class AudioFileTTS(TTS):
             finished.set()
 
         task = asyncio.create_task(worker())
-        while not queue.empty() or not finished.is_set():
-            done, other = await asyncio.wait(
-                [
-                    asyncio.ensure_future(queue.get()),
-                    asyncio.ensure_future(finished.wait()),
-                ],
-                return_when=asyncio.FIRST_COMPLETED,
-            )
-            if other:
-                other.pop().cancel()
 
-            result = done.pop().result()
-            if result is True:
-                # finished is set, break the loop
-                break
-            else:
-                url, duration = result
-                logger.debug("Playing URL %s (%s seconds)", url, duration)
-                await self.mina_service.play_by_url(self.device_id, url)
-                await self.wait_for_duration(duration)
+        while True:
+            try:
+                url, duration = queue.get_nowait()
+            except asyncio.QueueEmpty:
+                if finished.is_set():
+                    break
+                else:
+                    await asyncio.sleep(0.1)
+                    continue
+            logger.debug("Playing URL %s (%s seconds)", url, duration)
+            await asyncio.gather(
+                self.mina_service.play_by_url(self.device_id, url),
+                self.wait_for_duration(duration),
+            )
         await task
 
     def _start_http_server(self):

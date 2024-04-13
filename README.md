@@ -12,12 +12,10 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 
 ## 支持的 AI 类型
 
-- GPT3
 - ChatGPT
 - New Bing
 - [ChatGLM](http://open.bigmodel.cn/)
 - [Gemini](https://makersuite.google.com/app/apikey)
-- [Bard](https://github.com/dsdanielpark/Bard-API)
 - [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
 
 ## 获取小米音响DID
@@ -71,7 +69,6 @@ export MI_DID=xxxx
 - 使用 `--account ${account} --password ${password}`
 - 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
 - 使用 `--use_chatgpt_api` 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, [openai api](https://platform.openai.com/account/api-keys), 命令 `--use_chatgpt_api`
-- 使用 gpt-3 的 api 那样可以更流畅的对话，速度快, 请 google 如何用 [openai api](https://platform.openai.com/account/api-keys) 命令 --use_gpt3
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。 **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
@@ -92,9 +89,6 @@ xiaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_passw
 xiaogpt --hardware LX06  --mute_xiaoai --use_chatgpt_api
 # 使用流式响应，获得更快的响应
 xiaogpt --hardware LX06  --mute_xiaoai --stream
-# 如果你想使用 gpt3 ai
-export OPENAI_API_KEY=${your_api_key}
-xiaogpt --hardware LX06  --mute_xiaoai --use_gpt3
 # 如果你想使用 google 的 gemini
 xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 # 如果你想使用阿里的通义千问
@@ -120,13 +114,8 @@ python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password $
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai
 # 使用流式响应，获得更快的响应
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --stream
-# 如果你想使用 gpt3 ai
-export OPENAI_API_KEY=${your_api_key}
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gpt3
 # 如果你想使用 ChatGLM api
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_glm --glm_key ${glm_key}
-# 如果你想使用 google 的 bard
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_bard --bard_token ${bard_token}
 # 如果你想使用 google 的 gemini
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 # 如果你想使用阿里的通义千问
@@ -171,7 +160,6 @@ python3 xiaogpt.py
 
 具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
 ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
-Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 
 ## 配置项说明
 
@@ -185,13 +173,12 @@ Bard-API [参考](https://github.com/dsdanielpark/Bard-API)
 | glm_key                  | chatglm 的 apikey                                                                           |                                                                                                           |                                                                                                                            |
 | gemini_key               | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                           |                                                                                                           |                                                                                                                            |
 | qwen_key                 | qwen 的 apikey [参考](https://help.aliyun.com/zh/dashscope/developer-reference/api-details) |                                                                                                           |                                                                                                                            |
-| bard_token               | bard 的 token 参考 [Bard-API](https://github.com/dsdanielpark/Bard-API)                     |                                                                                                           |                                                                                                                            |
 | cookie                   | 小爱账户cookie （如果用上面密码登录可以不填）                                               |                                                                                                           |                                                                                                                            |
 | mi_did                   | 设备did                                                                                     |                                                                                                           |                                                                                                                            |
 | use_command              | 使用 MI command 与小爱交互                                                                  | `false`                                                                                                   |                                                                                                                            |
 | mute_xiaoai              | 快速停掉小爱自己的回答                                                                      | `true`                                                                                                    |                                                                                                                            |
 | verbose                  | 是否打印详细日志                                                                            | `false`                                                                                                   |                                                                                                                            |
-| bot                      | 使用的 bot 类型，目前支持gpt3,chatgptapi和newbing                                           | `chatgptapi`                                                                                              |                                                                                                                            |
+| bot                      | 使用的 bot 类型，目前支持 chatgptapi,newbing, qwen, gemini                                           | `chatgptapi`                                                                                              |                                                                                                                            |
 | tts                      | 使用的 TTS 类型                                                                             | `mi`                                                                                                      | `edge`、 `openai`、`azure`                                                                                                 |
 | tts_voice                | TTS 的嗓音                                                                                  | `zh-CN-XiaoxiaoNeural`(edge), `alloy`(openai), `zh-CN-XiaoxiaoMultilingualNeural`(azure)                  |                                                                                                                            |
 | prompt                   | 自定义prompt                                                                                | `请用100字以内回答`                                                                                       |                                                                                                                            |

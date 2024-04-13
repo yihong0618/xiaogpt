@@ -64,7 +64,6 @@ class Config:
     glm_key: str = os.getenv("CHATGLM_KEY", "")
     gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
     qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
-    bard_token: str = os.getenv("BARD_TOKEN", "")
     serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
@@ -107,7 +106,7 @@ class Config:
                 "Using Azure OpenAI needs deployment_id, read this: "
                 "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions"
             )
-        if self.bot in ["chatgptapi", "gpt3"]:
+        if self.bot in ["chatgptapi"]:
             if not self.openai_key:
                 raise Exception(
                     "Using GPT api needs openai API key, please google how to"
@@ -147,8 +146,6 @@ class Config:
                     value = [kw for kw in value if kw]
                 elif key == "use_chatgpt_api":
                     key, value = "bot", "chatgptapi"
-                elif key == "use_gpt3":
-                    key, value = "bot", "gpt3"
                 elif key == "use_newbing":
                     key, value = "bot", "newbing"
                 elif key == "use_glm":
@@ -157,8 +154,6 @@ class Config:
                     key, value = "bot", "gemini"
                 elif key == "use_qwen":
                     key, value = "bot", "qwen"
-                elif key == "use_bard":
-                    key, value = "bot", "bard"
                 elif key == "use_langchain":
                     key, value = "bot", "langchain"
                 elif key == "enable_edge_tts":

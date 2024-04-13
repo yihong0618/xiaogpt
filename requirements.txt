@@ -8,14 +8,12 @@ anyio==3.7.1
 async-timeout==4.0.3; python_version < "3.11"
 attrs==23.2.0
 azure-cognitiveservices-speech==1.37.0
-bardapi==1.0.0
 beautifulsoup4==4.12.3
 bingimagecreator==0.5.0
-browser-cookie3==0.19.1
 cachetools==5.3.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
-colorama==0.4.6
+colorama==0.4.6; platform_system == "Windows"
 dashscope==1.10.0
 dataclasses-json==0.6.3
 distro==1.9.0
@@ -35,14 +33,10 @@ greenlet==3.0.3; platform_machine == "win32" or platform_machine == "WIN32" or p
 grpcio==1.60.0
 grpcio-status==1.60.0
 h11==0.12.0
-h2==4.1.0
-hpack==4.0.0
 httpcore==0.15.0
 httplib2==0.22.0
 httpx==0.24.1
-hyperframe==6.0.1
 idna==3.7
-jeepney==0.8.0; "bsd" in sys_platform and python_version >= "3.7" or sys_platform == "linux" and python_version >= "3.7"
 jsonpatch==1.33
 jsonpointer==2.4
 langchain==0.1.16
@@ -50,8 +44,6 @@ langchain-community==0.0.32
 langchain-core==0.1.42
 langchain-text-splitters==0.0.1
 langsmith==0.1.45
-loguru==0.7.2
-lz4==4.3.3
 markdown-it-py==3.0.0
 marshmallow==3.20.1
 mdurl==0.1.2
@@ -69,13 +61,11 @@ proto-plus==1.23.0
 protobuf==4.25.1
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
-pycryptodomex==3.20.0
 pydantic==2.5.3
 pydantic-core==2.14.6
 pygments==2.17.2
 pyjwt==2.8.0
 pyparsing==3.1.2; python_version > "3.0"
-python-gemini-api==2.4.2
 pyyaml==6.0.1
 regex==2023.12.25
 requests==2.31.0
@@ -92,6 +82,5 @@ uritemplate==4.1.1
 urllib3==2.1.0
 wcwidth==0.2.13
 websockets==12.0
-win32-setctime==1.1.0; sys_platform == "win32"
 yarl==1.9.4
 zhipuai==2.0.1

@@ -181,8 +181,6 @@ class MiGPT:
         )
 
     def need_change_prompt(self, record):
-        if self.config.bot == "gpt3":
-            return False
         query = record.get("query", "")
         return query.startswith(tuple(self.config.change_prompt_keyword))
 

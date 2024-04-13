@@ -32,6 +32,7 @@ class AzureTTS(AudioFileTTS):
         # Check result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             logger.debug("Speech synthesized for text [{}]".format(text))
+
             return Path(output_file.name), calculate_tts_elapse(text)
         elif result.reason == speechsdk.ResultReason.Canceled:
             cancellation_details = result.cancellation_details
