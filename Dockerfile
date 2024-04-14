@@ -6,7 +6,7 @@ ARG PIP_INDEX_URL=https://pypi.org/simple
 # 使用 ARG 定义的变量作为 pip 源地址
 RUN python3 -m venv .venv && .venv/bin/pip install --no-cache-dir -r requirements.txt -i ${PIP_INDEX_URL}
 
-FROM python:3.10-slim
+FROM python:3.10-slim-buster
 
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv

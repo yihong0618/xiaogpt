@@ -271,9 +271,11 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 
 ### 第三方 TTS
 
-我们目前支持两种第三方 TTS：edge/openai
+我们目前支持是三种第三方 TTS：edge/openai/azure
 
 [edge-tts](https://github.com/rany2/edge-tts) 提供了类似微软tts的能力
+[azure-tts](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/9-more-realistic-ai-voices-for-conversations-now-generally/ba-p/4099471) 提供了微软 azure tts 的能力
+[openai-tts](https://platform.openai.com/docs/guides/text-to-speech) 提供了类似 openai tts 的能力
 
 #### Usage
 
@@ -292,7 +294,7 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 edge-tts --list-voices
 ```
 
-#### 在容器中使用edge-tts
+#### 在容器中使用 edge-tts/azure-tts/openai-tts
 
 由于 Edge TTS 启动了一个本地的 HTTP 服务，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
 
