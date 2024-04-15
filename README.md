@@ -29,7 +29,7 @@ set MI_DID=xxxx
 ```
 
 - 如果获取did报错时，请更换一下无线网络，有很大概率解决问题。
- 
+
 ### Linux(使用 export 设置环境变量）
 ```sh
 # 1、安装模块
@@ -59,7 +59,7 @@ export MI_DID=xxxx
 
 ## 使用
 
-- `pip install -U --force-reinstall xiaogpt`
+- `pip install -U --force-reinstall xiaogpt[locked]`
 - 参考我 fork 的 [MiService](https://github.com/yihong0618/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用
 - run `xiaogpt --hardware ${your_hardware} --use_chatgpt_api` hardware 你看小爱屁股上有型号，输入进来，如果在屁股上找不到或者型号不对，可以用 `micli mina` 找到型号
 - 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
@@ -178,7 +178,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | use_command              | 使用 MI command 与小爱交互                                                                  | `false`                                                                                                   |                                                                                                                            |
 | mute_xiaoai              | 快速停掉小爱自己的回答                                                                      | `true`                                                                                                    |                                                                                                                            |
 | verbose                  | 是否打印详细日志                                                                            | `false`                                                                                                   |                                                                                                                            |
-| bot                      | 使用的 bot 类型，目前支持 chatgptapi,newbing, qwen, gemini                                           | `chatgptapi`                                                                                              |                                                                                                                            |
+| bot                      | 使用的 bot 类型，目前支持 chatgptapi,newbing, qwen, gemini                                  | `chatgptapi`                                                                                              |                                                                                                                            |
 | tts                      | 使用的 TTS 类型                                                                             | `mi`                                                                                                      | `edge`、 `openai`、`azure`                                                                                                 |
 | tts_voice                | TTS 的嗓音                                                                                  | `zh-CN-XiaoxiaoNeural`(edge), `alloy`(openai), `zh-CN-XiaoxiaoMultilingualNeural`(azure)                  |                                                                                                                            |
 | prompt                   | 自定义prompt                                                                                | `请用100字以内回答`                                                                                       |                                                                                                                            |
