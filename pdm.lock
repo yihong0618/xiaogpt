@@ -947,7 +947,7 @@ files = [
 
 [[package]]
 name = "miservice-fork"
-version = "2.4.2"
+version = "2.4.3"
 requires_python = ">=3.7"
 summary = "XiaoMi Cloud Service fork from https://github.com/Yonsm/MiService"
 groups = ["default"]
@@ -957,8 +957,8 @@ dependencies = [
     "rich",
 ]
 files = [
-    {file = "miservice_fork-2.4.2-py3-none-any.whl", hash = "sha256:a671b9801bd05f301db0b9df74fcb47ee845e612f0ecb944442973aff22faa3f"},
-    {file = "miservice_fork-2.4.2.tar.gz", hash = "sha256:a02cd9366ac2ef879a9137209b13b9b7fc813637fc53e6691de9fe6faf56e0ff"},
+    {file = "miservice_fork-2.4.3-py3-none-any.whl", hash = "sha256:e93732dbfff11435dede56ebf2c76aca6284d5d54dc198d260a684c9ea16fc07"},
+    {file = "miservice_fork-2.4.3.tar.gz", hash = "sha256:a0f7cbba41d48904d2914ea707934ebc9ddb107ae528cfb990a8da8fa9225105"},
 ]
 
 [[package]]
@@ -1126,7 +1126,7 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.17.0"
+version = "1.17.1"
 requires_python = ">=3.7.1"
 summary = "The official Python library for the openai API"
 groups = ["default"]
@@ -1140,8 +1140,8 @@ dependencies = [
     "typing-extensions<5,>=4.7",
 ]
 files = [
-    {file = "openai-1.17.0-py3-none-any.whl", hash = "sha256:72464cdb0602a57af87acb4888b1a48a1c02182cc9f09d2f2f3200b185223d5f"},
-    {file = "openai-1.17.0.tar.gz", hash = "sha256:72e6758cec080a3e5a9daf843178c975fed656fe0831919f4dd89bb62431724f"},
+    {file = "openai-1.17.1-py3-none-any.whl", hash = "sha256:d42e0d7a692c7b78cbae21598df5ded396abecf6c285325635ec62621e6c82f1"},
+    {file = "openai-1.17.1.tar.gz", hash = "sha256:c5a909e70e2b4cd04ef4076b68497c4eb894704cf8ab23d32d6552931fda6e5b"},
 ]
 
 [[package]]
