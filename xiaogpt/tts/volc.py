@@ -75,10 +75,10 @@ class VolcTTS(AudioFileTTS):
 def get_token(config):
     token_file = (
         "/tmp/volc_token.json"
-        if os.path.exists("/tmp/")
-        else os.path.join(os.getenv("TEMP"), "volc_token.json")
+        if Path.exists("/tmp/")
+        else Path.joinpath(os.getenv("TEMP"), "volc_token.json")
     )
-    if not os.path.exists(token_file):
+    if not Path.exists(token_file):
         token = request_token_data(config)
     else:
         with open(token_file, "r") as f:
@@ -86,7 +86,7 @@ def get_token(config):
             if token["expires_at"] < time.time():
                 token = request_token_data(config)
 
-    if not os.path.exists(token_file):
+    if not Path.exists(token_file):
         with open(token_file, "w") as f:
             json.dump(token, f)
     return token["token"]
