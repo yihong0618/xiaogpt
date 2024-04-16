@@ -73,11 +73,7 @@ class VolcTTS(AudioFileTTS):
 ## it's aimed to reduce the request to volcengine
 ## it'll throw error if token is requested too frequently (more than 1 times per minute)
 def get_token(config):
-    token_file = (
-        "/tmp/volc_token.json"
-        if Path.exists("/tmp/")
-        else Path.joinpath(os.getenv("TEMP"), "volc_token.json")
-    )
+    token_file = Path.home() / ".volc.token"
     if not Path.exists(token_file):
         token = request_token_data(config)
     else:

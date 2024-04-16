@@ -27,7 +27,6 @@ dependencies = [
     "numexpr>=2.8.6",
     "dashscope>=1.10.0",
     "azure-cognitiveservices-speech>=1.37.0",
-    "requests>=2.31.0",
     "multidict>=6.0.5",
     "volcengine>=1.0.136",
 ]
