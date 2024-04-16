@@ -62,7 +62,9 @@ class MiGPT:
                 )
                 new_record = await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
-                self.log.debug("Polling_event, timestamp: %s %s", self.last_timestamp, new_record)
+                self.log.debug(
+                    "Polling_event, timestamp: %s %s", self.last_timestamp, new_record
+                )
                 await self.polling_event.wait()
                 if (
                     self.config.mute_xiaoai

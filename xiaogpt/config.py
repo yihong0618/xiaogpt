@@ -87,10 +87,16 @@ class Config:
     bing_cookies: dict | None = None
     azure_tts_speech_key: str | None = None
     azure_tts_service_region: str = "eastasia"
-    volc_accesskey: str = os.getenv("VOLC_ACCESSKEY", "") # https://console.volcengine.com/iam/keymanage/
+    volc_accesskey: str = os.getenv(
+        "VOLC_ACCESSKEY", ""
+    )  # https://console.volcengine.com/iam/keymanage/
     volc_secretkey: str = os.getenv("VOLC_SECRETKEY", "")
-    volc_tts_app: str = os.getenv("VOLC_TTS_APP", "") # https://console.volcengine.com/sami
-    volc_tts_speaker: str = os.getenv("VOLC_TTS_SPEAPER", "zh_female_qingxin") # https://www.volcengine.com/docs/6489/93478
+    volc_tts_app: str = os.getenv(
+        "VOLC_TTS_APP", ""
+    )  # https://console.volcengine.com/sami
+    volc_tts_speaker: str = os.getenv(
+        "VOLC_TTS_SPEAPER", "zh_female_qingxin"
+    )  # https://www.volcengine.com/docs/6489/93478
 
     def __post_init__(self) -> None:
         if self.proxy:
