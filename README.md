@@ -19,32 +19,15 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
 
 ## 获取小米音响DID
-### Windows(使用 set 设置环境变量）
-```cmd
-pip install miservice_fork
-set MI_USER=xxxx
-set MI_PASS=xxx
-micli list 得到did
-set MI_DID=xxxx
-```
+系统和Shell|Linux *sh|Windows CMD用户|Windows PowerShell用户
+-|-|-|-
+1、安装包|`pip install miservice_fork`|`pip install miservice_fork`|`pip install miservice_fork`
+2、设置变量|`export MI_USER=xxx` <br> `export MI_PASS=xxx`|`set MI_USER=xxx`<br>`set MI_PASS=xxx`|`$env:MI_USER="xxx"` <br> `$env:MI_PASS="xxx"`
+3、取得MI_DID|`micli list` |`micli list` |`micli list` 
+4、设置MI_DID|`export MI_DID=xxx`| `set MI_DID=xxx`| `$env:MI_DID="xxx"`
 
+- 注意不同shell 对环境变量的处理是不同的，尤其是powershell赋值时，可能需要双引号来包括值。
 - 如果获取did报错时，请更换一下无线网络，有很大概率解决问题。
-
-### Linux(使用 export 设置环境变量）
-```sh
-# 1、安装模块
-pip install miservice_fork
-
-# 2、设置环境用户参数
-export MI_USER=xxxx
-export MI_PASS=xxx
-
-# 3、使用micli list 得到did
-micli list
-
-# 4、根据did设置环境DID参数
-export MI_DID=xxxx
-```
 
 ## 一点原理
 
