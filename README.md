@@ -19,32 +19,15 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
 
 ## 获取小米音响DID
-### Windows(使用 set 设置环境变量）
-```cmd
-pip install miservice_fork
-set MI_USER=xxxx
-set MI_PASS=xxx
-micli list 得到did
-set MI_DID=xxxx
-```
+系统和Shell|Linux *sh|Windows CMD用户|Windows PowerShell用户
+-|-|-|-
+1、安装包|`pip install miservice_fork`|`pip install miservice_fork`|`pip install miservice_fork`
+2、设置变量|`export MI_USER=xxx` <br> `export MI_PASS=xxx`|`set MI_USER=xxx`<br>`set MI_PASS=xxx`|`$env:MI_USER="xxx"` <br> `$env:MI_PASS="xxx"`
+3、取得MI_DID|`micli list` |`micli list` |`micli list` 
+4、设置MI_DID|`export MI_DID=xxx`| `set MI_DID=xxx`| `$env:MI_DID="xxx"`
 
+- 注意不同shell 对环境变量的处理是不同的，尤其是powershell赋值时，可能需要双引号来包括值。
 - 如果获取did报错时，请更换一下无线网络，有很大概率解决问题。
- 
-### Linux(使用 export 设置环境变量）
-```sh
-# 1、安装模块
-pip install miservice_fork
-
-# 2、设置环境用户参数
-export MI_USER=xxxx
-export MI_PASS=xxx
-
-# 3、使用micli list 得到did
-micli list
-
-# 4、根据did设置环境DID参数
-export MI_DID=xxxx
-```
 
 ## 一点原理
 
@@ -59,7 +42,7 @@ export MI_DID=xxxx
 
 ## 使用
 
-- `pip install -U --force-reinstall xiaogpt`
+- `pip install -U --force-reinstall xiaogpt[locked]`
 - 参考我 fork 的 [MiService](https://github.com/yihong0618/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用
 - run `xiaogpt --hardware ${your_hardware} --use_chatgpt_api` hardware 你看小爱屁股上有型号，输入进来，如果在屁股上找不到或者型号不对，可以用 `micli mina` 找到型号
 - 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
@@ -275,9 +258,11 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 
 ### 第三方 TTS
 
-我们目前支持两种第三方 TTS：edge/openai
+我们目前支持是三种第三方 TTS：edge/openai/azure
 
 [edge-tts](https://github.com/rany2/edge-tts) 提供了类似微软tts的能力
+[azure-tts](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/9-more-realistic-ai-voices-for-conversations-now-generally/ba-p/4099471) 提供了微软 azure tts 的能力
+[openai-tts](https://platform.openai.com/docs/guides/text-to-speech) 提供了类似 openai tts 的能力
 
 #### Usage
 
@@ -296,7 +281,7 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 edge-tts --list-voices
 ```
 
-#### 在容器中使用edge-tts
+#### 在容器中使用 edge-tts/azure-tts/openai-tts
 
 由于 Edge TTS 启动了一个本地的 HTTP 服务，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
 
