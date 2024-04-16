@@ -180,7 +180,8 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | azure_tts_service_region | Azure TTS 服务地区                                                                          | `eastasia`                                                                                                | [Regions - Speech service - Azure AI services](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/regions) |
 | volc_accesskey | 火山引擎accesskey [参考](https://console.volcengine.com/iam/keymanage/)                                |                                                                                                 |  |
 | volc_secretkey | 火山引擎secretkey [参考](https://console.volcengine.com/iam/keymanage/)                                |                                                                                                 | |
-| volc_tts_app | 火山引擎 app 服务   [参考]( https://console.volcengine.com/sami/)                          |                                  |  |
+| volc_tts_app | 火山引擎  TTS app 服务   [参考]( https://console.volcengine.com/sami/)                          |                                  |  |
+| volc_tts_speaker | 火山引擎 TTS speaker   [参考]( https://www.volcengine.com/docs/6489/93478)                          |   `zh_female_qingxin`                               |  |
 
 
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
