@@ -28,5 +28,9 @@
   "api_base": "https://abc-def.openai.azure.com/",
   "deployment_id": "",
   "azure_tts_speech_key": null,
-  "azure_tts_service_region": "eastasia"
+  "azure_tts_service_region": "eastasia",
+  "volc_accesskey": "",
+  "volc_secretkey": "",
+  "volc_tts_app": "",
+  "volc_tts_speaker": "zh_female_qingxin",
 }

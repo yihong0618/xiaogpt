@@ -29,6 +29,9 @@ dependencies = [
     "httpcore==0.15.0",
     "idna==3.7",
     "azure-cognitiveservices-speech>=1.37.0",
+    "requests>=2.31.0",
+    "multidict>=6.0.5",
+    "volcengine>=1.0.136",
 ]
 license = {text = "MIT"}
 dynamic = ["version"]
