@@ -14,7 +14,7 @@
   "verbose": false,
   "bot": "chatgptapi",
   "tts": "mi",
-  "edge_tts_voice": "zh-CN-XiaoxiaoNeural",
+  "tts_options": {},
   "prompt": "请用100字以内回答",
   "keyword": ["请"],
   "change_prompt_keyword": ["更改提示词"],
@@ -26,11 +26,5 @@
   "bing_cookie_path": "",
   "bing_cookies": {},
   "api_base": "https://abc-def.openai.azure.com/",
-  "deployment_id": "",
-  "azure_tts_speech_key": null,
-  "azure_tts_service_region": "eastasia",
-  "volc_accesskey": "",
-  "volc_secretkey": "",
-  "volc_tts_app": "",
-  "volc_tts_speaker": "zh_male_chunhou",
+  "deployment_id": ""
 }
