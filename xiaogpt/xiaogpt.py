@@ -23,7 +23,7 @@ from xiaogpt.config import (
     WAKEUP_KEYWORD,
     Config,
 )
-from xiaogpt.tts import TTS, EdgeTTS, MiTTS, AzureTTS
+from xiaogpt.tts import TTS, EdgeTTS, MiTTS, AzureTTS, VolcTTS
 from xiaogpt.tts.openai import OpenAITTS
 from xiaogpt.utils import (
     parse_cookie_string,
@@ -62,7 +62,9 @@ class MiGPT:
                 )
                 new_record = await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
-                self.log.debug("Polling_event, timestamp: %s", self.last_timestamp)
+                self.log.debug(
+                    "Polling_event, timestamp: %s %s", self.last_timestamp, new_record
+                )
                 await self.polling_event.wait()
                 if (
                     self.config.mute_xiaoai
@@ -262,6 +264,8 @@ class MiGPT:
             return AzureTTS(self.mina_service, self.device_id, self.config)
         elif self.config.tts == "openai":
             return OpenAITTS(self.mina_service, self.device_id, self.config)
+        elif self.config.tts == "volc":
+            return VolcTTS(self.mina_service, self.device_id, self.config)
         else:
             return MiTTS(self.mina_service, self.device_id, self.config)
 
@@ -355,7 +359,6 @@ class MiGPT:
             new_record = await self.last_record.get()
             self.polling_event.clear()  # stop polling when processing the question
             query = new_record.get("query", "").strip()
-
             if query == self.config.start_conversation:
                 if not self.in_conversation:
                     print("开始对话")
