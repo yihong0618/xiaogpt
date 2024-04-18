@@ -56,6 +56,7 @@ class Config:
     gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
     qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
     serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
+    gemini_api_domain: str = os.getenv("GEMINI_API_DOMAIN", "") # 自行部署的 Google Gemini 代理
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD

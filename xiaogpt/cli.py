@@ -38,6 +38,11 @@ def main():
         help="gemini api key",
     )
     parser.add_argument(
+        "--gemini_api_domain",
+        dest="gemini_api_domain",
+        help="custom gemini api domain",
+    )
+    parser.add_argument(
         "--qwen_key",
         dest="qwen_key",
         help="Alibaba Qwen api key",
