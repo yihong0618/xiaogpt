@@ -56,7 +56,7 @@ class TTS(abc.ABC):
         return is_playing
 
     @abc.abstractmethod
-    async def synthesize(self, query: str, text_stream: AsyncIterator[str]) -> None:
+    async def synthesize(self, lang: str, text_stream: AsyncIterator[str]) -> None:
         """Synthesize speech from a stream of text."""
         raise NotImplementedError
 
@@ -87,20 +87,20 @@ class AudioFileTTS(TTS):
         self._start_http_server()
 
     @abc.abstractmethod
-    async def make_audio_file(self, query: str, text: str) -> tuple[Path, float]:
+    async def make_audio_file(self, lang: str, text: str) -> tuple[Path, float]:
         """Synthesize speech from text and save it to a file.
         Return the file path and the duration of the audio in seconds.
         The file path must be relative to the self.dirname.
         """
         raise NotImplementedError
 
-    async def synthesize(self, query: str, text_stream: AsyncIterator[str]) -> None:
+    async def synthesize(self, lang: str, text_stream: AsyncIterator[str]) -> None:
         queue: asyncio.Queue[tuple[str, float]] = asyncio.Queue()
         finished = asyncio.Event()
 
         async def worker():
             async for text in text_stream:
-                path, duration = await self.make_audio_file(query, text)
+                path, duration = await self.make_audio_file(lang, text)
                 url = f"http://{self.hostname}:{self.port}/{path.name}"
                 await queue.put((url, duration))
             finished.set()

@@ -27,7 +27,7 @@ class MiTTS(TTS):
                 f"{self.config.tts_command} {text}",
             )
 
-    async def synthesize(self, query: str, text_stream: AsyncIterator[str]) -> None:
+    async def synthesize(self, lang: str, text_stream: AsyncIterator[str]) -> None:
         async for text in text_stream:
             await self.say(text)
             await self.wait_for_duration(calculate_tts_elapse(text))

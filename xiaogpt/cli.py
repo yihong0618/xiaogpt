@@ -86,27 +86,9 @@ def main():
         help="show info",
     )
     parser.add_argument(
-        "--azure_tts_speech_key",
-        dest="azure_tts_speech_key",
-        help="if use azure tts",
-    )
-    parser.add_argument(
-        "--azure_tts_service_region",
-        dest="azure_tts_service_region",
-        help="if use azure tts",
-    )
-    tts_group = parser.add_mutually_exclusive_group()
-    tts_group.add_argument(
-        "--enable_edge_tts",
-        dest="tts",
-        action="store_const",
-        const="edge",
-        help="if use edge tts",
-    )
-    tts_group.add_argument(
         "--tts",
-        help="tts type",
-        choices=["mi", "edge", "openai", "azure"],
+        help="TTS provider",
+        choices=["mi", "edge", "openai", "azure", "google", "baidu", "volc"],
     )
     bot_group = parser.add_mutually_exclusive_group()
     bot_group.add_argument(
@@ -190,9 +172,15 @@ def main():
     options = parser.parse_args()
     config = Config.from_options(options)
 
-    miboy = MiGPT(config)
+    async def main(config: Config) -> None:
+        miboy = MiGPT(config)
+        try:
+            await miboy.run_forever()
+        finally:
+            await miboy.close()
+
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(miboy.run_forever())
+    loop.run_until_complete(main(config))
 
 
 if __name__ == "__main__":

@@ -33,15 +33,6 @@ HARDWARE_COMMAND_DICT = {
     # add more here
 }
 
-EDGE_TTS_DICT = {
-    "用英语": "en-US-AriaNeural",
-    "用日语": "ja-JP-NanamiNeural",
-    "用法语": "fr-BE-CharlineNeural",
-    "用韩语": "ko-KR-SunHiNeural",
-    "用德语": "de-AT-JonasNeural",
-    # add more here
-}
-
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请")
@@ -80,23 +71,11 @@ class Config:
     start_conversation: str = "开始持续对话"
     end_conversation: str = "结束持续对话"
     stream: bool = False
-    tts: Literal["mi", "edge", "azure", "openai"] = "mi"
-    tts_voice: str | None = None
+    tts: Literal["mi", "edge", "azure", "openai", "baidu", "google", "volc"] = "mi"
+    tts_options: dict[str, Any] = field(default_factory=dict)
     gpt_options: dict[str, Any] = field(default_factory=dict)
     bing_cookie_path: str = ""
     bing_cookies: dict | None = None
-    azure_tts_speech_key: str | None = None
-    azure_tts_service_region: str = "eastasia"
-    volc_accesskey: str = os.getenv(
-        "VOLC_ACCESSKEY", ""
-    )  # https://console.volcengine.com/iam/keymanage/
-    volc_secretkey: str = os.getenv("VOLC_SECRETKEY", "")
-    volc_tts_app: str = os.getenv(
-        "VOLC_TTS_APP", ""
-    )  # https://console.volcengine.com/sami
-    volc_tts_speaker: str = os.getenv(
-        "VOLC_TTS_SPEAPER", "zh_female_qingxin"
-    )  # https://www.volcengine.com/docs/6489/93478
 
     def __post_init__(self) -> None:
         if self.proxy:
@@ -121,8 +100,6 @@ class Config:
                 raise Exception(
                     "Using GPT api needs openai API key, please google how to"
                 )
-        if self.tts == "azure" and not self.azure_tts_speech_key:
-            raise Exception("Using Azure TTS needs azure speech key")
 
     @property
     def tts_command(self) -> str:
