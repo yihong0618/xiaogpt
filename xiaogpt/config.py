@@ -56,6 +56,8 @@ class Config:
     gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
     qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
     serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
+    volc_access_key: str = os.getenv("VOLC_ACCESS_KEY", "")
+    volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
@@ -117,6 +119,13 @@ class Config:
         for key, value in vars(options).items():
             if value is not None and key in cls.__dataclass_fields__:
                 config[key] = value
+        if config.get("tts") == "volc":
+            config.setdefault("tts_options", {}).setdefault(
+                "access_key", config.get("volc_access_key")
+            )
+            config.setdefault("tts_options", {}).setdefault(
+                "secret_key", config.get("volc_secret_key")
+            )
         return cls(**config)
 
     @classmethod

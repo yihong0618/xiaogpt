@@ -26,5 +26,7 @@
   "bing_cookie_path": "",
   "bing_cookies": {},
   "api_base": "https://abc-def.openai.azure.com/",
-  "deployment_id": ""
+  "deployment_id": "",
+  "volc_access_key": "",
+  "volc_secret_key": ""
 }
