@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from xiaogpt.bot.base_bot import BaseBot
 from xiaogpt.bot.chatgptapi_bot import ChatGPTBot
-from xiaogpt.bot.newbing_bot import NewBingBot
-from xiaogpt.bot.glm_bot import GLMBot
+from xiaogpt.bot.doubao_bot import DoubaoBot
 from xiaogpt.bot.gemini_bot import GeminiBot
-from xiaogpt.bot.qwen_bot import QwenBot
+from xiaogpt.bot.glm_bot import GLMBot
 from xiaogpt.bot.langchain_bot import LangChainBot
+from xiaogpt.bot.newbing_bot import NewBingBot
+from xiaogpt.bot.qwen_bot import QwenBot
 from xiaogpt.config import Config
 
 BOTS: dict[str, type[BaseBot]] = {
@@ -16,6 +17,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "gemini": GeminiBot,
     "qwen": QwenBot,
     "langchain": LangChainBot,
+    "doubao": DoubaoBot,
 }
 
 
@@ -34,4 +36,5 @@ __all__ = [
     "QwenBot",
     "get_bot",
     "LangChainBot",
+    "DoubaoBot",
 ]
