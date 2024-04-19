@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:872f68c2c4343d11e942418c7b0df2ca24b24d070bce7d349b1040aecfc98576"
+content_hash = "sha256:00a086032f49627cfa20f256e629bbb8af5e23968ddbfe29209a394cc531815c"
 
 [[package]]
 name = "aiohttp"
@@ -1733,7 +1733,7 @@ files = [
 
 [[package]]
 name = "tetos"
-version = "0.1.0"
+version = "0.1.1"
 requires_python = ">=3.8"
 summary = "Unified interface for multiple Text-to-Speech (TTS) providers"
 groups = ["default"]
@@ -1747,8 +1747,8 @@ dependencies = [
     "openai>=1.20.0",
 ]
 files = [
-    {file = "tetos-0.1.0-py3-none-any.whl", hash = "sha256:3a3d2a2a93c2d22f950fae10c179e88bdc1cd6ee5d812c7dd5bf14751653a667"},
-    {file = "tetos-0.1.0.tar.gz", hash = "sha256:fa537bb769ff4e54e3f808dd76c5d98373387a0a0c1119502e6998e00b4dcc75"},
+    {file = "tetos-0.1.1-py3-none-any.whl", hash = "sha256:ae1105a23aae2211876f846dde09555d29cf564e67c403b64abca7a0b5992542"},
+    {file = "tetos-0.1.1.tar.gz", hash = "sha256:f4ccc2b281a0917407be018aaed9b5f1d14334484f343e7d57065190392e9a3c"},
 ]
 
 [[package]]

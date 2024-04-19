@@ -83,6 +83,8 @@ def main():
         default=None,
         help="try to mute xiaoai answer",
     )
+    parser.add_argument("--volc-access-key", help="Volcengine access key")
+    parser.add_argument("--volc-secret-key", help="Volcengine secret key")
     parser.add_argument(
         "--verbose",
         dest="verbose",
