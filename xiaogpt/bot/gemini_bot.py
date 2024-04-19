@@ -38,13 +38,17 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
         from google.auth import api_key
 
         credentials = api_key.Credentials(gemini_key)
-        if(len(gemini_api_domain) > 0):
-            print('Use custom gemini_api_domain: ' + gemini_api_domain)
+        if len(gemini_api_domain) > 0:
+            print("Use custom gemini_api_domain: " + gemini_api_domain)
             credentials._universe_domain = gemini_api_domain
-            genai.configure(transport="rest", credentials=credentials, client_options={
-                "api_endpoint": "https://" + gemini_api_domain,
-                "universe_domain": gemini_api_domain
-            })
+            genai.configure(
+                transport="rest",
+                credentials=credentials,
+                client_options={
+                    "api_endpoint": "https://" + gemini_api_domain,
+                    "universe_domain": gemini_api_domain,
+                },
+            )
         else:
             genai.configure(api_key=gemini_key)
 
@@ -58,7 +62,9 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
 
     @classmethod
     def from_config(cls, config):
-        return cls(gemini_key=config.gemini_key, gemini_api_domain=config.gemini_api_domain)
+        return cls(
+            gemini_key=config.gemini_key, gemini_api_domain=config.gemini_api_domain
+        )
 
     async def ask(self, query, **options):
         response = self.convo.send_message(query)
