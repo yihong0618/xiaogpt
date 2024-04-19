@@ -5,6 +5,7 @@
   "openai_key": "",
   "glm_key": "",
   "gemini_key": "",
+  "gemini_api_domain": "",
   "qwen_key": "",
   "serpapi_api_key": "",
   "cookie": "",

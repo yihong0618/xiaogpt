@@ -56,6 +56,9 @@ class Config:
     gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
     qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
     serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
+    gemini_api_domain: str = os.getenv(
+        "GEMINI_API_DOMAIN", ""
+    )  # 自行部署的 Google Gemini 代理
     volc_access_key: str = os.getenv("VOLC_ACCESS_KEY", "")
     volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
     proxy: str | None = None

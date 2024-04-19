@@ -74,6 +74,8 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_chatgpt_api
 xiaogpt --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 google 的 gemini
 xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
+# 如果你想使用自己的 google gemini 服务
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qen_key ${qwen_key}
 # 如果你想用 edge-tts
@@ -101,6 +103,8 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --stream
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_glm --glm_key ${glm_key}
 # 如果你想使用 google 的 gemini
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
+# 如果你想使用自己的 google gemini 服务
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_qwen --qen_key ${qwen_key}
 # 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
@@ -155,6 +159,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | serpapi_api_key       | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                                           |                                                                                                           |                                                       |
 | glm_key               | chatglm 的 apikey                                                                           |                                                                                                           |                                                       |
 | gemini_key            | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                           |                                                                                                           |                                                       |
+| gemini_api_domain            | gemini 的自定义域名 [参考](https://github.com/antergone/palm-netlify-proxy)                                                      |                                                                                                           |
 | qwen_key              | qwen 的 apikey [参考](https://help.aliyun.com/zh/dashscope/developer-reference/api-details) |                                                                                                           |                                                       |
 | cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                                               |                                                                                                           |                                                       |
 | mi_did                | 设备did                                                                                     |                                                                                                           |                                                       |
@@ -175,11 +180,9 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取                                                     | 也可通过环境变量 `COOKIE_FILE` 设置                                                                       |                                                       |
 | bing_cookies          | NewBing使用的cookie字典，参考[这里]获取                                                     |                                                                                                           |                                                       |
 | deployment_id         | Azure OpenAI 服务的 deployment ID                                                           | 参考这个[如何找到deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784) |                                                       |
-| api_base              | 如果需要替换默认的api,或者使用Azure OpenAI 服务                                             | 例如：`https://abc-def.openai.azure.com/`                                                                 |                                                       |
+| api_base              | 如果需要替换默认的api,或者使用Azure OpenAI 服务                                             | 例如：`https://abc-def.openai.azure.com/`                                                                 | 
 | volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取         |                                                                                                           |                                                       |
 | volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取         |                                                                                                           |                                                       |
-
-
 [这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
 
 ## 注意
