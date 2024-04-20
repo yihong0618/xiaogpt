@@ -411,7 +411,7 @@ class MiGPT:
                 await self.wakeup_xiaoai()
 
     async def speak(self, text_stream: AsyncIterator[str]) -> None:
-        text = await anext(text_stream)
+        text = await text_stream.__anext__()
         # See if the first part contains language code(e.g. en-US|Hello world)
         lang, _, first_chunk = text.rpartition("|")
         if len(lang) > 7:
