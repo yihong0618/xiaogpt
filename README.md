@@ -16,6 +16,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - New Bing
 - [ChatGLM](http://open.bigmodel.cn/)
 - [Gemini](https://makersuite.google.com/app/apikey)
+- [Doubao](https://console.volcengine.com/iam/keymanage/)
 - [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
 
 ## 获取小米音响DID
@@ -78,6 +79,8 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qen_key ${qwen_key}
+# 如果你想使用豆包
+xiaogpt --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
 # 如果你想用 edge-tts
 xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --tts edge
 # 如果你想使用 LangChain + SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
@@ -107,6 +110,8 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${ge
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_qwen --qen_key ${qwen_key}
+# 如果你想使用豆包
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
 # 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
 export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
@@ -258,7 +263,7 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 
 ### 第三方 TTS
 
-我们目前支持是三种第三方 TTS：edge/openai/azure
+我们目前支持是三种第三方 TTS：edge/openai/azure/volc/baidu/google
 
 [edge-tts](https://github.com/rany2/edge-tts) 提供了类似微软tts的能力
 [azure-tts](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/9-more-realistic-ai-voices-for-conversations-now-generally/ba-p/4099471) 提供了微软 azure tts 的能力
@@ -271,17 +276,16 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 ```json
 {
   "tts": "edge",
-  "tts_voice": "zh-CN-XiaoxiaoNeural"
 }
 ```
 
-查看更多语言支持, 从中选择一个
+For edge 查看更多语言支持, 从中选择一个
 
 ```shell
 edge-tts --list-voices
 ```
 
-#### 在容器中使用 edge-tts/azure-tts/openai-tts
+#### 在容器中使用 edge-tts/azure-tts/openai-tts/volc/google/baidu
 
 由于 Edge TTS 启动了一个本地的 HTTP 服务，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
 

@@ -83,8 +83,12 @@ def main():
         default=None,
         help="try to mute xiaoai answer",
     )
-    parser.add_argument("--volc-access-key", help="Volcengine access key")
-    parser.add_argument("--volc-secret-key", help="Volcengine secret key")
+    parser.add_argument(
+        "--volc_access_key", dest="volc_access_key", help="Volcengine access key"
+    )
+    parser.add_argument(
+        "--volc_secret_key", dest="volc_secret_key", help="Volcengine secret key"
+    )
     parser.add_argument(
         "--verbose",
         dest="verbose",
@@ -140,6 +144,13 @@ def main():
         const="gemini",
         help="if use gemini",
     )
+    bot_group.add_argument(
+        "--use_doubao",
+        dest="bot",
+        action="store_const",
+        const="doubao",
+        help="if use doubao",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -156,6 +167,7 @@ def main():
             "gemini",
             "langchain",
             "qwen",
+            "doubao",
         ],
     )
     parser.add_argument(

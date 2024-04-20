@@ -153,6 +153,8 @@ class Config:
                     key, value = "bot", "gemini"
                 elif key == "use_qwen":
                     key, value = "bot", "qwen"
+                elif key == "use_doubao":
+                    key, value = "bot", "doubao"
                 elif key == "use_langchain":
                     key, value = "bot", "langchain"
                 elif key == "enable_edge_tts":

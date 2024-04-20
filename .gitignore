@@ -136,3 +136,4 @@ config/
 .pdm-python
 .pdm-build/
 chatgpt.sh
+nohup.out

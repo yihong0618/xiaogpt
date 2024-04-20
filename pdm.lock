@@ -315,7 +315,7 @@ files = [
 
 [[package]]
 name = "dashscope"
-version = "1.17.0"
+version = "1.17.1"
 requires_python = ">=3.8.0"
 summary = "dashscope client sdk library"
 groups = ["default"]
@@ -324,7 +324,7 @@ dependencies = [
     "requests",
 ]
 files = [
-    {file = "dashscope-1.17.0-py3-none-any.whl", hash = "sha256:fdc007d37a9b108178b00f50a0d3776ddda3bbad5d124f6183028fdb51d609cc"},
+    {file = "dashscope-1.17.1-py3-none-any.whl", hash = "sha256:1e07e7ff4544684797f86ede646766b5ab8f5bd6eb43d2d01f0f757a2941efe1"},
 ]
 
 [[package]]
@@ -590,7 +590,7 @@ files = [
 
 [[package]]
 name = "google-generativeai"
-version = "0.5.1"
+version = "0.5.2"
 requires_python = ">=3.9"
 summary = "Google Generative AI High level API client library and tools."
 groups = ["default"]
@@ -605,7 +605,7 @@ dependencies = [
     "typing-extensions",
 ]
 files = [
-    {file = "google_generativeai-0.5.1-py3-none-any.whl", hash = "sha256:4205b6f0e38cc7dc5e19c49a26a7732115ce64dbd085bfd295814c2651cef98d"},
+    {file = "google_generativeai-0.5.2-py3-none-any.whl", hash = "sha256:56f39485a0a673c93c21ec31c17809cc6a964193fb77b7ce809ad15d0dd72d7b"},
 ]
 
 [[package]]
@@ -1189,7 +1189,7 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.21.2"
+version = "1.23.2"
 requires_python = ">=3.7.1"
 summary = "The official Python library for the openai API"
 groups = ["default"]
@@ -1203,8 +1203,8 @@ dependencies = [
     "typing-extensions<5,>=4.7",
 ]
 files = [
-    {file = "openai-1.21.2-py3-none-any.whl", hash = "sha256:65f6bed84ecde0fc20e4f3b458000deb775531aa29154ff4d679e937d7e4370d"},
-    {file = "openai-1.21.2.tar.gz", hash = "sha256:7b6e4d59f3686fcd94efdb2ee61052bf6c9dbb58052b5116fc0d75ba7adbf329"},
+    {file = "openai-1.23.2-py3-none-any.whl", hash = "sha256:293a36effde29946eb221040c89c46a4850f2f2e30b37ef09ff6d75226d71b42"},
+    {file = "openai-1.23.2.tar.gz", hash = "sha256:b84aa3005357ceb38f22a269e0e22ee58ce103897f447032d021906f18178a8e"},
 ]
 
 [[package]]
