@@ -418,9 +418,15 @@ class MiGPT:
             # It is not a legal language code, discard it
             lang, first_chunk = "", text
 
+        lang = (
+            matches[0]
+            if (matches := re.findall(r"([a-z]{2}-[A-Z]{2})", lang))
+            else "zh-CN"
+        )
+
         async def gen():  # reconstruct the generator
             yield first_chunk
             async for text in text_stream:
                 yield text
 
-        await self.tts.synthesize(lang or "zh-CN", gen())
+        await self.tts.synthesize(lang, gen())
