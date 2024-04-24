@@ -76,7 +76,9 @@ class Config:
     start_conversation: str = "开始持续对话"
     end_conversation: str = "结束持续对话"
     stream: bool = False
-    tts: Literal["mi", "edge", "azure", "openai", "baidu", "google", "volc"] = "mi"
+    tts: Literal[
+        "mi", "edge", "azure", "openai", "baidu", "google", "volc", "minimax"
+    ] = "mi"
     tts_options: dict[str, Any] = field(default_factory=dict)
     gpt_options: dict[str, Any] = field(default_factory=dict)
     bing_cookie_path: str = ""
