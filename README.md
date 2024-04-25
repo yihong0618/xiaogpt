@@ -78,7 +78,7 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 # 如果你想使用自己的 google gemini 服务
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
-xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qen_key ${qwen_key}
+xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
 # 如果你想使用豆包
 xiaogpt --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
 # 如果你想用 edge-tts
