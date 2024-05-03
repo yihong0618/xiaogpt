@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:e2938d8a401fab0f92e1bd9f4fcc51d51b753297da473f6e4b1138130ed844ad"
+content_hash = "sha256:f64eb5f3bc8c63e65740d39b5cdc792037f75af9ef3c490866af5716d222ea17"
 
 [[package]]
 name = "aiohttp"
@@ -315,7 +315,7 @@ files = [
 
 [[package]]
 name = "dashscope"
-version = "1.17.1"
+version = "1.18.0"
 requires_python = ">=3.8.0"
 summary = "dashscope client sdk library"
 groups = ["default"]
@@ -324,7 +324,7 @@ dependencies = [
     "requests",
 ]
 files = [
-    {file = "dashscope-1.17.1-py3-none-any.whl", hash = "sha256:1e07e7ff4544684797f86ede646766b5ab8f5bd6eb43d2d01f0f757a2941efe1"},
+    {file = "dashscope-1.18.0-py3-none-any.whl", hash = "sha256:87ab6a3459f76ecad4519d096647a5b5c5aacc732b1014213bda405cec3661a1"},
 ]
 
 [[package]]
@@ -684,6 +684,25 @@ files = [
 ]
 
 [[package]]
+name = "groq"
+version = "0.5.0"
+requires_python = ">=3.7"
+summary = "The official Python library for the groq API"
+groups = ["default"]
+dependencies = [
+    "anyio<5,>=3.5.0",
+    "distro<2,>=1.7.0",
+    "httpx<1,>=0.23.0",
+    "pydantic<3,>=1.9.0",
+    "sniffio",
+    "typing-extensions<5,>=4.7",
+]
+files = [
+    {file = "groq-0.5.0-py3-none-any.whl", hash = "sha256:a7e6be1118bcdfea3ed071ec00f505a34d4e6ec28c435adb5a5afd33545683a1"},
+    {file = "groq-0.5.0.tar.gz", hash = "sha256:d476cdc3383b45d2a4dc1876142a9542e663ea1029f9e07a05de24f895cae48c"},
+]
+
+[[package]]
 name = "grpcio"
 version = "1.60.0"
 requires_python = ">=3.7"
@@ -857,7 +876,7 @@ files = [
 
 [[package]]
 name = "langchain"
-version = "0.1.16"
+version = "0.1.17"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -868,8 +887,8 @@ dependencies = [
     "async-timeout<5.0.0,>=4.0.0; python_version < \"3.11\"",
     "dataclasses-json<0.7,>=0.5.7",
     "jsonpatch<2.0,>=1.33",
-    "langchain-community<0.1,>=0.0.32",
-    "langchain-core<0.2.0,>=0.1.42",
+    "langchain-community<0.1,>=0.0.36",
+    "langchain-core<0.2.0,>=0.1.48",
     "langchain-text-splitters<0.1,>=0.0.1",
     "langsmith<0.2.0,>=0.1.17",
     "numpy<2,>=1",
@@ -878,13 +897,13 @@ dependencies = [
     "tenacity<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain-0.1.16-py3-none-any.whl", hash = "sha256:bc074cc5e51fad79b9ead1572fc3161918d0f614a6c8f0460543d505ad249ac7"},
-    {file = "langchain-0.1.16.tar.gz", hash = "sha256:b6bce78f8c071baa898884accfff15c3d81da2f0dd86c20e2f4c80b41463f49f"},
+    {file = "langchain-0.1.17-py3-none-any.whl", hash = "sha256:f6c5b5fdb529545e6cafbb4ba099031508e621ba1ed7985cf078a597ade3458b"},
+    {file = "langchain-0.1.17.tar.gz", hash = "sha256:709b80afa00ae634dfc7042f3e4c20309267b21ffeacc7d7494d58bcae1862f7"},
 ]
 
 [[package]]
 name = "langchain-community"
-version = "0.0.32"
+version = "0.0.36"
 requires_python = "<4.0,>=3.8.1"
 summary = "Community contributed LangChain integrations."
 groups = ["default"]
@@ -893,20 +912,20 @@ dependencies = [
     "SQLAlchemy<3,>=1.4",
     "aiohttp<4.0.0,>=3.8.3",
     "dataclasses-json<0.7,>=0.5.7",
-    "langchain-core<0.2.0,>=0.1.41",
+    "langchain-core<0.2.0,>=0.1.48",
     "langsmith<0.2.0,>=0.1.0",
     "numpy<2,>=1",
     "requests<3,>=2",
     "tenacity<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain_community-0.0.32-py3-none-any.whl", hash = "sha256:406977009999952d0705de3806de2b4867e9bb8eda8ca154a59c7a8ed58da38d"},
-    {file = "langchain_community-0.0.32.tar.gz", hash = "sha256:1510217d646c8380f54e9850351f6d2a0b0dd73c501b666c6f4b40baa8160b29"},
+    {file = "langchain_community-0.0.36-py3-none-any.whl", hash = "sha256:439ae85e01d852ba8388923d8e2a71121efdc2eea3dc1ce27d28741189f1ea75"},
+    {file = "langchain_community-0.0.36.tar.gz", hash = "sha256:97be9d00cf119c961e03ed226e04e670f51b5d42f5b05ffc3518598fa6d20c74"},
 ]
 
 [[package]]
 name = "langchain-core"
-version = "0.1.42"
+version = "0.1.50"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -919,8 +938,8 @@ dependencies = [
     "tenacity<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain_core-0.1.42-py3-none-any.whl", hash = "sha256:c5653ffa08a44f740295c157a24c0def4a753333f6a2c41f76bf431cd00be8b5"},
-    {file = "langchain_core-0.1.42.tar.gz", hash = "sha256:40751bf60ea5d8e2b2efe65290db434717ee3834870c002e40e2811f09d814e6"},
+    {file = "langchain_core-0.1.50-py3-none-any.whl", hash = "sha256:19d57477de5ebcb55febc3bc94c6c9aac62a6199b0802cfa326ca718d84d985e"},
+    {file = "langchain_core-0.1.50.tar.gz", hash = "sha256:a01e3149a117ed00ef086cc74d8d1b9437d650a0a3c80c8a3786f4dcbb8d1ef9"},
 ]
 
 [[package]]
@@ -1189,7 +1208,7 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.23.2"
+version = "1.25.1"
 requires_python = ">=3.7.1"
 summary = "The official Python library for the openai API"
 groups = ["default"]
@@ -1203,8 +1222,8 @@ dependencies = [
     "typing-extensions<5,>=4.7",
 ]
 files = [
-    {file = "openai-1.23.2-py3-none-any.whl", hash = "sha256:293a36effde29946eb221040c89c46a4850f2f2e30b37ef09ff6d75226d71b42"},
-    {file = "openai-1.23.2.tar.gz", hash = "sha256:b84aa3005357ceb38f22a269e0e22ee58ce103897f447032d021906f18178a8e"},
+    {file = "openai-1.25.1-py3-none-any.whl", hash = "sha256:aa2f381f476f5fa4df8728a34a3e454c321caa064b7b68ab6e9daa1ed082dbf9"},
+    {file = "openai-1.25.1.tar.gz", hash = "sha256:f561ce86f4b4008eb6c78622d641e4b7e1ab8a8cdb15d2f0b2a49942d40d21a8"},
 ]
 
 [[package]]
@@ -1969,17 +1988,17 @@ files = [
 
 [[package]]
 name = "zhipuai"
-version = "2.0.1"
+version = "2.0.1.20240423.1"
 requires_python = ">=3.7"
 summary = "A SDK library for accessing big model apis from ZhipuAI"
 groups = ["default"]
 dependencies = [
     "cachetools>=4.2.2",
     "httpx>=0.23.0",
-    "pydantic>=2.5.2",
+    "pydantic<3,>=1.9.0",
     "pyjwt~=2.8.0",
 ]
 files = [
-    {file = "zhipuai-2.0.1-py3-none-any.whl", hash = "sha256:738033d95696c3d5117dc4487e37d924e3ebbcdfa0072812b3f63a08ff72274a"},
-    {file = "zhipuai-2.0.1.tar.gz", hash = "sha256:297bbdbe9393da2d1dc8066c39cf39bb2342f170d86f2b7b7a13ba368c53d701"},
+    {file = "zhipuai-2.0.1.20240423.1-py3-none-any.whl", hash = "sha256:d8a560b355730909f5db9460f392428a0b93e01bbefef1f4c63e863b2ca22176"},
+    {file = "zhipuai-2.0.1.20240423.1.tar.gz", hash = "sha256:66d8f16817df98f64baae4a6f2aee6d52f9644098f8f0825b413200f3e608c24"},
 ]

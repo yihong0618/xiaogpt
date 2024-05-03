@@ -135,5 +135,5 @@ config/
 *.mp3
 .pdm-python
 .pdm-build/
-chatgpt.sh
+*.sh
 nohup.out

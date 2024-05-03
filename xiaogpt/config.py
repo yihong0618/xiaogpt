@@ -37,7 +37,7 @@ DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请")
 CHANGE_PROMPT_KEY_WORD = ("更改提示词",)
-PROMPT = "以下请用100字以内回答，请只回答文字不要带链接"
+PROMPT = "以下请用300字以内回答，请只回答文字不要带链接"
 # simulate_xiaoai_question
 MI_ASK_SIMULATE_DATA = {
     "code": 0,
@@ -52,6 +52,9 @@ class Config:
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    moonshot_api_key: str = os.getenv("MOONSHOT_API_KEY", "")
+    yi_api_key: str = os.getenv("YI_API_KEY", "")
+    llama_api_key: str = os.getenv("GROQ_API_KEY", "")  # use groq
     glm_key: str = os.getenv("CHATGLM_KEY", "")
     gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
     qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
@@ -157,6 +160,12 @@ class Config:
                     key, value = "bot", "qwen"
                 elif key == "use_doubao":
                     key, value = "bot", "doubao"
+                elif key == "use_moonshot":
+                    key, value = "bot", "moonshot"
+                elif key == "use_yi":
+                    key, value = "bot", "yi"
+                elif key == "use_llama":
+                    key, value = "bot", "llama"
                 elif key == "use_langchain":
                     key, value = "bot", "langchain"
                 elif key == "enable_edge_tts":

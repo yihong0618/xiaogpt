@@ -378,14 +378,23 @@ class MiGPT:
                 self.log.debug("No new xiao ai record")
                 continue
 
-            # drop 帮我回答
+            # drop key words
             query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
+            # llama3 is not good at Chinese, so we need to add prompt in it.
+            if self.config.bot == "llama":
+                query = f"你是一个基于llama3 的智能助手，请你跟我对话时，一定使用中文，不要夹杂一些英文单词，甚至英语短语也不能随意使用，但类似于 llama3 这样的专属名词除外, 问题是：{query}"
 
             print("-" * 20)
             print("问题：" + query + "？")
             if not self.chatbot.has_history():
                 query = f"{query}，{self.config.prompt}"
-            query += "，并用本段话的language code作为开头，用|分隔，如：en-US|你好……"
+            # some model can not detect the language code, so we need to add it
+
+            if self.config.tts != "mi":  # mi only say Chinese
+                query += (
+                    "，并用本段话的language code作为开头，用|分隔，如：en-US|你好……"
+                )
+
             if self.config.mute_xiaoai:
                 await self.stop_if_xiaoai_is_playing()
             else:

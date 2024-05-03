@@ -15,7 +15,7 @@ certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6; platform_system == "Windows"
-dashscope==1.17.0
+dashscope==1.18.0
 dataclasses-json==0.6.3
 distro==1.9.0
 edge-tts==6.1.10
@@ -28,10 +28,11 @@ google-api-python-client==2.125.0
 google-auth==2.26.1
 google-auth-httplib2==0.2.0
 google-cloud-texttospeech==2.16.3
-google-generativeai==0.5.1
+google-generativeai==0.5.2
 google-search-results==2.4.2
 googleapis-common-protos==1.62.0
 greenlet==3.0.3; platform_machine == "win32" or platform_machine == "WIN32" or platform_machine == "AMD64" or platform_machine == "amd64" or platform_machine == "x86_64" or platform_machine == "ppc64le" or platform_machine == "aarch64"
+groq==0.5.0
 grpcio==1.60.0
 grpcio-status==1.60.0
 h11==0.14.0
@@ -41,9 +42,9 @@ httpx==0.27.0
 idna==3.7
 jsonpatch==1.33
 jsonpointer==2.4
-langchain==0.1.16
-langchain-community==0.0.32
-langchain-core==0.1.42
+langchain==0.1.17
+langchain-community==0.0.36
+langchain-core==0.1.50
 langchain-text-splitters==0.0.1
 langsmith==0.1.45
 markdown-it-py==3.0.0
@@ -55,7 +56,7 @@ mutagen==1.47.0
 mypy-extensions==1.0.0
 numexpr==2.10.0
 numpy==1.26.3
-openai==1.21.2
+openai==1.25.1
 orjson==3.10.0
 packaging==23.2
 prompt-toolkit==3.0.43
@@ -87,4 +88,4 @@ urllib3==2.1.0
 wcwidth==0.2.13
 websockets==12.0
 yarl==1.9.4
-zhipuai==2.0.1
+zhipuai==2.0.1.20240423.1

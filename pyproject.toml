@@ -26,6 +26,7 @@ dependencies = [
     "numexpr>=2.8.6",
     "dashscope>=1.10.0",
     "tetos>=0.2.1",
+    "groq>=0.5.0",
 ]
 license = {text = "MIT"}
 dynamic = ["version", "optional-dependencies"]
