@@ -28,6 +28,21 @@ def main():
         help="openai api key",
     )
     parser.add_argument(
+        "--moonshot_api_key",
+        dest="moonshot_api_key",
+        help="Moonshot api key",
+    )
+    parser.add_argument(
+        "--llama_api_key",
+        dest="llama_api_key",
+        help="llama(use groq) api key",
+    )
+    parser.add_argument(
+        "--yi_api_key",
+        dest="yi_api_key",
+        help="01wanwu api key",
+    )
+    parser.add_argument(
         "--glm_key",
         dest="glm_key",
         help="chatglm api key",
@@ -110,6 +125,20 @@ def main():
         help="if use openai chatgpt api",
     )
     bot_group.add_argument(
+        "--use_moonshot_api",
+        dest="bot",
+        action="store_const",
+        const="moonshot",
+        help="if use moonshot api",
+    )
+    bot_group.add_argument(
+        "--use_yi_api",
+        dest="bot",
+        action="store_const",
+        const="yi",
+        help="if use yi api",
+    )
+    bot_group.add_argument(
         "--use_langchain",
         dest="bot",
         action="store_const",
@@ -151,6 +180,13 @@ def main():
         const="doubao",
         help="if use doubao",
     )
+    bot_group.add_argument(
+        "--use_llama",  # use groq
+        dest="bot",
+        action="store_const",
+        const="llama",
+        help="if use groq llama3",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -168,6 +204,9 @@ def main():
             "langchain",
             "qwen",
             "doubao",
+            "moonshot",
+            "yi",
+            "llama",
         ],
     )
     parser.add_argument(

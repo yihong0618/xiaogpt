@@ -8,6 +8,9 @@ from xiaogpt.bot.glm_bot import GLMBot
 from xiaogpt.bot.langchain_bot import LangChainBot
 from xiaogpt.bot.newbing_bot import NewBingBot
 from xiaogpt.bot.qwen_bot import QwenBot
+from xiaogpt.bot.moonshot_bot import MoonshotBot
+from xiaogpt.bot.yi_bot import YiBot
+from xiaogpt.bot.llama_bot import LlamaBot
 from xiaogpt.config import Config
 
 BOTS: dict[str, type[BaseBot]] = {
@@ -18,6 +21,9 @@ BOTS: dict[str, type[BaseBot]] = {
     "qwen": QwenBot,
     "langchain": LangChainBot,
     "doubao": DoubaoBot,
+    "moonshot": MoonshotBot,
+    "yi": YiBot,
+    "llama": LlamaBot,
 }
 
 
@@ -33,8 +39,11 @@ __all__ = [
     "NewBingBot",
     "GLMBot",
     "GeminiBot",
+    "MoonshotBot",
     "QwenBot",
     "get_bot",
     "LangChainBot",
     "DoubaoBot",
+    "YiBot",
+    "LlamaBot",
 ]

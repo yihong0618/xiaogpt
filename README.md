@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/xiaogpt?style=flat-square)](https://pypi.org/project/xiaogpt)
 [![Docker Image Version (latest by date)](https://img.shields.io/docker/v/yihong0618/xiaogpt?color=%23086DCD&label=docker%20image)](https://hub.docker.com/r/yihong0618/xiaogpt)
 
-https://user-images.githubusercontent.com/15976103/226803357-72f87a41-a15b-409e-94f5-e2d262eecd53.mp4
+<https://user-images.githubusercontent.com/15976103/226803357-72f87a41-a15b-409e-94f5-e2d262eecd53.mp4>
 
 Play ChatGPT and other LLM with Xiaomi AI Speaker
 
@@ -17,11 +17,15 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - [ChatGLM](http://open.bigmodel.cn/)
 - [Gemini](https://makersuite.google.com/app/apikey)
 - [Doubao](https://console.volcengine.com/iam/keymanage/)
+- [Moonshot](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
+- [01](https://platform.lingyiwanwu.com/apikeys)
+- [Llama3](https://console.groq.com/docs/quickstart)
 - [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
 
 ## 获取小米音响DID
-| 系统和Shell   | Linux *sh                                      | Windows CMD用户                        | Windows PowerShell用户                         |
-| ------------- | ---------------------------------------------- | -------------------------------------- | ---------------------------------------------- |
+
+| 系统和Shell  | Linux *sh                                      | Windows CMD用户                        | Windows PowerShell用户                         |
+|------------|------------------------------------------------|----------------------------------------|------------------------------------------------|
 | 1、安装包     | `pip install miservice_fork`                   | `pip install miservice_fork`           | `pip install miservice_fork`                   |
 | 2、设置变量   | `export MI_USER=xxx` <br> `export MI_PASS=xxx` | `set MI_USER=xxx`<br>`set MI_PASS=xxx` | `$env:MI_USER="xxx"` <br> `$env:MI_PASS="xxx"` |
 | 3、取得MI_DID | `micli list`                                   | `micli list`                           | `micli list`                                   |
@@ -47,13 +51,14 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 参考我 fork 的 [MiService](https://github.com/yihong0618/MiService) 项目 README 并在本地 terminal 跑 `micli list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用
 - run `xiaogpt --hardware ${your_hardware} --use_chatgpt_api` hardware 你看小爱屁股上有型号，输入进来，如果在屁股上找不到或者型号不对，可以用 `micli mina` 找到型号
 - 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
-- 如果上面不可用，可以尝试用手机抓包，https://userprofile.mina.mi.com/device_profile/v2/conversation 找到 cookie 利用 `--cookie '${cookie}'` cookie 别忘了用单引号包裹
+- 如果上面不可用，可以尝试用手机抓包，<https://userprofile.mina.mi.com/device_profile/v2/conversation> 找到 cookie 利用 `--cookie '${cookie}'` cookie 别忘了用单引号包裹
 - 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 `--use_command` 来使用 command 来 tts
 - 使用 `--mute_xiaoai` 选项，可以快速停掉小爱的回答
 - 使用 `--account ${account} --password ${password}`
 - 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
 - 使用 `--use_chatgpt_api` 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验, [openai api](https://platform.openai.com/account/api-keys), 命令 `--use_chatgpt_api`
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。 **请注意，此处你输入的api应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
+- `--use_moonshot_api` and other models please refer below
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
 - 可以使用 `--tts openai` 来获取 openai tts 能力
@@ -79,11 +84,17 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
+# 如果你想使用 kimi
+xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${moonshot_api_key}
+# 如果你想使用 llama3
+xiaogpt --hardware LX06  --mute_xiaoai --use_llama --llama_api_key ${llama_api_key}
+# 如果你想使用 01
+xiaogpt --hardware LX06  --mute_xiaoai --use_yi_api --ti_api_key ${yi_api_key}
 # 如果你想使用豆包
-xiaogpt --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
-# 如果你想用 edge-tts
-xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api --tts edge
-# 如果你想使用 LangChain + SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
+
+
+
+
 export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
 xiaogpt --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
@@ -110,8 +121,14 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${ge
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
+# 如果你想使用 kimi
+xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${moonshot_api_key}
+# 如果你想使用 01
+xiaogpt --hardware LX06  --mute_xiaoai --use_yi_api --ti_api_key ${yi_api_key}
 # 如果你想使用豆包
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
+# 如果你想使用 llama3
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_llama --llama_api_key ${llama_api_key}
 # 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
 export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
@@ -155,15 +172,18 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 
 ## 配置项说明
 
-| 参数                  | 说明                                                                                        | 默认值                                                                                                    | 可选值                                                           |
-| --------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| hardware              | 设备型号                                                                                    |                                                                                                           |                                                                  |
-| account               | 小爱账户                                                                                    |                                                                                                           |                                                                  |
-| password              | 小爱账户密码                                                                                |                                                                                                           |                                                                  |
-| openai_key            | openai的apikey                                                                              |                                                                                                           |                                                                  |
-| serpapi_api_key       | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                                           |                                                                                                           |                                                                  |
-| glm_key               | chatglm 的 apikey                                                                           |                                                                                                           |                                                                  |
-| gemini_key            | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                           |                                                                                                           |                                                                  |
+| 参数             | 说明                                                                                                       | 默认值 | 可选值 |
+|------------------|-----------------------------------------------------------------------------------------------------------|--------|--------|
+| hardware         | 设备型号                                                                                                   |        |        |
+| account          | 小爱账户                                                                                                   |        |        |
+| password         | 小爱账户密码                                                                                               |        |        |
+| openai_key       | openai的apikey                                                                                             |        |        |
+| moonshot_api_key | moonshot kimi 的 [apikey](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) |        |        |
+| yi_api_key       | 01 wanwu 的 [apikey](https://platform.lingyiwanwu.com/apikeys)                                             |        |        |
+| llama_api_key       | groq 的 llama3 [apikey](https://console.groq.com/docs/quickstart)                                             |        |        |
+| serpapi_api_key  | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                                                          |        |        |
+| glm_key          | chatglm 的 apikey                                                                                          |        |        |
+| gemini_key       | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                                          |        |        |
 | gemini_api_domain     | gemini 的自定义域名 [参考](https://github.com/antergone/palm-netlify-proxy)                 |                                                                                                           |
 | qwen_key              | qwen 的 apikey [参考](https://help.aliyun.com/zh/dashscope/developer-reference/api-details) |                                                                                                           |                                                                  |
 | cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                                               |                                                                                                           |                                                                  |
@@ -188,14 +208,14 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | api_base              | 如果需要替换默认的api,或者使用Azure OpenAI 服务                                             | 例如：`https://abc-def.openai.azure.com/`                                                                 |
 | volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取         |                                                                                                           |                                                                  |
 | volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取         |                                                                                                           |                                                                  |
-[这里]: https://github.com/acheong08/EdgeGPT#getting-authentication-required
+[这里]: <https://github.com/acheong08/EdgeGPT#getting-authentication-required>
 
 ## 注意
 
 1. 请开启小爱同学的蓝牙
 2. 如果要更改提示词和 PROMPT 在代码最上面自行更改
 3. 目前已知 LX04、X10A 和 L05B L05C 可能需要使用 `--use_command`，否则可能会出现终端能输出GPT的回复但小爱同学不回答GPT的情况。这几个型号也只支持小爱原本的 tts.
-4. 在wsl使用时, 需要设置代理为 http://wls的ip:port(vpn的代理端口), 否则会出现连接超时的情况, 详情 [报错： Error communicating with OpenAI](https://github.com/yihong0618/xiaogpt/issues/235)
+4. 在wsl使用时, 需要设置代理为 <http://wls的ip:port(vpn的代理端口)>, 否则会出现连接超时的情况, 详情 [报错： Error communicating with OpenAI](https://github.com/yihong0618/xiaogpt/issues/235)
 
 ## QA
 
@@ -203,7 +223,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 2. 你做这玩意也没用啊？确实。。。但是挺好玩的，有用对你来说没用，对我们来说不一定呀
 3. 想把它变得更好？PR Issue always welcome.
 4. 还有问题？提 Issue 哈哈
-5. Exception: Error https://api2.mina.mi.com/admin/v2/device_list?master=0&requestId=app_ios_xxx: Login failed [@KJZH001](https://github.com/KJZH001)<br>
+5. Exception: Error <https://api2.mina.mi.com/admin/v2/device_list?master=0&requestId=app_ios_xxx>: Login failed [@KJZH001](https://github.com/KJZH001)<br>
    这是由于小米风控导致，海外地区无法登录大陆的账户，请尝试cookie登录
    无法抓包的可以在本地部署完毕项目后再用户文件夹`C:\Users\用户名`下面找到.mi.token，然后扔到你无法登录的服务器去<br>
    若是linux则请放到当前用户的home文件夹，此时你可以重新执行先前的命令，不出意外即可正常登录（但cookie可能会过一段时间失效，需要重新获取）<br>
@@ -211,7 +231,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 
 ## 视频教程
 
-https://www.youtube.com/watch?v=K4YA8YwzOOA
+<https://www.youtube.com/watch?v=K4YA8YwzOOA>
 
 ## Docker
 
