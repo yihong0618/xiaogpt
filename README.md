@@ -24,8 +24,8 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 
 ## 获取小米音响DID
 
-| 系统和Shell  | Linux *sh                                      | Windows CMD用户                        | Windows PowerShell用户                         |
-|------------|------------------------------------------------|----------------------------------------|------------------------------------------------|
+| 系统和Shell   | Linux *sh                                      | Windows CMD用户                        | Windows PowerShell用户                         |
+| ------------- | ---------------------------------------------- | -------------------------------------- | ---------------------------------------------- |
 | 1、安装包     | `pip install miservice_fork`                   | `pip install miservice_fork`           | `pip install miservice_fork`                   |
 | 2、设置变量   | `export MI_USER=xxx` <br> `export MI_PASS=xxx` | `set MI_USER=xxx`<br>`set MI_PASS=xxx` | `$env:MI_USER="xxx"` <br> `$env:MI_PASS="xxx"` |
 | 3、取得MI_DID | `micli list`                                   | `micli list`                           | `micli list`                                   |
@@ -135,36 +135,32 @@ export SERPAPI_API_KEY=${your_serpapi_key}
 python3 xiaogpt.py --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
 ```
 
-## config.json
+## config.yaml
 
-如果想通过单一配置文件启动也是可以的, 可以通过 `--config` 参数指定配置文件, config 文件必须是合法的 JSON 格式
+如果想通过单一配置文件启动也是可以的, 可以通过 `--config` 参数指定配置文件, config 文件必须是合法的 Yaml 或 JSON 格式
 参数优先级
 
 - cli args > default > config
 
 ```shell
-python3 xiaogpt.py --config xiao_config.json
+python3 xiaogpt.py --config xiao_config.yaml
 # or
-xiaogpt --config xiao_config.json
+xiaogpt --config xiao_config.yaml
 ```
 
 或者
 
 ```shell
-cp xiao_config.json.example xiao_config.json
+cp xiao_config.yaml.example xiao_config.yaml
 python3 xiaogpt.py
 ```
 
-若要指定 OpenAI 的模型参数，如 model, temporature, top_p, 请在config.json中指定：
+若要指定 OpenAI 的模型参数，如 model, temporature, top_p, 请在 config.yaml 中指定：
 
-```json
-{
-    ...
-    "gpt_options": {
-        "temperature": 0.9,
-        "top_p": 0.9,
-    }
-}
+```yaml
+gpt_options:
+  temperature: 0.9,
+  top_p: 0.9,
 ```
 
 具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
@@ -172,43 +168,40 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 
 ## 配置项说明
 
-| 参数             | 说明                                                                                                       | 默认值 | 可选值 |
-|------------------|-----------------------------------------------------------------------------------------------------------|--------|--------|
-| hardware         | 设备型号                                                                                                   |        |        |
-| account          | 小爱账户                                                                                                   |        |        |
-| password         | 小爱账户密码                                                                                               |        |        |
-| openai_key       | openai的apikey                                                                                             |        |        |
-| moonshot_api_key | moonshot kimi 的 [apikey](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) |        |        |
-| yi_api_key       | 01 wanwu 的 [apikey](https://platform.lingyiwanwu.com/apikeys)                                             |        |        |
-| llama_api_key       | groq 的 llama3 [apikey](https://console.groq.com/docs/quickstart)                                             |        |        |
-| serpapi_api_key  | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                                                          |        |        |
-| glm_key          | chatglm 的 apikey                                                                                          |        |        |
-| gemini_key       | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                                          |        |        |
-| gemini_api_domain     | gemini 的自定义域名 [参考](https://github.com/antergone/palm-netlify-proxy)                 |                                                                                                           |
-| qwen_key              | qwen 的 apikey [参考](https://help.aliyun.com/zh/dashscope/developer-reference/api-details) |                                                                                                           |                                                                  |
-| cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                                               |                                                                                                           |                                                                  |
-| mi_did                | 设备did                                                                                     |                                                                                                           |                                                                  |
-| use_command           | 使用 MI command 与小爱交互                                                                  | `false`                                                                                                   |                                                                  |
-| mute_xiaoai           | 快速停掉小爱自己的回答                                                                      | `true`                                                                                                    |                                                                  |
-| verbose               | 是否打印详细日志                                                                            | `false`                                                                                                   |                                                                  |
-| bot                   | 使用的 bot 类型，目前支持 chatgptapi,newbing, qwen, gemini                                  | `chatgptapi`                                                                                              |                                                                  |
-| tts                   | 使用的 TTS 类型                                                                             | `mi`                                                                                                      | `edge`、 `openai`、`azure`、`volc`、`baidu`、`google`、`minimax` |
-| tts_options           | TTS 参数字典，参考 [tetos](https://github.com/frostming/tetos) 获取可用参数                 |                                                                                                           |                                                                  |
-| prompt                | 自定义prompt                                                                                | `请用100字以内回答`                                                                                       |                                                                  |
-| keyword               | 自定义请求词列表                                                                            | `["请"]`                                                                                                  |                                                                  |
-| change_prompt_keyword | 更改提示词触发列表                                                                          | `["更改提示词"]`                                                                                          |                                                                  |
-| start_conversation    | 开始持续对话关键词                                                                          | `开始持续对话`                                                                                            |                                                                  |
-| end_conversation      | 结束持续对话关键词                                                                          | `结束持续对话`                                                                                            |                                                                  |
-| stream                | 使用流式响应，获得更快的响应                                                                | `false`                                                                                                   |                                                                  |
-| proxy                 | 支持 HTTP 代理，传入 http proxy URL                                                         | ""                                                                                                        |                                                                  |
-| gpt_options           | OpenAI API 的参数字典                                                                       | `{}`                                                                                                      |                                                                  |
-| bing_cookie_path      | NewBing使用的cookie路径，参考[这里]获取                                                     | 也可通过环境变量 `COOKIE_FILE` 设置                                                                       |                                                                  |
-| bing_cookies          | NewBing使用的cookie字典，参考[这里]获取                                                     |                                                                                                           |                                                                  |
-| deployment_id         | Azure OpenAI 服务的 deployment ID                                                           | 参考这个[如何找到deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784) |                                                                  |
-| api_base              | 如果需要替换默认的api,或者使用Azure OpenAI 服务                                             | 例如：`https://abc-def.openai.azure.com/`                                                                 |
-| volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取         |                                                                                                           |                                                                  |
-| volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取         |                                                                                                           |                                                                  |
-[这里]: <https://github.com/acheong08/EdgeGPT#getting-authentication-required>
+| 参数                  | 说明                                                                                                       | 默认值                                                                                                    | 可选值                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| hardware              | 设备型号                                                                                                   |                                                                                                           |                                                                  |
+| account               | 小爱账户                                                                                                   |                                                                                                           |                                                                  |
+| password              | 小爱账户密码                                                                                               |                                                                                                           |                                                                  |
+| openai_key            | openai的apikey                                                                                             |                                                                                                           |                                                                  |
+| moonshot_api_key      | moonshot kimi 的 [apikey](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) |                                                                                                           |                                                                  |
+| yi_api_key            | 01 wanwu 的 [apikey](https://platform.lingyiwanwu.com/apikeys)                                             |                                                                                                           |                                                                  |
+| llama_api_key         | groq 的 llama3 [apikey](https://console.groq.com/docs/quickstart)                                          |                                                                                                           |                                                                  |
+| serpapi_api_key       | serpapi的key 参考 [SerpAPI](https://serpapi.com/)                                                          |                                                                                                           |                                                                  |
+| glm_key               | chatglm 的 apikey                                                                                          |                                                                                                           |                                                                  |
+| gemini_key            | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                                          |                                                                                                           |                                                                  |
+| gemini_api_domain     | gemini 的自定义域名 [参考](https://github.com/antergone/palm-netlify-proxy)                                |                                                                                                           |
+| qwen_key              | qwen 的 apikey [参考](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)                |                                                                                                           |                                                                  |
+| cookie                | 小爱账户cookie （如果用上面密码登录可以不填）                                                              |                                                                                                           |                                                                  |
+| mi_did                | 设备did                                                                                                    |                                                                                                           |                                                                  |
+| use_command           | 使用 MI command 与小爱交互                                                                                 | `false`                                                                                                   |                                                                  |
+| mute_xiaoai           | 快速停掉小爱自己的回答                                                                                     | `true`                                                                                                    |                                                                  |
+| verbose               | 是否打印详细日志                                                                                           | `false`                                                                                                   |                                                                  |
+| bot                   | 使用的 bot 类型，目前支持 chatgptapi,newbing, qwen, gemini                                                 | `chatgptapi`                                                                                              |                                                                  |
+| tts                   | 使用的 TTS 类型                                                                                            | `mi`                                                                                                      | `edge`、 `openai`、`azure`、`volc`、`baidu`、`google`、`minimax` |
+| tts_options           | TTS 参数字典，参考 [tetos](https://github.com/frostming/tetos) 获取可用参数                                |                                                                                                           |                                                                  |
+| prompt                | 自定义prompt                                                                                               | `请用100字以内回答`                                                                                       |                                                                  |
+| keyword               | 自定义请求词列表                                                                                           | `["请"]`                                                                                                  |                                                                  |
+| change_prompt_keyword | 更改提示词触发列表                                                                                         | `["更改提示词"]`                                                                                          |                                                                  |
+| start_conversation    | 开始持续对话关键词                                                                                         | `开始持续对话`                                                                                            |                                                                  |
+| end_conversation      | 结束持续对话关键词                                                                                         | `结束持续对话`                                                                                            |                                                                  |
+| stream                | 使用流式响应，获得更快的响应                                                                               | `true`                                                                                                    |                                                                  |
+| proxy                 | 支持 HTTP 代理，传入 http proxy URL                                                                        | ""                                                                                                        |                                                                  |
+| gpt_options           | OpenAI API 的参数字典                                                                                      | `{}`                                                                                                      |                                                                  |
+| deployment_id         | Azure OpenAI 服务的 deployment ID                                                                          | 参考这个[如何找到deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784) |                                                                  |
+| api_base              | 如果需要替换默认的api,或者使用Azure OpenAI 服务                                                            | 例如：`https://abc-def.openai.azure.com/`                                                                 |
+| volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |                                                                  |
+| volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |
 
 ## 注意
 
@@ -254,13 +247,13 @@ docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<yo
 xiaogpt的配置文件可通过指定volume /config，以及指定参数--config来处理，如
 
 ```shell
-docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/config.json
+docker run -v <your-config-dir>:/config yihong0618/xiaogpt --config=/config/config.yaml
 ```
 
 ### 网络使用 host 模型
 
 ```shell
-docker run -v <your-config-dir>:/config --network=host yihong0618/xiaogpt --config=/config/config.json
+docker run -v <your-config-dir>:/config --network=host yihong0618/xiaogpt --config=/config/config.yaml
 ```
 
 ### 本地编译Docker Image
@@ -293,10 +286,8 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 
 你可以通过参数 `tts`, 来启用它
 
-```json
-{
-  "tts": "edge",
-}
+```yaml
+tts: edge
 ```
 
 For edge 查看更多语言支持, 从中选择一个
@@ -310,7 +301,7 @@ edge-tts --list-voices
 由于 Edge TTS 启动了一个本地的 HTTP 服务，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
 
 ```shell
-docker run -v <your-config-dir>:/config -p 9527:9527 -e XIAOGPT_HOSTNAME=<your ip> yihong0618/xiaogpt --config=/config/config.json
+docker run -v <your-config-dir>:/config -p 9527:9527 -e XIAOGPT_HOSTNAME=<your ip> yihong0618/xiaogpt --config=/config/config.yaml
 ```
 
 注意端口必须映射为与容器内一致，XIAOGPT_HOSTNAME 需要设置为宿主机的 IP 地址，否则小爱无法正常播放语音。
