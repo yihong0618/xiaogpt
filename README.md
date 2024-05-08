@@ -159,7 +159,7 @@ python3 xiaogpt.py
 
 ```yaml
 gpt_options:
-  temperature: 0.9,
+  temperature: 0.9
   top_p: 0.9,
 ```
 
