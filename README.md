@@ -160,7 +160,7 @@ python3 xiaogpt.py
 ```yaml
 gpt_options:
   temperature: 0.9
-  top_p: 0.9,
+  top_p: 0.9
 ```
 
 具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
