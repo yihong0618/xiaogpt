@@ -146,13 +146,6 @@ def main():
         help="if use langchain",
     )
     bot_group.add_argument(
-        "--use_newbing",
-        dest="bot",
-        action="store_const",
-        const="newbing",
-        help="if use newbing",
-    )
-    bot_group.add_argument(
         "--use_glm",
         dest="bot",
         action="store_const",
@@ -198,7 +191,6 @@ def main():
         help="bot type",
         choices=[
             "chatgptapi",
-            "newbing",
             "glm",
             "gemini",
             "langchain",

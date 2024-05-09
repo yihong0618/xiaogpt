@@ -1,0 +1,94 @@
+# This is a YAML configuration file
+
+# 小米设备型号，可在底部标签获得
+hardware: LX06
+# 小米账号
+account: ""
+# 小米密码
+password: ""
+# 小米账户 cookie （如果用上面密码登录可以不填）
+cookie: ""
+# 设备 DID，参考 https://github.com/yihong0618/MiService
+mi_did: ""
+# 使用 MI command 与小爱交互
+use_command: false
+# 快速停掉小爱自己的回答
+mute_xiaoai: true
+# 是否打印详细日志
+verbose: false
+# HTTP 代理地址
+proxy: ""
+
+# ===== 对话 AI 设置 =====
+# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama,
+bot: chatgptapi
+# 自定义 prompt
+prompt: "请用100字以内回答"
+# 触发词列表
+keyword:
+    - "请"
+# 更改提示词触发列表
+change_prompt_keyword:
+    - "更改提示词"
+# 开始持续对话关键词
+start_conversation: "开始持续对话"
+# 结束持续对话关键词
+end_conversation: "结束持续对话"
+# 使用流式响应，获得更快的响应
+stream: true
+# 传给 Chatbot completion 接口的参数，比如要使用自定义模型：
+# gpt_options:
+#   model: gpt4-turbo
+gpt_options: {}
+
+# ----- OpenAI -----
+# OpenAI key
+openai_key: ""
+# OpenAI API 地址
+# 例：OpenAI 代理地址: https://myopenai.com/v1/
+# 或：Azure Open AI: https://abc.openai.azure.com/
+api_base: "https://abc-def.openai.azure.com/"
+# Azure Open AI 的 deployment id（如使用 Azure OpenAI）
+deployment_id: ""
+
+
+# ----- Moonshot(Kimi) -----
+# Kimi 的 API key: https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B
+moonshot_api_key: ""
+
+# ----- Yi -----
+# 零一万物的 API key: https://platform.lingyiwanwu.com/apikeys
+yi_api_key: ""
+
+# ----- Groq(Llama3) -----
+# Groq API key: https://console.groq.com/docs/quickstart
+llama_api_key: ""
+
+# ----- SerpAPI(Bot 类型为 langchain 时需要) -----
+# SerpAPI key: https://serpapi.com/
+serpapi_api_key: ""
+
+# ----- 智谱清言(ChatGLM) -----
+# ChatGLM API key
+glm_key: ""
+
+# ----- Gemini -----
+# Gemini key: https://makersuite.google.com/app/apikey
+gemini_key: ""
+# Gemini 自定义域名: https://github.com/antergone/palm-netlify-proxy
+gemini_api_domain: ""
+
+# ----- 通义千问(Qwen) -----
+# Qwen API key: https://help.aliyun.com/zh/dashscope/developer-reference/api-details
+qwen_key: ""
+
+# ----- 火山（豆包）-----
+# 火山引擎的 access key 和 secret key，参考 https://console.volcengine.com/iam/keymanage/
+volc_access_key: ""
+volc_secret_key: ""
+
+# ===== 语音设置 =====
+# 使用的 TTS 类型，目前支持 mi, edge, openai, azure, volc, baidu, google, minimax
+tts: mi
+# TTS 参数字典，参考 https://github.com/frostming/tetos 获取可用参数
+tts_options: {}

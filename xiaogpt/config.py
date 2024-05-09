@@ -6,6 +6,8 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Literal
 
+import yaml
+
 from xiaogpt.utils import validate_proxy
 
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
@@ -84,18 +86,10 @@ class Config:
     ] = "mi"
     tts_options: dict[str, Any] = field(default_factory=dict)
     gpt_options: dict[str, Any] = field(default_factory=dict)
-    bing_cookie_path: str = ""
-    bing_cookies: dict | None = None
 
     def __post_init__(self) -> None:
         if self.proxy:
             validate_proxy(self.proxy)
-        if self.bot == "newbing":
-            if not (self.bing_cookie_path or self.bing_cookies):
-                raise Exception(
-                    "New bing bot needs bing_cookie_path or bing_cookies, read this: "
-                    "https://github.com/acheong08/EdgeGPT#getting-authentication-required"
-                )
         if (
             self.api_base
             and self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
@@ -140,7 +134,10 @@ class Config:
     def read_from_file(cls, config_path: str) -> dict:
         result = {}
         with open(config_path, "rb") as f:
-            config = json.load(f)
+            if config_path.endswith(".json"):
+                config = json.load(f)
+            else:
+                config = yaml.safe_load(f)
             for key, value in config.items():
                 if value is None:
                     continue
