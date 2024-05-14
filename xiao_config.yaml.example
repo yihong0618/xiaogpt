@@ -23,7 +23,7 @@ proxy: ""
 # 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama,
 bot: chatgptapi
 # 自定义 prompt
-prompt: "请用100字以内回答"
+prompt: "请用300字以内回答"
 # 触发词列表
 keyword:
     - "请"
@@ -38,7 +38,7 @@ end_conversation: "结束持续对话"
 stream: true
 # 传给 Chatbot completion 接口的参数，比如要使用自定义模型：
 # gpt_options:
-#   model: gpt4-turbo
+#   model: gpt-4o-2024-05-13
 gpt_options: {}
 
 # ----- OpenAI -----
@@ -47,9 +47,9 @@ openai_key: ""
 # OpenAI API 地址
 # 例：OpenAI 代理地址: https://myopenai.com/v1/
 # 或：Azure Open AI: https://abc.openai.azure.com/
-api_base: "https://abc-def.openai.azure.com/"
+#api_base: "https://abc-def.openai.azure.com/"
 # Azure Open AI 的 deployment id（如使用 Azure OpenAI）
-deployment_id: ""
+#deployment_id: ""
 
 
 # ----- Moonshot(Kimi) -----

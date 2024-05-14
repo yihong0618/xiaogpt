@@ -137,3 +137,4 @@ config/
 .pdm-build/
 *.sh
 nohup.out
+xiao_config.yaml
