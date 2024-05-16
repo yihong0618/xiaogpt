@@ -325,7 +325,7 @@ class MiGPT:
         # WTF xiaomi api
         is_playing = (
             json.loads(playing_info.get("data", {}).get("info", "{}")).get("status", -1)
-            == 1
+            >= 1
         )
         return is_playing
 
@@ -333,7 +333,7 @@ class MiGPT:
         is_playing = await self.get_if_xiaoai_is_playing()
         if is_playing:
             # stop it
-            await self.mina_service.player_pause(self.device_id)
+            await self.mina_service.player_stop(self.device_id)
 
     async def wakeup_xiaoai(self):
         return await miio_command(
