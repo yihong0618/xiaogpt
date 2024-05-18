@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:b13a77de5418a6e7d7f394841654581ba5c15814ff5588ccefef1df3fab51353"
+content_hash = "sha256:32304ef0edf623e7371e6ff966de06e7a62c581922586f999d566ea94bff0cba"
 
 [[package]]
 name = "aiohttp"
@@ -300,7 +300,7 @@ files = [
 
 [[package]]
 name = "dashscope"
-version = "1.19.0"
+version = "1.19.1"
 requires_python = ">=3.8.0"
 summary = "dashscope client sdk library"
 groups = ["default"]
@@ -309,7 +309,7 @@ dependencies = [
     "requests",
 ]
 files = [
-    {file = "dashscope-1.19.0-py3-none-any.whl", hash = "sha256:d865fa60c8662bd7694bf592cfaf496802af23eebf18cf1e867f8381cb372eea"},
+    {file = "dashscope-1.19.1-py3-none-any.whl", hash = "sha256:2f115d10a16db0c5389cc924016353adc4287ed59761027f4dcbf3935663d2a9"},
 ]
 
 [[package]]
@@ -842,7 +842,7 @@ files = [
 
 [[package]]
 name = "langchain"
-version = "0.1.20"
+version = "0.2.0"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -852,9 +852,8 @@ dependencies = [
     "aiohttp<4.0.0,>=3.8.3",
     "async-timeout<5.0.0,>=4.0.0; python_version < \"3.11\"",
     "dataclasses-json<0.7,>=0.5.7",
-    "langchain-community<0.1,>=0.0.38",
-    "langchain-core<0.2.0,>=0.1.52",
-    "langchain-text-splitters<0.1,>=0.0.1",
+    "langchain-core<0.3.0,>=0.2.0",
+    "langchain-text-splitters<0.3.0,>=0.2.0",
     "langsmith<0.2.0,>=0.1.17",
     "numpy<2,>=1",
     "pydantic<3,>=1",
@@ -862,13 +861,13 @@ dependencies = [
     "tenacity<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain-0.1.20-py3-none-any.whl", hash = "sha256:09991999fbd6c3421a12db3c7d1f52d55601fc41d9b2a3ef51aab2e0e9c38da9"},
-    {file = "langchain-0.1.20.tar.gz", hash = "sha256:f35c95eed8c8375e02dce95a34f2fd4856a4c98269d6dc34547a23dba5beab7e"},
+    {file = "langchain-0.2.0-py3-none-any.whl", hash = "sha256:25c43d97daaf8539c10c77d028f88782f48649e6a01e77938014a1fbaf68bb62"},
+    {file = "langchain-0.2.0.tar.gz", hash = "sha256:3d980e92d8635bb7fa45751ee159c56643d1f0e56221e378b45d81cf6dc7d453"},
 ]
 
 [[package]]
 name = "langchain-community"
-version = "0.0.38"
+version = "0.2.0"
 requires_python = "<4.0,>=3.8.1"
 summary = "Community contributed LangChain integrations."
 groups = ["default"]
@@ -877,20 +876,21 @@ dependencies = [
     "SQLAlchemy<3,>=1.4",
     "aiohttp<4.0.0,>=3.8.3",
     "dataclasses-json<0.7,>=0.5.7",
-    "langchain-core<0.2.0,>=0.1.52",
+    "langchain-core<0.3.0,>=0.2.0",
+    "langchain<0.3.0,>=0.2.0",
     "langsmith<0.2.0,>=0.1.0",
     "numpy<2,>=1",
     "requests<3,>=2",
     "tenacity<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain_community-0.0.38-py3-none-any.whl", hash = "sha256:ecb48660a70a08c90229be46b0cc5f6bc9f38f2833ee44c57dfab9bf3a2c121a"},
-    {file = "langchain_community-0.0.38.tar.gz", hash = "sha256:127fc4b75bc67b62fe827c66c02e715a730fef8fe69bd2023d466bab06b5810d"},
+    {file = "langchain_community-0.2.0-py3-none-any.whl", hash = "sha256:4d069d280fd2dc1219df13d580338729dbaebf581160bc42c73d5ed208258d57"},
+    {file = "langchain_community-0.2.0.tar.gz", hash = "sha256:15c7e8f2547d9e9f03eef0704ef1c68a0074c462e9bd635662d5ea4b0eace87b"},
 ]
 
 [[package]]
 name = "langchain-core"
-version = "0.1.52"
+version = "0.2.0"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -903,22 +903,22 @@ dependencies = [
     "tenacity<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain_core-0.1.52-py3-none-any.whl", hash = "sha256:62566749c92e8a1181c255c788548dc16dbc319d896cd6b9c95dc17af9b2a6db"},
-    {file = "langchain_core-0.1.52.tar.gz", hash = "sha256:084c3fc452f5a6966c28ab3ec5dbc8b8d26fc3f63378073928f4e29d90b6393f"},
+    {file = "langchain_core-0.2.0-py3-none-any.whl", hash = "sha256:973cf3402d428018dc68313d8be0e721cea5b18d4ae82149ad659dbce34dc296"},
+    {file = "langchain_core-0.2.0.tar.gz", hash = "sha256:22c84e88aa7e98a0b98fadb3238343152641afce6ff27e8f2d9f5ff421e35a35"},
 ]
 
 [[package]]
 name = "langchain-text-splitters"
-version = "0.0.1"
-requires_python = ">=3.8.1,<4.0"
+version = "0.2.0"
+requires_python = "<4.0,>=3.8.1"
 summary = "LangChain text splitting utilities"
 groups = ["default"]
 dependencies = [
-    "langchain-core<0.2.0,>=0.1.28",
+    "langchain-core<0.3.0,>=0.2.0",
 ]
 files = [
-    {file = "langchain_text_splitters-0.0.1-py3-none-any.whl", hash = "sha256:f5b802f873f5ff6a8b9259ff34d53ed989666ef4e1582e6d1adb3b5520e3839a"},
-    {file = "langchain_text_splitters-0.0.1.tar.gz", hash = "sha256:ac459fa98799f5117ad5425a9330b21961321e30bc19a2a2f9f761ddadd62aa1"},
+    {file = "langchain_text_splitters-0.2.0-py3-none-any.whl", hash = "sha256:7b4c6a45f8471630a882b321e138329b6897102a5bc62f4c12be1c0b05bb9199"},
+    {file = "langchain_text_splitters-0.2.0.tar.gz", hash = "sha256:b32ab4f7397f7d42c1fa3283fefc2547ba356bd63a68ee9092865e5ad83c82f9"},
 ]
 
 [[package]]
