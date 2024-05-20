@@ -118,7 +118,7 @@ class AudioFileTTS(TTS):
                     continue
             logger.debug("Playing URL %s (%s seconds)", url, duration)
             await asyncio.gather(
-                self.mina_service.play_by_url(self.device_id, url),
+                self.mina_service.play_by_url(self.device_id, url, _type=1),
                 self.wait_for_duration(duration),
             )
         await task
