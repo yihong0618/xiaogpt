@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:32304ef0edf623e7371e6ff966de06e7a62c581922586f999d566ea94bff0cba"
+content_hash = "sha256:a0dd0fc528bbf872608258b296cebe5620bde2e66f6f9f313c533de2817523fd"
 
 [[package]]
 name = "aiohttp"
@@ -935,6 +935,80 @@ dependencies = [
 files = [
     {file = "langsmith-0.1.45-py3-none-any.whl", hash = "sha256:5a5b7fafe767fa28826c925f175875c09bf5368bfdb141286381a94bf737e6ef"},
     {file = "langsmith-0.1.45.tar.gz", hash = "sha256:713206107df636db1edf30867d64b92495afb1f09d2fee0857a77b7a8ee083d5"},
+]
+
+[[package]]
+name = "lingua-language-detector"
+version = "2.0.2"
+requires_python = ">=3.8"
+summary = "An accurate natural language detection library, suitable for short text and mixed-language text"
+groups = ["default"]
+marker = "python_version < \"3.13\""
+files = [
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-macosx_10_7_x86_64.whl", hash = "sha256:972b76218a2d72095c372e8b592b6ba0295a47880387de2d7c9c38da64d76a10"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9ae0c1fac75528db15c293160ff1d5feeba0dbc0d2f3a43e62ba07163cf81354"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:51adc3ac5c39a1d245394e6f02a197896e380b908642f4a19bef7554029f6437"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:013a57405ce9b5d03250fc50cd09b10122f21398851c4ecce98647fe7585b5f4"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d24190b5e75c466fe3117310aeae2d11e30e62dfb531c288a85b9b6ab11c94e2"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:4e162f9aa34c4f78bc48a69b557b58f783e1ee1dd369e99ab7d2b14bdac3447f"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:a8092529499ab8bb1beece1a9f4c241b1d0c3ab6c36b181833c4107b81ae5d1d"},
+    {file = "lingua_language_detector-2.0.2-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:ce3233f1c05c623eafdbfb751bd8ac47e20c4bfd744ba6dda5d5c47db7149425"},
+    {file = "lingua_language_detector-2.0.2-cp310-none-win32.whl", hash = "sha256:ffa8eff2bbfbf80469a6c4ee3864ccfd4dc7150717e9a1abcf4580b354ccea10"},
+    {file = "lingua_language_detector-2.0.2-cp310-none-win_amd64.whl", hash = "sha256:745befc3a1e4c9510d00ad34cac206b678944257fc8b5c1cd7b512310cd7fdbd"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-macosx_10_7_x86_64.whl", hash = "sha256:14216ee3aeb0c9ab6a5665d71a1399653fe635ed66f208165ed67346feeb2a5c"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:ca558c52130a3a2a1fa432504fc71d4c6e2370340008d4bad261b33c05f81b3f"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:a7ae33db037acb47c6517a938885dab4b8bf14e6d6b27a9fa7e237e8680babbc"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d6b22ad7d05db4ae6ef8ff127ccee2afb456941ddd781dc8675f110f77de8337"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5d39aa5ca1b2d51aee46c7c96fa7ad0463dd2471a1b9827019b71fa367c918be"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:d1502bb5e33a9f535b735cb8a898d96b81a63d19a1d2143f76e3b1ae7b7651ae"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:d72a650be1c44e69dacac26aa7ab354790f95191bc830b3d43ab32ec71388a25"},
+    {file = "lingua_language_detector-2.0.2-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:2c9588ed7e1dfbe06190d6946cd0a9c0f4f22018f09dc37bb6ac686bcfd67907"},
+    {file = "lingua_language_detector-2.0.2-cp311-none-win32.whl", hash = "sha256:c0a9fcaaf3a05b7b0b199414bfcdfc06a90b6779bfc37f784fafd45a0dad3201"},
+    {file = "lingua_language_detector-2.0.2-cp311-none-win_amd64.whl", hash = "sha256:7ca5e4643cbb229c4eaae198458a5fafdeb812576edb3a160a5c2e4951d3cd1c"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-macosx_10_7_x86_64.whl", hash = "sha256:f5abfba01b9d1d4e23c647871203692f6e14cbd41a5d99a19ae3504e987a175c"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:afb62a4ec7f758d1bc12e0bcb6178d762d4ca26cb5e005f5a24f79ef52f47dec"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:3a9395f4030cf6eaaa7e432cb167fbaa577109c38114ab1dbdfdd75693b3048b"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ed54511cc9e4bb721c7f0530870494918985fabf3a30c1fe9a26649416ed83c7"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f1571a68601a60b3eaf246ce9c2ad7b9d515609116f3a01c7536f20e2f9e7437"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:652936f5e109784528f643062c704ad02572994cf05cfb7c609f96f0ae6259ed"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:5fcc06b49c65cf6083afc7b6bd6ea26a43da8107d849842e4647a19c0ce68f66"},
+    {file = "lingua_language_detector-2.0.2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:9012c74eea7d07c63c47fceaa3a6bc1e216954107b08beb421b64c717912be0d"},
+    {file = "lingua_language_detector-2.0.2-cp312-none-win32.whl", hash = "sha256:9a256aadabf76a915910dd430724592f417942a443dc980a325a154c3f93f547"},
+    {file = "lingua_language_detector-2.0.2-cp312-none-win_amd64.whl", hash = "sha256:72866175ff3d78b3d9244932ffbbb731471bca3758a2a825c60331ecdfb10851"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-macosx_10_7_x86_64.whl", hash = "sha256:c568d1bc24ccf61a76d3b181139dbc519180f14e2eca437ba1e10a62efaf9e4a"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:3e4a936dc42ce8c118afcba3ce5f964b9590c2ed84fb622b7b35c518e4ea1c90"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:815f3290ab251907e142b82969a1d251c1c03d9ec2c71c8fbe5dc87f46152590"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:01b69fc794474611978bbc922cbff154ef390287df47c1a48699c589a78587a2"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:40629aeac21a3cbc6ea45b925c6adab66badd6c9fc1885285f2aa27658b86157"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:15beab4230e16c38cc88e50548076943e960476b2681e9873d764770173c1d3d"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-musllinux_1_2_i686.whl", hash = "sha256:c2f788707484686e584e947bbc526fae13759c2bcfe57d8076e3b20c2278d0e0"},
+    {file = "lingua_language_detector-2.0.2-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:daf792f938601d161e93ab8c46b0aee2facc187c2bb9e87a4ee314d7fc7471a1"},
+    {file = "lingua_language_detector-2.0.2-cp39-none-win32.whl", hash = "sha256:183c335b8f73286bb67a8a1a780145335af7fd03cc4e4de926da792d1ed120fe"},
+    {file = "lingua_language_detector-2.0.2-cp39-none-win_amd64.whl", hash = "sha256:48203ec1fbd6be0b6af3888b9494d543b86f3cf8de6f9b1cd08867fa12cd673c"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-macosx_10_7_x86_64.whl", hash = "sha256:fc6f2548fe6aa94ac0a0868cd67b468dc6b03982ecb9d6d04aeb6716d45995c2"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-macosx_11_0_arm64.whl", hash = "sha256:9be364224fc088cf9b0e95fbe19dcc884238f9194ffd015d223400334f7f57c7"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:aa499e82d66e12a242f51de51517d86e4cf0969c29379a9bae16a12853519c80"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9eb520f8de3906db10df68c4dcd48c5ed9a3c6eb593d3d94a9875627eead010a"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ccb2aa354d659abddcaa067bc403fc32549d1f531ce99b5d4d336b7c796ed111"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:1eeb4390c7b2b570013bbcbfb2292beda4b60e6c22631b27937160814fa38f8d"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-musllinux_1_2_i686.whl", hash = "sha256:8286b031302e32ac7a81d4f4f0a379b8ce1031422424eba3b1c8d721b956c4cb"},
+    {file = "lingua_language_detector-2.0.2-pp310-pypy310_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:3d2e8a34e4d9830714f1de6728eec182a36d243f038d1b7b71a29cc63408ad2d"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-macosx_10_7_x86_64.whl", hash = "sha256:d012d95f863c627d4a57a69084ec768a7add7d8ca5f87eb0b51b05d7f4b17232"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-macosx_11_0_arm64.whl", hash = "sha256:9d26936378cf2d8c081be332f60d5b1b7e6ead66986cff85df00105f146f8aa2"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:d4115466f8dc4e63b6dc71fdd17ac39bc5ab334a0f2567237cff5a9f7515655c"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ade311c8f7f419e4ad79065b5d757a49550131fc3b18fccb76cb949c562e0705"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b4e861e49e75d37d26eb5c62c384b473d0641390b5f5f52c5ca30667b6573425"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:9fd26d458356942db1d92b2951f9f6fa3aca0ef843a939c2cdcd8779a5148912"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-musllinux_1_2_i686.whl", hash = "sha256:80eaaf6db600303665ab13c582c7818894e28270fee1e1d6af2a36ccc4d5095a"},
+    {file = "lingua_language_detector-2.0.2-pp38-pypy38_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:eb5dc7f0f867e52cc66b2fee861f7442f95a6be7fdca84fc375b8d57b2cae008"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-macosx_10_7_x86_64.whl", hash = "sha256:0b5415d527be8e8ef9216c8d5aab8cc8e5271361342777a39133ca7e0e5e9944"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-macosx_11_0_arm64.whl", hash = "sha256:796ba624c026ef978819d124d0d47685f2aeeec5b92315827187126347e7f406"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:b4c164c7c9e0a151a986ab52668f57e3de265f0b04fb804a8ff2a5cb8a2fd83d"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ac1ca58c8b273ac3ea1a0aa5dccb613c4539b1e4eaf236b565836898a70bd03d"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ae33435d749478623466aa6315917432de9114226ad0faa7dc02b5bf42faae77"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:177fd7d5073a96b885daa2059c55d19a306550fed7aadafcfd3037cd8ce44ae1"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-musllinux_1_2_i686.whl", hash = "sha256:c7d1ea36a200f5d7e72eca06a3f1648dcd15fa482bf3b075ec3ef90ed57120a0"},
+    {file = "lingua_language_detector-2.0.2-pp39-pypy39_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:436de99680cbe4418295f961d82958bed76c029ab10696a4c46ce0b8d33e369c"},
 ]
 
 [[package]]

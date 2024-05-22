@@ -5,10 +5,13 @@ import os
 import re
 import socket
 from http.cookies import SimpleCookie
-from typing import AsyncIterator
+from typing import TYPE_CHECKING, AsyncIterator
 from urllib.parse import urlparse
 
 from requests.utils import cookiejar_from_dict
+
+if TYPE_CHECKING:
+    from lingua import LanguageDetector
 
 
 ### HELP FUNCTION ###
@@ -69,3 +72,21 @@ def get_hostname() -> str:
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.connect(("8.8.8.8", 80))
         return s.getsockname()[0]
+
+
+def _get_detector() -> LanguageDetector | None:
+    try:
+        from lingua import LanguageDetectorBuilder
+    except ImportError:
+        return None
+    return LanguageDetectorBuilder.from_all_spoken_languages().build()
+
+
+_detector = _get_detector()
+
+
+def detect_language(text: str) -> str:
+    if _detector is None:
+        return "zh"  # default to Chinese if langdetect module is not available
+    lang = _detector.detect_language_of(text)
+    return lang.iso_code_639_1.name.lower() if lang is not None else "zh"

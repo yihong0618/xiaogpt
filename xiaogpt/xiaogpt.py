@@ -24,9 +24,7 @@ from xiaogpt.config import (
     Config,
 )
 from xiaogpt.tts import TTS, MiTTS, TetosTTS
-from xiaogpt.utils import (
-    parse_cookie_string,
-)
+from xiaogpt.utils import detect_language, parse_cookie_string
 
 EOF = object()
 
@@ -390,11 +388,6 @@ class MiGPT:
                 query = f"{query}，{self.config.prompt}"
             # some model can not detect the language code, so we need to add it
 
-            if self.config.tts != "mi":  # mi only say Chinese
-                query += (
-                    "，并用本段话的language code作为开头，用|分隔，如：en-US|你好……"
-                )
-
             if self.config.mute_xiaoai:
                 await self.stop_if_xiaoai_is_playing()
             else:
@@ -420,18 +413,11 @@ class MiGPT:
                 await self.wakeup_xiaoai()
 
     async def speak(self, text_stream: AsyncIterator[str]) -> None:
-        text = await text_stream.__anext__()
-        # See if the first part contains language code(e.g. en-US|Hello world)
-        lang, _, first_chunk = text.rpartition("|")
-        if len(lang) > 7:
-            # It is not a legal language code, discard it
-            lang, first_chunk = "", text
-
-        lang = (
-            matches[0]
-            if (matches := re.findall(r"([a-z]{2}-[A-Z]{2})", lang))
-            else "zh-CN"
-        )
+        first_chunk = await text_stream.__anext__()
+        # Detect the language from the first chunk
+        # Add suffix '-' because tetos expects it to exist when selecting voices
+        # however, the nation code is never used.
+        lang = detect_language(first_chunk) + "-"
 
         async def gen():  # reconstruct the generator
             yield first_chunk

@@ -28,6 +28,8 @@ dependencies = [
     "groq>=0.5.0",
     "pyyaml>=6.0.1",
     "langchain-community>=0.0.38",
+    # lingua doesn't ship wheels for python 3.13 nor sdist
+    "lingua-language-detector>=2.0.2; python_version < \"3.13\"",
 ]
 license = {text = "MIT"}
 dynamic = ["version", "optional-dependencies"]
