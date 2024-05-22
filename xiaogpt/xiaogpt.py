@@ -414,7 +414,7 @@ class MiGPT:
 
     async def speak(self, text_stream: AsyncIterator[str]) -> None:
         first_chunk = await text_stream.__anext__()
-        # See if the first part contains language code(e.g. en-US|Hello world)
+        # Detect the language from the first chunk
         # Add suffix '-' because tetos expects it to exist when selecting voices
         # however, the nation code is never used.
         lang = detect_language(first_chunk) + "-"
