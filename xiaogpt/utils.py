@@ -69,3 +69,13 @@ def get_hostname() -> str:
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.connect(("8.8.8.8", 80))
         return s.getsockname()[0]
+
+
+def detect_language(text: str) -> str:
+    try:
+        from lingua import LanguageDetectorBuilder
+    except ImportError:
+        return "zh"  # default to Chinese if langdetect module is not available
+    detector = LanguageDetectorBuilder.from_all_spoken_languages().build()
+    lang = detector.detect_language_of(text)
+    return lang.iso_code_639_1.name.lower() if lang is not None else "zh"

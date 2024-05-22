@@ -45,6 +45,7 @@ langchain-community==0.2.0
 langchain-core==0.2.0
 langchain-text-splitters==0.2.0
 langsmith==0.1.45
+lingua-language-detector==2.0.2; python_version < "3.13"
 markdown-it-py==3.0.0
 marshmallow==3.20.1
 mdurl==0.1.2
