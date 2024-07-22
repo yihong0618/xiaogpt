@@ -300,7 +300,7 @@ files = [
 
 [[package]]
 name = "dashscope"
-version = "1.20.1"
+version = "1.20.3"
 requires_python = ">=3.8.0"
 summary = "dashscope client sdk library"
 groups = ["default"]
@@ -310,7 +310,7 @@ dependencies = [
     "websocket-client",
 ]
 files = [
-    {file = "dashscope-1.20.1-py3-none-any.whl", hash = "sha256:3beb470004ead66eb4cb7e6ac378d1002c76139bbf7d195c3323f0510b55082a"},
+    {file = "dashscope-1.20.3-py3-none-any.whl", hash = "sha256:8dd4161b8387f1220d38c7a78fccf4a0491d8518949a91ec3e0834c45f46aa78"},
 ]
 
 [[package]]
@@ -569,7 +569,7 @@ files = [
 
 [[package]]
 name = "google-generativeai"
-version = "0.7.1"
+version = "0.7.2"
 requires_python = ">=3.9"
 summary = "Google Generative AI High level API client library and tools."
 groups = ["default"]
@@ -584,7 +584,7 @@ dependencies = [
     "typing-extensions",
 ]
 files = [
-    {file = "google_generativeai-0.7.1-py3-none-any.whl", hash = "sha256:25017b1278c873b6db65ba41c70566ee9fce8f265498e8b2f6aac036528ba1c7"},
+    {file = "google_generativeai-0.7.2-py3-none-any.whl", hash = "sha256:3117d1ebc92ee77710d4bc25ab4763492fddce9b6332eb25d124cf5d8b78b339"},
 ]
 
 [[package]]
@@ -855,7 +855,7 @@ files = [
 
 [[package]]
 name = "langchain"
-version = "0.2.6"
+version = "0.2.10"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -864,7 +864,7 @@ dependencies = [
     "SQLAlchemy<3,>=1.4",
     "aiohttp<4.0.0,>=3.8.3",
     "async-timeout<5.0.0,>=4.0.0; python_version < \"3.11\"",
-    "langchain-core<0.3.0,>=0.2.10",
+    "langchain-core<0.3.0,>=0.2.22",
     "langchain-text-splitters<0.3.0,>=0.2.0",
     "langsmith<0.2.0,>=0.1.17",
     "numpy<2,>=1; python_version < \"3.12\"",
@@ -874,13 +874,13 @@ dependencies = [
     "tenacity!=8.4.0,<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain-0.2.6-py3-none-any.whl", hash = "sha256:f86e8a7afd3e56f8eb5ba47f01dd00144fb9fc2f1db9873bd197347be2857aa4"},
-    {file = "langchain-0.2.6.tar.gz", hash = "sha256:867f6add370c1e3911b0e87d3dd0e36aec1e8f513bf06131340fe8f151d89dc5"},
+    {file = "langchain-0.2.10-py3-none-any.whl", hash = "sha256:b4fb58c7faf4f4999cfe3325474979a7121a1737dd101655a723a1d957ef0617"},
+    {file = "langchain-0.2.10.tar.gz", hash = "sha256:1f861c1b59ac9c91b02bb0fa58d3adad1c1d0686636872b5b357bbce3ce41d06"},
 ]
 
 [[package]]
 name = "langchain-community"
-version = "0.2.6"
+version = "0.2.9"
 requires_python = "<4.0,>=3.8.1"
 summary = "Community contributed LangChain integrations."
 groups = ["default"]
@@ -889,8 +889,8 @@ dependencies = [
     "SQLAlchemy<3,>=1.4",
     "aiohttp<4.0.0,>=3.8.3",
     "dataclasses-json<0.7,>=0.5.7",
-    "langchain-core<0.3.0,>=0.2.10",
-    "langchain<0.3.0,>=0.2.6",
+    "langchain-core<0.3.0,>=0.2.22",
+    "langchain<0.3.0,>=0.2.9",
     "langsmith<0.2.0,>=0.1.0",
     "numpy<2,>=1; python_version < \"3.12\"",
     "numpy<2.0.0,>=1.26.0; python_version >= \"3.12\"",
@@ -898,13 +898,13 @@ dependencies = [
     "tenacity!=8.4.0,<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain_community-0.2.6-py3-none-any.whl", hash = "sha256:758cc800acfe5dd396bf8ba1b57c4792639ead0eab48ed0367f0732ec6ee1f68"},
-    {file = "langchain_community-0.2.6.tar.gz", hash = "sha256:40ce09a50ed798aa651ddb34c8978200fa8589b9813c7a28ce8af027bbf249f0"},
+    {file = "langchain_community-0.2.9-py3-none-any.whl", hash = "sha256:b51d3adf9346a1161c1098917585b9e303cf24e2f5c71f5d232a0504edada5f2"},
+    {file = "langchain_community-0.2.9.tar.gz", hash = "sha256:1e7c180232916cbe35fe00509680dd1f805e32d7c87b5e80b3a9ec8754ecae37"},
 ]
 
 [[package]]
 name = "langchain-core"
-version = "0.2.11"
+version = "0.2.22"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -918,8 +918,8 @@ dependencies = [
     "tenacity!=8.4.0,<9.0.0,>=8.1.0",
 ]
 files = [
-    {file = "langchain_core-0.2.11-py3-none-any.whl", hash = "sha256:c7ca4dc4d88e3c69fd7916c95a7027c2b1a11c2db5a51141c3ceb8afac212208"},
-    {file = "langchain_core-0.2.11.tar.gz", hash = "sha256:7a4661b50604eeb20c3373fbfd8a4f1b74482a6ab4e0f9df11e96821ead8ef0c"},
+    {file = "langchain_core-0.2.22-py3-none-any.whl", hash = "sha256:7731a86440c0958b3186c003fb9b26b2d5a682a6344bda7bfb9174e2898f8b43"},
+    {file = "langchain_core-0.2.22.tar.gz", hash = "sha256:582d6f929a43b830139444e4124123cd415331ad62f25757b1406252958cdcac"},
 ]
 
 [[package]]
@@ -1263,7 +1263,7 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.35.10"
+version = "1.36.1"
 requires_python = ">=3.7.1"
 summary = "The official Python library for the openai API"
 groups = ["default"]
@@ -1277,8 +1277,8 @@ dependencies = [
     "typing-extensions<5,>=4.7",
 ]
 files = [
-    {file = "openai-1.35.10-py3-none-any.whl", hash = "sha256:962cb5c23224b5cbd16078308dabab97a08b0a5ad736a4fdb3dc2ffc44ac974f"},
-    {file = "openai-1.35.10.tar.gz", hash = "sha256:85966949f4f960f3e4b239a659f9fd64d3a97ecc43c44dc0a044b5c7f11cccc6"},
+    {file = "openai-1.36.1-py3-none-any.whl", hash = "sha256:d399b9d476dbbc167aceaac6bc6ed0b2e2bb6c9e189c7f7047f822743ae62e64"},
+    {file = "openai-1.36.1.tar.gz", hash = "sha256:41be9e0302e95dba8a9374b885c5cb1cec2202816a70b98736fee25a2cadd1f2"},
 ]
 
 [[package]]
