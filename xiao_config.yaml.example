@@ -38,7 +38,7 @@ end_conversation: "结束持续对话"
 stream: true
 # 传给 Chatbot completion 接口的参数，比如要使用自定义模型：
 # gpt_options:
-#   model: gpt-4o-2024-05-13
+#   model: gpt-4o-mini
 gpt_options: {}
 
 # ----- OpenAI -----

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @dataclasses.dataclass
 class ChatGPTBot(ChatHistoryMixin, BaseBot):
     name: ClassVar[str] = "ChatGPT"
-    default_options: ClassVar[dict[str, str]] = {"model": "gpt-4o-2024-05-13"}
+    default_options: ClassVar[dict[str, str]] = {"model": "gpt-4o-mini"}
     openai_key: str
     api_base: str | None = None
     proxy: str | None = None
