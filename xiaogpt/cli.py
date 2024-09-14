@@ -104,6 +104,11 @@ def main():
     parser.add_argument(
         "--volc_secret_key", dest="volc_secret_key", help="Volcengine secret key"
     )
+    # for fish tts
+    parser.add_argument("--fish_api_key", dest="fish_api_key", help="fish api key")
+    parser.add_argument(
+        "--fish_voice_key", dest="fish_voice_key", help="fish voice key"
+    )
     parser.add_argument(
         "--verbose",
         dest="verbose",
@@ -114,7 +119,7 @@ def main():
     parser.add_argument(
         "--tts",
         help="TTS provider",
-        choices=["mi", "edge", "openai", "azure", "google", "baidu", "volc"],
+        choices=["mi", "edge", "openai", "azure", "google", "baidu", "volc", "fish"],
     )
     bot_group = parser.add_mutually_exclusive_group()
     bot_group.add_argument(

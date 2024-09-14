@@ -82,7 +82,7 @@ class Config:
     end_conversation: str = "结束持续对话"
     stream: bool = False
     tts: Literal[
-        "mi", "edge", "azure", "openai", "baidu", "google", "volc", "minimax"
+        "mi", "edge", "azure", "openai", "baidu", "google", "volc", "minimax", "fish"
     ] = "mi"
     tts_options: dict[str, Any] = field(default_factory=dict)
     gpt_options: dict[str, Any] = field(default_factory=dict)
@@ -128,6 +128,15 @@ class Config:
             config.setdefault("tts_options", {}).setdefault(
                 "secret_key", config.get("volc_secret_key")
             )
+        elif config.get("tts") == "fish":
+            print("fish")
+            config.setdefault("tts_options", {}).setdefault(
+                "api_key", config.get("fish_api_key")
+            )
+            if voice := config.get("fish_voice_key"):
+                print("fish voice")
+                config.setdefault("tts_options", {}).setdefault("voice", voice)
+
         return cls(**config)
 
     @classmethod

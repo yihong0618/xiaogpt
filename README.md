@@ -61,6 +61,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - `--use_moonshot_api` and other models please refer below
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
+- 可以使用 `--tts fish --fish_api_key <your-fish-key> --fish_voice_key <fish-voice>` 来获取 [fish-audio](https://fish.audio/) 能力(如何获取 fish voice 见下)
 - 可以使用 `--tts openai` 来获取 openai tts 能力
 - 可以使用 `--tts azure --azure_tts_speech_key <your-speech-key>` 来获取 Azure TTS 能力
 - 可以使用 `--use_langchain` 替代 `--use_chatgpt_api` 来调用 LangChain（默认 chatgpt）服务，实现上网检索、数学运算..
@@ -90,11 +91,7 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${m
 xiaogpt --hardware LX06  --mute_xiaoai --use_llama --llama_api_key ${llama_api_key}
 # 如果你想使用 01
 xiaogpt --hardware LX06  --mute_xiaoai --use_yi_api --ti_api_key ${yi_api_key}
-# 如果你想使用豆包
-
-
-
-
+# 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
 export OPENAI_API_KEY=${your_api_key}
 export SERPAPI_API_KEY=${your_serpapi_key}
 xiaogpt --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
@@ -281,6 +278,7 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 [edge-tts](https://github.com/rany2/edge-tts) 提供了类似微软tts的能力
 [azure-tts](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/9-more-realistic-ai-voices-for-conversations-now-generally/ba-p/4099471) 提供了微软 azure tts 的能力
 [openai-tts](https://platform.openai.com/docs/guides/text-to-speech) 提供了类似 openai tts 的能力
+[fish-tts](https://fish.audio/) 提供了 fish tts 的能力
 
 #### Usage
 
@@ -296,7 +294,24 @@ For edge 查看更多语言支持, 从中选择一个
 edge-tts --list-voices
 ```
 
-#### 在容器中使用 edge-tts/azure-tts/openai-tts/volc/google/baidu
+#### 如果你想使用 [fish-tts](https://fish.audio/)
+
+1. 注册 https://fish.audio/zh-CN/go-api/ 拿到 api key
+2. 选择你想要的声音自建声音或者使用热门声音  https://fish.audio/zh-CN/text-to-speech/?modelId=e80ea225770f42f79d50aa98be3cedfc 其中 `e80ea225770f42f79d50aa98be3cedfc` 就声音的 key id
+3. python3 xiaogpt.py --hardware LX06 --account xxxx --password xxxxx --use_chatgpt_api --mute_xiaoai --stream --tts fish --fish_api_key xxxxx --fish_voice_key xxxxx
+4. 或者在 xiao_config.yaml 中配置
+
+```yaml
+tts: fish 
+# TTS 参数字典，参考 https://github.com/frostming/tetos 获取可用参数
+tts_options: {
+    "api_key": "xxxxx",
+    "voice": "xxxxxx"
+}
+
+``` 
+
+#### 在容器中使用 edge-tts/azure-tts/openai-tts/volc/google/baidu/fish
 
 由于 Edge TTS 启动了一个本地的 HTTP 服务，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
 
