@@ -129,12 +129,10 @@ class Config:
                 "secret_key", config.get("volc_secret_key")
             )
         elif config.get("tts") == "fish":
-            print("fish")
             config.setdefault("tts_options", {}).setdefault(
                 "api_key", config.get("fish_api_key")
             )
             if voice := config.get("fish_voice_key"):
-                print("fish voice")
                 config.setdefault("tts_options", {}).setdefault("voice", voice)
 
         return cls(**config)

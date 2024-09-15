@@ -88,7 +88,7 @@ volc_access_key: ""
 volc_secret_key: ""
 
 # ===== 语音设置 =====
-# 使用的 TTS 类型，目前支持 mi, edge, openai, azure, volc, baidu, google, minimax
+# 使用的 TTS 类型，目前支持 mi, edge, openai, azure, volc, baidu, google, minimax, fish
 tts: mi
 # TTS 参数字典，参考 https://github.com/frostming/tetos 获取可用参数
 tts_options: {}
