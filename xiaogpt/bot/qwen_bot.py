@@ -15,7 +15,6 @@ class QwenBot(ChatHistoryMixin, BaseBot):
 
     def __init__(self, qwen_key: str) -> None:
         import dashscope
-        from dashscope.api_entities.dashscope_response import Role
 
         self.history = []
         dashscope.api_key = qwen_key
