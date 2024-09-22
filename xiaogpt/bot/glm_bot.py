@@ -11,12 +11,10 @@ from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 
 class GLMBot(ChatHistoryMixin, BaseBot):
     name = "Chat GLM"
-    default_options = {"model": "chatglm_turbo"}
+    default_options = {"model": "glm-4"}  # Change glm model here
 
     def __init__(self, glm_key: str) -> None:
         from zhipuai import ZhipuAI
-
-        self.model = "glm-4"  # Change glm model here
 
         self.history = []
         self.client = ZhipuAI(api_key=glm_key)
@@ -28,7 +26,6 @@ class GLMBot(ChatHistoryMixin, BaseBot):
     def ask(self, query, **options):
         ms = self.get_messages()
         kwargs = {**self.default_options, **options}
-        kwargs["model"] = self.model
         ms.append({"role": "user", "content": f"{query}"})
         kwargs["messages"] = ms
         try:
@@ -45,7 +42,6 @@ class GLMBot(ChatHistoryMixin, BaseBot):
     async def ask_stream(self, query: str, **options: Any):
         ms = self.get_messages()
         kwargs = {**self.default_options, **options}
-        kwargs["model"] = self.model
         ms.append({"role": "user", "content": f"{query}"})
         kwargs["messages"] = ms
         kwargs["stream"] = True
