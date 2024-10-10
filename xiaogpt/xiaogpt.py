@@ -274,7 +274,7 @@ class MiGPT:
         message = message.strip().replace(" ", "--")
         message = message.replace("\n", "，")
         message = message.replace('"', "，")
-        message = message.replace('*', "")
+        message = message.replace("*", "")
         return message
 
     async def ask_gpt(self, query: str) -> AsyncIterator[str]:
