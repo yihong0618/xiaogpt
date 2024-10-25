@@ -1,5 +1,6 @@
 from xiaogpt.tts.base import TTS
+from xiaogpt.tts.file import TetosFileTTS
+from xiaogpt.tts.live import TetosLiveTTS
 from xiaogpt.tts.mi import MiTTS
-from xiaogpt.tts.tetos import TetosTTS
 
-__all__ = ["TTS", "TetosTTS", "MiTTS"]
+__all__ = ["TTS", "TetosFileTTS", "MiTTS", "TetosLiveTTS"]
