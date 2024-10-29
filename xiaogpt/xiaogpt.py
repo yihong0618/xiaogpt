@@ -23,7 +23,8 @@ from xiaogpt.config import (
     WAKEUP_KEYWORD,
     Config,
 )
-from xiaogpt.tts import TTS, MiTTS, TetosTTS
+from xiaogpt.tts import TTS, MiTTS, TetosFileTTS
+from xiaogpt.tts.live import TetosLiveTTS
 from xiaogpt.utils import detect_language, parse_cookie_string
 
 EOF = object()
@@ -260,8 +261,10 @@ class MiGPT:
     def tts(self) -> TTS:
         if self.config.tts == "mi":
             return MiTTS(self.mina_service, self.device_id, self.config)
+        elif self.config.tts == "fish":
+            return TetosLiveTTS(self.mina_service, self.device_id, self.config)
         else:
-            return TetosTTS(self.mina_service, self.device_id, self.config)
+            return TetosFileTTS(self.mina_service, self.device_id, self.config)
 
     async def wait_for_tts_finish(self):
         while True:
