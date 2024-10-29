@@ -2013,7 +2013,7 @@ files = [
 
 [[package]]
 name = "tetos"
-version = "0.4.0"
+version = "0.4.1"
 requires_python = ">=3.8"
 summary = "Unified interface for multiple Text-to-Speech (TTS) providers"
 groups = ["default"]
@@ -2029,8 +2029,8 @@ dependencies = [
     "ormsgpack>=1.5.0",
 ]
 files = [
-    {file = "tetos-0.4.0-py3-none-any.whl", hash = "sha256:362057265accb125c0f9c36e9e6b65e19762ded5524542437b6ca8a82457f04f"},
-    {file = "tetos-0.4.0.tar.gz", hash = "sha256:41e8d14fc22409e832f3d26799fb4c9434b4625cbcfb6e88e0374ce3d6519ec2"},
+    {file = "tetos-0.4.1-py3-none-any.whl", hash = "sha256:99717c41aac5047d64349309fb81fedf12be178ffe4d0ab0906f6c9e74bc05ec"},
+    {file = "tetos-0.4.1.tar.gz", hash = "sha256:13e96b604162f630abce17de89a5c10bc903a0045387eb39bdd5e5546e4a29d1"},
 ]
 
 [[package]]
