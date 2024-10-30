@@ -77,7 +77,7 @@ class Config:
     api_base: str | None = None
     deployment_id: str | None = None
     use_command: bool = False
-    verbose: bool = False
+    verbose: int = 0
     start_conversation: str = "开始持续对话"
     end_conversation: str = "结束持续对话"
     stream: bool = False

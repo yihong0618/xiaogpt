@@ -27,11 +27,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         key = self.path.split("/")[-1]
         queue = get_queue(key)
+        chunks: list[bytes] = []
         while True:
             chunk = queue.get()
+            chunks.append(chunk)
             if chunk == b"":
                 break
             self.wfile.write(chunk)
+        for chunk in chunks:
+            queue.put_nowait(chunk)
 
     def log_message(self, format, *args):
         logger.debug(f"{self.address_string()} - {format}", *args)
@@ -76,6 +80,7 @@ class TetosLiveTTS(TTS):
 
         while True:
             if await self.get_if_xiaoai_is_playing():
+                logger.debug("Xiaoai is playing, waiting")
                 await asyncio.sleep(1)
             else:
                 break

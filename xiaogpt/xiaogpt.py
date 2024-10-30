@@ -57,15 +57,20 @@ class MiGPT:
     async def poll_latest_ask(self):
         async with ClientSession() as session:
             session._cookie_jar = self.cookie_jar
+            log_polling = int(self.config.verbose) > 1
             while True:
-                self.log.debug(
-                    "Listening new message, timestamp: %s", self.last_timestamp
-                )
+                if log_polling:
+                    self.log.debug(
+                        "Listening new message, timestamp: %s", self.last_timestamp
+                    )
                 new_record = await self.get_latest_ask_from_xiaoai(session)
                 start = time.perf_counter()
-                self.log.debug(
-                    "Polling_event, timestamp: %s %s", self.last_timestamp, new_record
-                )
+                if log_polling:
+                    self.log.debug(
+                        "Polling_event, timestamp: %s %s",
+                        self.last_timestamp,
+                        new_record,
+                    )
                 await self.polling_event.wait()
                 if (
                     self.config.mute_xiaoai
@@ -75,7 +80,10 @@ class MiGPT:
                     await self.stop_if_xiaoai_is_playing()
                 if (d := time.perf_counter() - start) < 1:
                     # sleep to avoid too many request
-                    self.log.debug("Sleep %f, timestamp: %s", d, self.last_timestamp)
+                    if log_polling:
+                        self.log.debug(
+                            "Sleep %f, timestamp: %s", d, self.last_timestamp
+                        )
                     # if you want force mute xiaoai, comment this line below.
                     await asyncio.sleep(1 - d)
 
@@ -334,6 +342,7 @@ class MiGPT:
     async def stop_if_xiaoai_is_playing(self):
         is_playing = await self.get_if_xiaoai_is_playing()
         if is_playing:
+            self.log.debug("Muting xiaoai")
             # stop it
             await self.mina_service.player_pause(self.device_id)
 
