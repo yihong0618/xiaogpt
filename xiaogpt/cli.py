@@ -111,9 +111,10 @@ def main():
     )
     parser.add_argument(
         "--verbose",
+        "-v",
         dest="verbose",
-        action="store_true",
-        default=None,
+        action="count",
+        default=0,
         help="show info",
     )
     parser.add_argument(
