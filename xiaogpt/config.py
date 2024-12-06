@@ -59,6 +59,7 @@ class Config:
     llama_api_key: str = os.getenv("GROQ_API_KEY", "")  # use groq
     glm_key: str = os.getenv("CHATGLM_KEY", "")
     gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
+    gemini_model: str = os.getenv("GEMINI_MODEL", "")  # keep the old rule
     qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
     serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
     gemini_api_domain: str = os.getenv(
