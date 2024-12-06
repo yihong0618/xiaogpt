@@ -32,7 +32,7 @@ safety_settings = [
 class GeminiBot(ChatHistoryMixin, BaseBot):
     name = "Gemini"
 
-    def __init__(self, gemini_key: str, gemini_api_domain: str) -> None:
+    def __init__(self, gemini_key: str, gemini_api_domain: str, gemini_model: str) -> None:
         import google.generativeai as genai
 
         from google.auth import api_key
@@ -54,7 +54,7 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
 
         self.history = []
         model = genai.GenerativeModel(
-            model_name="gemini-pro",
+            model_name=gemini_model or "gemini-pro",
             generation_config=generation_config,
             safety_settings=safety_settings,
         )
@@ -63,7 +63,7 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
     @classmethod
     def from_config(cls, config):
         return cls(
-            gemini_key=config.gemini_key, gemini_api_domain=config.gemini_api_domain
+            gemini_key=config.gemini_key, gemini_api_domain=config.gemini_api_domain, gemini_model=config.gemini_model
         )
 
     async def ask(self, query, **options):
