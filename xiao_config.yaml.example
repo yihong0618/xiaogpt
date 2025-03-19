@@ -75,6 +75,7 @@ glm_key: ""
 # ----- Gemini -----
 # Gemini key: https://makersuite.google.com/app/apikey
 gemini_key: ""
+gemini_model: ""
 # Gemini 自定义域名: https://github.com/antergone/palm-netlify-proxy
 gemini_api_domain: ""
 
