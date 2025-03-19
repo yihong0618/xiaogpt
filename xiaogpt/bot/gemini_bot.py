@@ -40,7 +40,7 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
         from google.auth import api_key
 
         credentials = api_key.Credentials(gemini_key)
-        if len(gemini_api_domain) > 0:
+        if gemini_api_domain:
             print("Use custom gemini_api_domain: " + gemini_api_domain)
             credentials._universe_domain = gemini_api_domain
             genai.configure(
@@ -56,7 +56,7 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
 
         self.history = []
         model = genai.GenerativeModel(
-            model_name=gemini_model or "gemini-pro",
+            model_name=gemini_model or "gemini-2.0-flash-lite",
             generation_config=generation_config,
             safety_settings=safety_settings,
         )
