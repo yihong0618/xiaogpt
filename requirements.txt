@@ -94,3 +94,4 @@ websocket-client==1.8.0
 wsproto==1.2.0
 yarl==1.14.0
 zhipuai==2.1.5.20230904
+volcengine-python-sdk==1.1.5
