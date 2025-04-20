@@ -51,7 +51,7 @@ class Mailbox:
                     email_id = email_ids[i]
                     email_content = self.get_email_content(mailbox, email_id)
                     if email_content:
-                        all_email_content += f"{i+1}、{email_content}\n"
+                        all_email_content += f"{i+1},{email_content}\n"
 
                 # print(all_email_content)
 

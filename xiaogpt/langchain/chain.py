@@ -39,5 +39,5 @@ async def agent_search(
         tools, llm, agent=AgentType.OPENAI_FUNCTIONS, verbose=False, memory=memeory
     )
     callbacks = [callback] if callback else None
-    # query eg：'杭州亚运会中国队获得了多少枚金牌？' // '计算3的2次方'
+    # query eg：'杭州亚运会中国队获得了多少枚金牌？' // '计算 3 的 2 次方'
     return await agent.arun(query, callbacks=callbacks)
