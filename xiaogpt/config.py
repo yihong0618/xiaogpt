@@ -67,6 +67,7 @@ class Config:
     )  # 自行部署的 Google Gemini 代理
     volc_access_key: str = os.getenv("VOLC_ACCESS_KEY", "")
     volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
+    volc_api_key: str = os.getenv("volc_api_key", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD

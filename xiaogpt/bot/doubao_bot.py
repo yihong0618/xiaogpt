@@ -2,75 +2,62 @@
 
 from __future__ import annotations
 
-import json
-from typing import Any, AsyncIterator
+from typing import Any
 
-import httpx
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 from xiaogpt.config import Config
-from xiaogpt.utils import split_sentences
 
 
 class DoubaoBot(ChatHistoryMixin, BaseBot):
-    API_URL = "https://maas-api.ml-platform-cn-beijing.volces.com"
     name = "豆包"
-    default_options = {"model": "skylark-chat"}
+    default_options = {"model": "skylark-chat"}  # 根据官方示例修改默认模型
 
-    def __init__(self, access_key: str, secret_key: str) -> None:
-        from tetos.volc import VolcSignAuth
+    def __init__(self, api_key: str) -> None:
+        from volcenginesdkarkruntime import Ark  # 引入官方 SDK
 
-        self.auth = VolcSignAuth(access_key, secret_key, "ml_maas", "cn-beijing")
+        self.api_key = api_key
         self.history = []
+        self.client = Ark(api_key=api_key)  # 初始化客户端
 
     @classmethod
     def from_config(cls, config: Config):
-        return cls(access_key=config.volc_access_key, secret_key=config.volc_secret_key)
+        return cls(api_key=config.volc_api_key)  # 假设配置文件中有 volc_api_key 字段
 
     def _get_data(self, query: str, **options: Any):
         options = {**self.default_options, **options}
         model = options.pop("model")
         ms = self.get_messages()
         ms.append({"role": "user", "content": query})
-        return {"model": {"name": model}, "parameters": options, "messages": ms}
+        return {"model": model, "messages": ms}
 
     async def ask(self, query, **options):
         data = self._get_data(query, **options)
-        async with httpx.AsyncClient(base_url=self.API_URL, auth=self.auth) as client:
-            resp = await client.post("/api/v1/chat", json=data)
-            resp.raise_for_status()
-            try:
-                message = resp.json()["choice"]["message"]["content"]
-            except Exception as e:
-                print(str(e))
-                return
+        try:
+            completion = self.client.chat.completions.create(**data)
+            message = completion.choices[0].message.content
             self.add_message(query, message)
             print(message)
             return message
+        except Exception as e:
+            print(str(e))
+            return
 
     async def ask_stream(self, query: str, **options: Any):
         data = self._get_data(query, **options)
         data["stream"] = True
 
-        async def sse_gen(line_iter: AsyncIterator[str]) -> AsyncIterator[str]:
-            message = ""
-            async for chunk in line_iter:
-                if not chunk.startswith("data:"):
-                    continue
-                message = chunk[5:].strip()
-                if message == "[DONE]":
-                    break
-                data = json.loads(message)
-                text = data["choice"]["message"]["content"]
-                print(text, end="", flush=True)
-                message += text
-                yield text
+        try:
+            full_content = ""
+            for chunk in self.client.chat.completions.create(**data):
+                content = chunk.choices[0].delta.content
+                if content:
+                    full_content += content
+                    print(content, end="", flush=True)
+                    yield content
             print()
-            self.add_message(query, message)
-
-        async with httpx.AsyncClient(base_url=self.API_URL, auth=self.auth) as client:
-            async with client.stream("POST", "/api/v1/chat", json=data) as resp:
-                resp.raise_for_status()
-                async for sentence in split_sentences(sse_gen(resp.aiter_lines())):
-                    yield sentence
+            self.add_message(query, full_content)
+        except Exception as e:
+            print(str(e))
+            return
