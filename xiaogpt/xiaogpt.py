@@ -358,9 +358,9 @@ class MiGPT:
         task = asyncio.create_task(self.poll_latest_ask())
         assert task is not None  # to keep the reference to task, do not remove this
         print(
-            f"Running xiaogpt now, 用[green]{'/'.join(self.config.keyword)}[/]开头来提问"
+            f"Running xiaogpt now, 用 [green]{'/'.join(self.config.keyword)}[/] 开头来提问"
         )
-        print(f"或用[green]{self.config.start_conversation}[/]开始持续对话")
+        print(f"或用 [green]{self.config.start_conversation}[/] 开始持续对话")
         while True:
             self.polling_event.set()
             new_record = await self.last_record.get()
@@ -393,12 +393,12 @@ class MiGPT:
             query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
             # llama3 is not good at Chinese, so we need to add prompt in it.
             if self.config.bot == "llama":
-                query = f"你是一个基于llama3 的智能助手，请你跟我对话时，一定使用中文，不要夹杂一些英文单词，甚至英语短语也不能随意使用，但类似于 llama3 这样的专属名词除外, 问题是：{query}"
+                query = f"你是一个基于 llama3 的智能助手，请你跟我对话时，一定使用中文，不要夹杂一些英文单词，甚至英语短语也不能随意使用，但类似于 llama3 这样的专属名词除外，问题是：{query}"
 
             print("-" * 20)
             print("问题：" + query + "？")
             if not self.chatbot.has_history():
-                query = f"{query}，{self.config.prompt}"
+                query = f"{query},{self.config.prompt}"
             # some model can not detect the language code, so we need to add it
 
             if self.config.mute_xiaoai:
@@ -409,12 +409,12 @@ class MiGPT:
             await self.do_tts(f"正在问{self.chatbot.name}请耐心等待")
             try:
                 print(
-                    "以下是小爱的回答: ",
+                    "以下是小爱的回答：",
                     new_record.get("answers", [])[0].get("tts", {}).get("text"),
                 )
             except IndexError:
                 print("小爱没回")
-            print(f"以下是 {self.chatbot.name} 的回答: ", end="")
+            print(f"以下是 {self.chatbot.name} 的回答：", end="")
             try:
                 await self.speak(self.ask_gpt(query))
             except Exception as e:
@@ -422,7 +422,7 @@ class MiGPT:
             else:
                 print("回答完毕")
             if self.in_conversation:
-                print(f"继续对话, 或用`{self.config.end_conversation}`结束对话")
+                print(f"继续对话，或用 `{self.config.end_conversation}` 结束对话")
                 await self.wakeup_xiaoai()
 
     async def speak(self, text_stream: AsyncIterator[str]) -> None:
