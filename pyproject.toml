@@ -30,6 +30,7 @@ dependencies = [
     "langchain-community>=0.0.38",
     # lingua doesn't ship wheels for python 3.13 nor sdist
     "lingua-language-detector>=2.0.2; python_version < \"3.13\"",
+    "volcengine-python-sdk>=1.1.5",
 ]
 license = {text = "MIT"}
 dynamic = ["version", "optional-dependencies"]
