@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import json
-from typing import Any, AsyncIterator
+from typing import Any
 
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot, ChatHistoryMixin
 from xiaogpt.config import Config
-from xiaogpt.utils import split_sentences
 
 
 class DoubaoBot(ChatHistoryMixin, BaseBot):
@@ -18,7 +16,7 @@ class DoubaoBot(ChatHistoryMixin, BaseBot):
 
     def __init__(self, api_key: str) -> None:
         from volcenginesdkarkruntime import Ark  # 引入官方 SDK
-        
+
         self.api_key = api_key
         self.history = []
         self.client = Ark(api_key=api_key)  # 初始化客户端
