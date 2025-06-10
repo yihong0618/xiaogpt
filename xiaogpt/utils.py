@@ -46,13 +46,6 @@ async def split_sentences(text_stream: AsyncIterator[str]) -> AsyncIterator[str]
         yield cur
 
 
-### for edge-tts utils ###
-def find_key_by_partial_string(dictionary: dict[str, str], partial_key: str) -> str:
-    for key, value in dictionary.items():
-        if key in partial_key:
-            return value
-
-
 def validate_proxy(proxy_str: str) -> bool:
     """Do a simple validation of the http proxy string."""
 
