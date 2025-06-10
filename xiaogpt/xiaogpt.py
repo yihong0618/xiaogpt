@@ -38,7 +38,6 @@ class MiGPT:
         self.last_timestamp = int(time.time() * 1000)  # timestamp last call mi speaker
         self.cookie_jar = None
         self.device_id = ""
-        self.parent_id = None
         self.mina_service = None
         self.miio_service = None
         self.in_conversation = False
