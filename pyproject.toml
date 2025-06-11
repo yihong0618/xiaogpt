@@ -43,6 +43,7 @@ xiaogpt = "xiaogpt.cli:main"
 
 [tool.pdm]
 plugins = ["pdm-autoexport"]
+dev-dependencies = {dev = ["black"]}
 
 [tool.pdm.version]
 source = "scm"
