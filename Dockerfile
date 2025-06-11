@@ -1,12 +1,12 @@
-FROM python:3.10 AS builder
+FROM python:3.12 AS builder
 WORKDIR /app
-COPY requirements.txt .
-# 设置默认的源地址为 PyPI 官方源
+COPY pyproject.toml pdm.lock* ./
 ARG PIP_INDEX_URL=https://pypi.org/simple
-# 使用 ARG 定义的变量作为 pip 源地址
-RUN python3 -m venv .venv && .venv/bin/pip install --no-cache-dir -r requirements.txt -i ${PIP_INDEX_URL}
+RUN pip install pdm && \
+    python3 -m venv .venv && \
+    .venv/bin/pdm install --prod --no-editable -G :all --config install.pypi_url=${PIP_INDEX_URL}
 
-FROM python:3.10-slim-buster
+FROM python:3.12
 
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
