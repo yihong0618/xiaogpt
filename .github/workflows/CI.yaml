@@ -23,15 +23,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip' # caching pip dependencies
+          cache: 'pdm'
+      - name: Install PDM
+        run: |
+          curl -sSL https://pdm-project.org/install-pdm.py | python3 -
       - name: Check formatting (black)
         run: |
-          pip install black
-          black . --check
+          pdm install --dev
+          pdm run black . --check
       - name: Check install
         run: |
-          pip install .
-          xiaogpt --help
+          pdm install --prod
+          pdm run xiaogpt --help
 
   build-image:
     runs-on: ubuntu-latest
