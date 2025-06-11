@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pdm'
       - name: Install PDM
         run: |
           curl -sSL https://pdm-project.org/install-pdm.py | python3 -
