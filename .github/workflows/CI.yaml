@@ -28,11 +28,11 @@ jobs:
           curl -sSL https://pdm-project.org/install-pdm.py | python3 -
       - name: Check formatting (black)
         run: |
-          pdm install --dev
-          pdm run black . --check
+          pip install black
+          black --check .
       - name: Check install
         run: |
-          pdm install --prod
+          pdm install
           pdm run xiaogpt --help
 
   build-image:
