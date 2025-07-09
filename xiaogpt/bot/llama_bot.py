@@ -1,5 +1,4 @@
 import httpx
-from groq import Groq as openai
 from groq import AsyncGroq as AsyncOpenAI
 
 from xiaogpt.bot.chatgptapi_bot import ChatGPTBot
