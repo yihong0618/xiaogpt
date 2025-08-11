@@ -138,3 +138,4 @@ config/
 *.sh
 nohup.out
 xiao_config.yaml
+.DS_Store
