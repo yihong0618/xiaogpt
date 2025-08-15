@@ -36,7 +36,7 @@ greenlet==3.0.3; platform_machine == "win32" or platform_machine == "WIN32" or p
 groq==0.31.0
 grpcio==1.60.0
 grpcio-status==1.60.0
-h11==0.14.0
+h11==0.16.0
 httpcore==1.0.5
 httplib2==0.22.0
 httpx-sse==0.4.0
