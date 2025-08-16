@@ -1260,7 +1260,7 @@ files = [
 
 [[package]]
 name = "miservice-fork"
-version = "2.8.2"
+version = "2.9.0"
 requires_python = ">=3.8"
 summary = "XiaoMi Cloud Service fork from https://github.com/Yonsm/MiService"
 groups = ["default"]
@@ -1268,11 +1268,10 @@ dependencies = [
     "aiohttp",
     "mutagen",
     "rich",
-    "setuptools>=78.1.1",
 ]
 files = [
-    {file = "miservice_fork-2.8.2-py3-none-any.whl", hash = "sha256:cca47fbd744e1d67fd9d3946ea738f566515c66e74387237d34a69ad7114b00f"},
-    {file = "miservice_fork-2.8.2.tar.gz", hash = "sha256:7b1d0dfa74b1b818d4eb4ff28cc60e990d4eaeb12c3fa5bdd5a6d06928017ba3"},
+    {file = "miservice_fork-2.9.0-py3-none-any.whl", hash = "sha256:bbbf9ea4ae5554d7ed5a596509f961bee3b55ca34ac2da6dc351656f261be0c0"},
+    {file = "miservice_fork-2.9.0.tar.gz", hash = "sha256:ee50b07cc0aee247bf42d390d5253b03e6c914922f3b0c281c81867a5ac52750"},
 ]
 
 [[package]]
@@ -1456,7 +1455,7 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.99.6"
+version = "1.99.9"
 requires_python = ">=3.8"
 summary = "The official Python library for the openai API"
 groups = ["default"]
@@ -1471,8 +1470,8 @@ dependencies = [
     "typing-extensions<5,>=4.11",
 ]
 files = [
-    {file = "openai-1.99.6-py3-none-any.whl", hash = "sha256:e40d44b2989588c45ce13819598788b77b8fb80ba2f7ae95ce90d14e46f1bd26"},
-    {file = "openai-1.99.6.tar.gz", hash = "sha256:f48f4239b938ef187062f3d5199a05b69711d8b600b9a9b6a3853cd271799183"},
+    {file = "openai-1.99.9-py3-none-any.whl", hash = "sha256:9dbcdb425553bae1ac5d947147bebbd630d91bbfc7788394d4c4f3a35682ab3a"},
+    {file = "openai-1.99.9.tar.gz", hash = "sha256:f2082d155b1ad22e83247c3de3958eb4255b20ccf4a1de2e6681b6957b554e92"},
 ]
 
 [[package]]
@@ -2032,17 +2031,6 @@ files = [
 ]
 
 [[package]]
-name = "setuptools"
-version = "78.1.1"
-requires_python = ">=3.9"
-summary = "Easily download, build, install, upgrade, and uninstall Python packages"
-groups = ["default"]
-files = [
-    {file = "setuptools-78.1.1-py3-none-any.whl", hash = "sha256:c3a9c4211ff4c309edb8b8c4f1cbfa7ae324c4ba9f91ff254e3d305b9fd54561"},
-    {file = "setuptools-78.1.1.tar.gz", hash = "sha256:fcc17fd9cd898242f6b4adfaca46137a9edef687f43e6f78469692a5e70d851d"},
-]
-
-[[package]]
 name = "six"
 version = "1.17.0"
 requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
@@ -2231,7 +2219,7 @@ files = [
 
 [[package]]
 name = "volcengine-python-sdk"
-version = "4.0.10"
+version = "4.0.11"
 summary = "Volcengine SDK for Python"
 groups = ["default"]
 dependencies = [
@@ -2241,7 +2229,7 @@ dependencies = [
     "urllib3>=1.23",
 ]
 files = [
-    {file = "volcengine-python-sdk-4.0.10.tar.gz", hash = "sha256:bef511298f187654da52f8d2fc64da093e7b51dddfc566da673daafafe5d0299"},
+    {file = "volcengine-python-sdk-4.0.11.tar.gz", hash = "sha256:92c46411edb80b40bac87f07fc871dd9c6e4a987fbb793648f74028d9022c5dc"},
 ]
 
 [[package]]
