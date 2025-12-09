@@ -63,6 +63,11 @@ def main():
         help="Alibaba Qwen api key",
     )
     parser.add_argument(
+        "--ppio_api_key",
+        dest="ppio_api_key",
+        help="PPIO api key",
+    )
+    parser.add_argument(
         "--serpapi_api_key",
         dest="serpapi_api_key",
         help="serp api key see https://serpapi.com/",
@@ -186,6 +191,13 @@ def main():
         const="llama",
         help="if use groq llama3",
     )
+    bot_group.add_argument(
+        "--use_ppio",
+        dest="bot",
+        action="store_const",
+        const="ppio",
+        help="if use PPIO api",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -205,6 +217,7 @@ def main():
             "moonshot",
             "yi",
             "llama",
+            "ppio",
         ],
     )
     parser.add_argument(
