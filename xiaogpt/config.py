@@ -68,6 +68,7 @@ class Config:
     volc_access_key: str = os.getenv("VOLC_ACCESS_KEY", "")
     volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
     volc_api_key: str = os.getenv("volc_api_key", "")
+    ppio_api_key: str = os.getenv("PPIO_API_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
@@ -105,6 +106,11 @@ class Config:
             if not self.openai_key:
                 raise Exception(
                     "Using GPT api needs openai API key, please google how to"
+                )
+        if self.bot == "ppio":
+            if not self.ppio_api_key:
+                raise Exception(
+                    "Using PPIO api needs PPIO API key, please visit https://ppio.com/docs/models/reference-authentication"
                 )
 
     @property
@@ -174,6 +180,8 @@ class Config:
                     key, value = "bot", "llama"
                 elif key == "use_langchain":
                     key, value = "bot", "langchain"
+                elif key == "use_ppio":
+                    key, value = "bot", "ppio"
                 elif key == "enable_edge_tts":
                     key, value = "tts", "edge"
                 if key in cls.__dataclass_fields__:
