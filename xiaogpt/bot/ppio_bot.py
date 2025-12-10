@@ -18,15 +18,11 @@ if TYPE_CHECKING:
 @dataclasses.dataclass
 class PPIOBot(ChatHistoryMixin, BaseBot):
     name: ClassVar[str] = "PPIO"
-    default_options: ClassVar[dict[str, str]] = {
-        "model": "deepseek/deepseek-v3.2"
-    }
+    default_options: ClassVar[dict[str, str]] = {"model": "deepseek/deepseek-v3.2"}
     ppio_api_key: str
     api_base: str = "https://api.ppinfra.com/openai"
     proxy: str | None = None
-    history: list[tuple[str, str]] = dataclasses.field(
-        default_factory=list, init=False
-    )
+    history: list[tuple[str, str]] = dataclasses.field(default_factory=list, init=False)
 
     def _make_openai_client(self, sess: httpx.AsyncClient) -> openai.AsyncOpenAI:
         import openai
@@ -55,9 +51,7 @@ class PPIOBot(ChatHistoryMixin, BaseBot):
         async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = self._make_openai_client(sess)
             try:
-                completion = await client.chat.completions.create(
-                    messages=ms, **kwargs
-                )
+                completion = await client.chat.completions.create(messages=ms, **kwargs)
             except Exception as e:
                 print(str(e))
                 return ""
@@ -102,4 +96,3 @@ class PPIOBot(ChatHistoryMixin, BaseBot):
             finally:
                 print()
                 self.add_message(query, message)
-
