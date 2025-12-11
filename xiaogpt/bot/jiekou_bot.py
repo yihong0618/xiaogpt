@@ -18,9 +18,7 @@ if TYPE_CHECKING:
 @dataclasses.dataclass
 class JiekouBot(ChatHistoryMixin, BaseBot):
     name: ClassVar[str] = "Jiekou AI"
-    default_options: ClassVar[dict[str, str]] = {
-        "model": "deepseek/deepseek-v3.2"
-    }
+    default_options: ClassVar[dict[str, str]] = {"model": "deepseek/deepseek-v3.2"}
     jiekou_api_key: str
     api_base: str = "https://api.jiekou.ai/openai"
     proxy: str | None = None
