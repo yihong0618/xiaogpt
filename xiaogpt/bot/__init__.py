@@ -5,6 +5,7 @@ from xiaogpt.bot.chatgptapi_bot import ChatGPTBot
 from xiaogpt.bot.doubao_bot import DoubaoBot
 from xiaogpt.bot.gemini_bot import GeminiBot
 from xiaogpt.bot.glm_bot import GLMBot
+from xiaogpt.bot.jiekou_bot import JiekouBot
 from xiaogpt.bot.langchain_bot import LangChainBot
 from xiaogpt.bot.llama_bot import LlamaBot
 from xiaogpt.bot.moonshot_bot import MoonshotBot
@@ -24,6 +25,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "yi": YiBot,
     "llama": LlamaBot,
     "ppio": PPIOBot,
+    "jiekou": JiekouBot,
 }
 
 
@@ -46,4 +48,5 @@ __all__ = [
     "YiBot",
     "LlamaBot",
     "PPIOBot",
+    "JiekouBot",
 ]
