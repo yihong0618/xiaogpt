@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class JiekouBot(ChatHistoryMixin, BaseBot):
     name: ClassVar[str] = "Jiekou AI"
     default_options: ClassVar[dict[str, str]] = {
-        "model": "meta-llama/llama-3.1-8b-instruct"
+        "model": "deepseek/deepseek-v3.2"
     }
     jiekou_api_key: str
     api_base: str = "https://api.jiekou.ai/openai"
