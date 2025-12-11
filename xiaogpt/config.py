@@ -69,6 +69,7 @@ class Config:
     volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
     volc_api_key: str = os.getenv("volc_api_key", "")
     ppio_api_key: str = os.getenv("PPIO_API_KEY", "")
+    jiekou_api_key: str = os.getenv("JIEKOU_API_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
@@ -111,6 +112,11 @@ class Config:
             if not self.ppio_api_key:
                 raise Exception(
                     "Using PPIO api needs PPIO API key, please visit https://ppio.com/docs/models/reference-authentication"
+                )
+        if self.bot == "jiekou":
+            if not self.jiekou_api_key:
+                raise Exception(
+                    "Using Jiekou AI api needs Jiekou API key, please visit https://api.jiekou.ai"
                 )
 
     @property
@@ -182,6 +188,8 @@ class Config:
                     key, value = "bot", "langchain"
                 elif key == "use_ppio":
                     key, value = "bot", "ppio"
+                elif key == "use_jiekou":
+                    key, value = "bot", "jiekou"
                 elif key == "enable_edge_tts":
                     key, value = "tts", "edge"
                 if key in cls.__dataclass_fields__:

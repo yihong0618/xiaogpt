@@ -20,7 +20,7 @@ verbose: false
 proxy: ""
 
 # ===== 对话 AI 设置 =====
-# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama, ppio
+# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama, ppio, jiekou
 bot: chatgptapi
 # 自定义 prompt
 prompt: "请用300字以内回答"
@@ -89,8 +89,12 @@ volc_access_key: ""
 volc_secret_key: ""
 
 # ----- PPIO 派欧云 -----
-# PPIO API key: https://ppio.com/docs/models/reference-authentication
+# PPIO API key: https://ppio.com/settings/key-management
 ppio_api_key: ""
+
+# ----- 接口AI -----
+# Jiekou AI API key: https://jiekou.ai/settings/key-management
+jiekou_api_key: ""
 
 # ===== 语音设置 =====
 # 使用的 TTS 类型，目前支持 mi, edge, openai, azure, volc, baidu, google, minimax, fish

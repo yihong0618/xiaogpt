@@ -68,6 +68,11 @@ def main():
         help="PPIO api key",
     )
     parser.add_argument(
+        "--jiekou_api_key",
+        dest="jiekou_api_key",
+        help="Jiekou AI api key",
+    )
+    parser.add_argument(
         "--serpapi_api_key",
         dest="serpapi_api_key",
         help="serp api key see https://serpapi.com/",
@@ -198,6 +203,13 @@ def main():
         const="ppio",
         help="if use PPIO api",
     )
+    bot_group.add_argument(
+        "--use_jiekou",
+        dest="bot",
+        action="store_const",
+        const="jiekou",
+        help="if use Jiekou AI api",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -218,6 +230,7 @@ def main():
             "yi",
             "llama",
             "ppio",
+            "jiekou",
         ],
     )
     parser.add_argument(
