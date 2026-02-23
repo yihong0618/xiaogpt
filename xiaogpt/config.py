@@ -182,6 +182,8 @@ class Config:
                     key, value = "bot", "langchain"
                 elif key == "use_ppio":
                     key, value = "bot", "ppio"
+                elif key == "use_openclaw":
+                    key, value = "bot", "openclaw"
                 elif key == "enable_edge_tts":
                     key, value = "tts", "edge"
                 if key in cls.__dataclass_fields__:

@@ -198,6 +198,13 @@ def main():
         const="ppio",
         help="if use PPIO api",
     )
+    bot_group.add_argument(
+        "--use_openclaw",
+        dest="bot",
+        action="store_const",
+        const="openclaw",
+        help="if use OpenClaw as AI backend",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -218,6 +225,7 @@ def main():
             "yi",
             "llama",
             "ppio",
+            "openclaw",
         ],
     )
     parser.add_argument(

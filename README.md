@@ -7,6 +7,8 @@
 
 Play ChatGPT and other LLM with Xiaomi AI Speaker
 
+> **🐾 OpenClaw Fork**: This fork adds [OpenClaw](https://github.com/openclaw/openclaw) as a bot backend, allowing you to use your OpenClaw AI assistant through Xiaomi speakers. See [OpenClaw Usage](#openclaw-usage) below.
+
 ![image](https://user-images.githubusercontent.com/15976103/220028375-c193a859-48a1-4270-95b6-ef540e54a621.png)
 ![image](https://user-images.githubusercontent.com/15976103/226802344-9c71f543-b73c-4a47-8703-4c200c434dec.png)
 
@@ -338,3 +340,57 @@ docker run -v <your-config-dir>:/config -p 9527:9527 -e XIAOGPT_HOSTNAME=<your i
 ## 赞赏
 
 谢谢就够了
+
+## OpenClaw Usage
+
+[OpenClaw](https://github.com/openclaw/openclaw) is a personal AI assistant platform. This fork lets you talk to your OpenClaw assistant through Xiaomi speakers.
+
+### Quick Start
+
+```shell
+# Set your Xiaomi credentials
+export MI_USER=your_xiaomi_account
+export MI_PASS=your_xiaomi_password
+
+# Find your speaker
+micli list
+
+export MI_DID=your_device_did
+
+# Set OpenClaw API endpoint (running on same machine or remote)
+export OPENCLAW_API_BASE=http://localhost:18789/v1
+
+# Run with OpenClaw backend
+xiaogpt --hardware LX06 --use_openclaw --mute_xiaoai --stream
+```
+
+### Configuration (config.yaml)
+
+```yaml
+hardware: LX06
+account: your_xiaomi_account
+password: your_xiaomi_password
+bot: openclaw
+mute_xiaoai: true
+stream: true
+tts: mi
+api_base: http://localhost:18789/v1
+prompt: "你是一个智能家居助手，简洁回答问题，100字以内"
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENCLAW_API_BASE` | OpenClaw API endpoint | `http://localhost:18789/v1` |
+| `OPENCLAW_API_KEY` | API key (if required) | `openclaw` |
+| `OPENCLAW_MODEL` | Model to use | `default` |
+| `OPENCLAW_PROMPT` | System prompt | `简洁回答，100字以内` |
+
+### Architecture
+
+```
+You speak → Xiaomi Speaker (ASR) → xiaogpt → OpenClaw API → AI response → Speaker TTS
+```
+
+The OpenClaw bot uses the OpenAI-compatible `/v1/chat/completions` endpoint, so it works with any OpenClaw gateway that exposes this API.

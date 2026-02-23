@@ -8,6 +8,7 @@ from xiaogpt.bot.glm_bot import GLMBot
 from xiaogpt.bot.langchain_bot import LangChainBot
 from xiaogpt.bot.llama_bot import LlamaBot
 from xiaogpt.bot.moonshot_bot import MoonshotBot
+from xiaogpt.bot.openclaw_bot import OpenClawBot
 from xiaogpt.bot.ppio_bot import PPIOBot
 from xiaogpt.bot.qwen_bot import QwenBot
 from xiaogpt.bot.yi_bot import YiBot
@@ -24,6 +25,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "yi": YiBot,
     "llama": LlamaBot,
     "ppio": PPIOBot,
+    "openclaw": OpenClawBot,
 }
 
 
@@ -46,4 +48,5 @@ __all__ = [
     "YiBot",
     "LlamaBot",
     "PPIOBot",
+    "OpenClawBot",
 ]
