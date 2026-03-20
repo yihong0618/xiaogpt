@@ -17,6 +17,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - [ChatGLM](http://open.bigmodel.cn/)
 - [Gemini](https://makersuite.google.com/app/apikey)
 - [Doubao](https://console.volcengine.com/iam/keymanage/)
+- [MiniMax](https://platform.minimaxi.com/)
 - [Moonshot](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
 - [01](https://platform.lingyiwanwu.com/apikeys)
 - [Llama3](https://console.groq.com/docs/quickstart)
@@ -85,6 +86,8 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
+# 如果你想使用 MiniMax
+xiaogpt --hardware LX06  --mute_xiaoai --use_minimax --minimax_api_key ${minimax_api_key}
 # 如果你想使用 kimi
 xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${moonshot_api_key}
 # 如果你想使用 llama3
@@ -118,6 +121,8 @@ python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${ge
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
 # 如果你想使用阿里的通义千问
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
+# 如果你想使用 MiniMax
+xiaogpt --hardware LX06  --mute_xiaoai --use_minimax --minimax_api_key ${minimax_api_key}
 # 如果你想使用 kimi
 xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${moonshot_api_key}
 # 如果你想使用 01
@@ -171,6 +176,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | account               | 小爱账户                                                                                                   |                                                                                                           |                                                                  |
 | password              | 小爱账户密码                                                                                               |                                                                                                           |                                                                  |
 | openai_key            | openai 的 apikey                                                                                             |                                                                                                           |                                                                  |
+| minimax_api_key       | MiniMax 的 [apikey](https://platform.minimaxi.com/)                                                        |                                                                                                           |                                                                  |
 | moonshot_api_key      | moonshot kimi 的 [apikey](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) |                                                                                                           |                                                                  |
 | yi_api_key            | 01 wanwu 的 [apikey](https://platform.lingyiwanwu.com/apikeys)                                             |                                                                                                           |                                                                  |
 | llama_api_key         | groq 的 llama3 [apikey](https://console.groq.com/docs/quickstart)                                          |                                                                                                           |                                                                  |

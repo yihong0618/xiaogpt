@@ -20,7 +20,7 @@ verbose: false
 proxy: ""
 
 # ===== 对话 AI 设置 =====
-# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama, ppio, jiekou
+# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, minimax, qwen, doubao, moonshot, yi, llama, ppio, jiekou
 bot: chatgptapi
 # 自定义 prompt
 prompt: "请用300字以内回答"
@@ -51,6 +51,10 @@ openai_key: ""
 # Azure Open AI 的 deployment id（如使用 Azure OpenAI）
 #deployment_id: ""
 
+
+# ----- MiniMax -----
+# MiniMax API key: https://platform.minimaxi.com/
+minimax_api_key: ""
 
 # ----- Moonshot(Kimi) -----
 # Kimi 的 API key: https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B

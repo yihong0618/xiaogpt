@@ -54,6 +54,7 @@ class Config:
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
     openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    minimax_api_key: str = os.getenv("MINIMAX_API_KEY", "")
     moonshot_api_key: str = os.getenv("MOONSHOT_API_KEY", "")
     yi_api_key: str = os.getenv("YI_API_KEY", "")
     llama_api_key: str = os.getenv("GROQ_API_KEY", "")  # use groq
@@ -107,6 +108,11 @@ class Config:
             if not self.openai_key:
                 raise Exception(
                     "Using GPT api needs openai API key, please google how to"
+                )
+        if self.bot == "minimax":
+            if not self.minimax_api_key:
+                raise Exception(
+                    "Using MiniMax api needs MINIMAX_API_KEY, please visit https://platform.minimaxi.com/"
                 )
         if self.bot == "ppio":
             if not self.ppio_api_key:
@@ -178,6 +184,8 @@ class Config:
                     key, value = "bot", "qwen"
                 elif key == "use_doubao":
                     key, value = "bot", "doubao"
+                elif key == "use_minimax":
+                    key, value = "bot", "minimax"
                 elif key == "use_moonshot":
                     key, value = "bot", "moonshot"
                 elif key == "use_yi":

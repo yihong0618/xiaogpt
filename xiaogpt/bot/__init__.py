@@ -8,6 +8,7 @@ from xiaogpt.bot.glm_bot import GLMBot
 from xiaogpt.bot.jiekou_bot import JiekouBot
 from xiaogpt.bot.langchain_bot import LangChainBot
 from xiaogpt.bot.llama_bot import LlamaBot
+from xiaogpt.bot.minimax_bot import MiniMaxBot
 from xiaogpt.bot.moonshot_bot import MoonshotBot
 from xiaogpt.bot.ppio_bot import PPIOBot
 from xiaogpt.bot.qwen_bot import QwenBot
@@ -21,6 +22,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "qwen": QwenBot,
     "langchain": LangChainBot,
     "doubao": DoubaoBot,
+    "minimax": MiniMaxBot,
     "moonshot": MoonshotBot,
     "yi": YiBot,
     "llama": LlamaBot,
@@ -40,6 +42,7 @@ __all__ = [
     "ChatGPTBot",
     "GLMBot",
     "GeminiBot",
+    "MiniMaxBot",
     "MoonshotBot",
     "QwenBot",
     "get_bot",
