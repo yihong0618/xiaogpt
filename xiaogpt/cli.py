@@ -28,6 +28,11 @@ def main():
         help="openai api key",
     )
     parser.add_argument(
+        "--minimax_api_key",
+        dest="minimax_api_key",
+        help="MiniMax api key",
+    )
+    parser.add_argument(
         "--moonshot_api_key",
         dest="moonshot_api_key",
         help="Moonshot api key",
@@ -141,6 +146,13 @@ def main():
         help="if use openai chatgpt api",
     )
     bot_group.add_argument(
+        "--use_minimax",
+        dest="bot",
+        action="store_const",
+        const="minimax",
+        help="if use MiniMax api",
+    )
+    bot_group.add_argument(
         "--use_moonshot_api",
         dest="bot",
         action="store_const",
@@ -224,6 +236,7 @@ def main():
             "glm",
             "gemini",
             "langchain",
+            "minimax",
             "qwen",
             "doubao",
             "moonshot",
