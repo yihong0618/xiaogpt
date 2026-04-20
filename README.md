@@ -123,7 +123,7 @@ xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${m
 # 如果你想使用 01
 xiaogpt --hardware LX06  --mute_xiaoai --use_yi_api --ti_api_key ${yi_api_key}
 # 如果你想使用豆包
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
+python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_api_key xxxx
 # 如果你想使用 llama3
 python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_llama --llama_api_key ${llama_api_key}
 # 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
@@ -199,6 +199,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | api_base              | 如果需要替换默认的 api，或者使用 Azure OpenAI 服务                                                            | 例如：`https://abc-def.openai.azure.com/`                                                                 |
 | volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |                                                                  |
 | volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |
+| volc_api_key          | 豆包（火山方舟）V3 API key，请在[这里](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey)获取 |                                                                                                           |
 
 ## 注意
 

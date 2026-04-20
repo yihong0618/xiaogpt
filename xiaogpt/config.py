@@ -67,7 +67,7 @@ class Config:
     )  # 自行部署的 Google Gemini 代理
     volc_access_key: str = os.getenv("VOLC_ACCESS_KEY", "")
     volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
-    volc_api_key: str = os.getenv("volc_api_key", "")
+    volc_api_key: str = os.getenv("VOLC_API_KEY", "")
     ppio_api_key: str = os.getenv("PPIO_API_KEY", "")
     jiekou_api_key: str = os.getenv("JIEKOU_API_KEY", "")
     proxy: str | None = None

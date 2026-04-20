@@ -114,6 +114,9 @@ def main():
     parser.add_argument(
         "--volc_secret_key", dest="volc_secret_key", help="Volcengine secret key"
     )
+    parser.add_argument(
+        "--volc_api_key", dest="volc_api_key", help="Volcengine Ark API key (for Doubao V3)"
+    )
     # for fish tts
     parser.add_argument("--fish_api_key", dest="fish_api_key", help="fish api key")
     parser.add_argument(
