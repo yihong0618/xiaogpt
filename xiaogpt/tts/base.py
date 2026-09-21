@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import abc
 import asyncio
-import json
 import logging
 from typing import TYPE_CHECKING, AsyncIterator
 
@@ -38,12 +37,7 @@ class TTS(abc.ABC):
 
     async def get_if_xiaoai_is_playing(self) -> bool:
         playing_info = await self.mina_service.player_get_status(self.device_id)
-        # WTF xiaomi api
-        is_playing = (
-            json.loads(playing_info.get("data", {}).get("info", "{}")).get("status", -1)
-            == 1
-        )
-        return is_playing
+        return (playing_info or {}).get("status") == 1
 
     @abc.abstractmethod
     async def synthesize(self, lang: str, text_stream: AsyncIterator[str]) -> None:

@@ -100,8 +100,8 @@ class MiGPT:
             self.config.password,
             str(self.mi_token_home),
         )
-        # Forced login to refresh to refresh token
-        await account.login("micoapi")
+        # MiService loads persisted tokens on first request and reauthenticates
+        # only when they are missing or rejected by the service.
         self.mina_service = MiNAService(account)
         self.miio_service = MiIOService(account)
 
@@ -128,7 +128,7 @@ class MiGPT:
                 break
         else:
             raise Exception(
-                f"we have no hardware: {self.config.hardware} please use `micli mina` to check"
+                f"we have no hardware: {self.config.hardware} please use `miservice mina` to check"
             )
         if not self.config.mi_did:
             devices = await self.miio_service.device_list()
@@ -331,12 +331,7 @@ class MiGPT:
 
     async def get_if_xiaoai_is_playing(self):
         playing_info = await self.mina_service.player_get_status(self.device_id)
-        # WTF xiaomi api
-        is_playing = (
-            json.loads(playing_info.get("data", {}).get("info", "{}")).get("status", -1)
-            == 1
-        )
-        return is_playing
+        return (playing_info or {}).get("status") == 1
 
     async def stop_if_xiaoai_is_playing(self):
         is_playing = await self.get_if_xiaoai_is_playing()
