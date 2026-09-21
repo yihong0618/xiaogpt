@@ -6,6 +6,7 @@ COPY . .
 RUN pip install pdm && \
     pdm install --no-self
 
+ENV HOME=/config
 ENV XDG_CONFIG_HOME=/config
 ENV XIAOGPT_PORT=9527
 VOLUME /config

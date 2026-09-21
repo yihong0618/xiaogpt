@@ -230,14 +230,20 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 
 X86/ARM Docker Image: `yihong0618/xiaogpt`
 
+容器将 HOME 设置为 `/config`，MiService 会把登录 token 保存为 `/config/.mi.token`。请把宿主机上可写的目录挂载到 `/config`，并保持下面示例中的 `-v <your-config-dir>:/config`；已有 token 请先复制到 `<your-config-dir>/.mi.token`。首次登录或 token 失效后可能需要验证码，可使用交互式终端执行：
+
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt <命令行参数>
+docker run -it --rm -v <your-config-dir>:/config -e MI_USER=<your-xiaomi-account> -e MI_PASS=<your-xiaomi-password> --entrypoint pdm yihong0618/xiaogpt run miservice mina
+```
+
+```shell
+docker run -v <your-config-dir>:/config -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt <命令行参数>
 ```
 
 如
 
 ```shell
-docker run -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
+docker run -v <your-config-dir>:/config -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
 ```
 
 ### 使用配置文件
