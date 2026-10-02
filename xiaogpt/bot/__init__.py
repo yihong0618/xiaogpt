@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from xiaogpt.bot.base_bot import BaseBot
 from xiaogpt.bot.chatgptapi_bot import ChatGPTBot
+from xiaogpt.bot.cheaperinference_bot import CheaperInferenceBot
 from xiaogpt.bot.doubao_bot import DoubaoBot
 from xiaogpt.bot.gemini_bot import GeminiBot
 from xiaogpt.bot.glm_bot import GLMBot
@@ -26,6 +27,7 @@ BOTS: dict[str, type[BaseBot]] = {
     "llama": LlamaBot,
     "ppio": PPIOBot,
     "jiekou": JiekouBot,
+    "cheaperinference": CheaperInferenceBot,
 }
 
 
@@ -49,4 +51,5 @@ __all__ = [
     "LlamaBot",
     "PPIOBot",
     "JiekouBot",
+    "CheaperInferenceBot",
 ]

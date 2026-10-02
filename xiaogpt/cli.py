@@ -73,6 +73,11 @@ def main():
         help="Jiekou AI api key",
     )
     parser.add_argument(
+        "--cheaperinference_api_key",
+        dest="cheaperinference_api_key",
+        help="Cheaper Inference api key",
+    )
+    parser.add_argument(
         "--serpapi_api_key",
         dest="serpapi_api_key",
         help="serp api key see https://serpapi.com/",
@@ -210,6 +215,13 @@ def main():
         const="jiekou",
         help="if use Jiekou AI api",
     )
+    bot_group.add_argument(
+        "--use_cheaperinference",
+        dest="bot",
+        action="store_const",
+        const="cheaperinference",
+        help="if use Cheaper Inference api",
+    )
     parser.add_argument(
         "--bing_cookie_path",
         dest="bing_cookie_path",
@@ -231,6 +243,7 @@ def main():
             "llama",
             "ppio",
             "jiekou",
+            "cheaperinference",
         ],
     )
     parser.add_argument(

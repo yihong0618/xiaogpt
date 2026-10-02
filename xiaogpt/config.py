@@ -70,6 +70,7 @@ class Config:
     volc_api_key: str = os.getenv("volc_api_key", "")
     ppio_api_key: str = os.getenv("PPIO_API_KEY", "")
     jiekou_api_key: str = os.getenv("JIEKOU_API_KEY", "")
+    cheaperinference_api_key: str = os.getenv("CHEAPER_INFERENCE_API_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
@@ -117,6 +118,11 @@ class Config:
             if not self.jiekou_api_key:
                 raise Exception(
                     "Using Jiekou AI api needs Jiekou API key, please visit https://api.jiekou.ai"
+                )
+        if self.bot == "cheaperinference":
+            if not self.cheaperinference_api_key:
+                raise Exception(
+                    "Using Cheaper Inference api needs Cheaper Inference API key, please visit https://cheaperinference.com/signup"
                 )
 
     @property
@@ -190,6 +196,8 @@ class Config:
                     key, value = "bot", "ppio"
                 elif key == "use_jiekou":
                     key, value = "bot", "jiekou"
+                elif key == "use_cheaperinference":
+                    key, value = "bot", "cheaperinference"
                 elif key == "enable_edge_tts":
                     key, value = "tts", "edge"
                 if key in cls.__dataclass_fields__:
