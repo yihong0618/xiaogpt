@@ -20,7 +20,7 @@ verbose: false
 proxy: ""
 
 # ===== 对话 AI 设置 =====
-# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama, ppio, jiekou
+# 使用的 bot 类型，目前支持 chatgptapi, glm, gemini, langchain, qwen, doubao, moonshot, yi, llama, ppio, jiekou, cheaperinference
 bot: chatgptapi
 # 自定义 prompt
 prompt: "请用300字以内回答"
@@ -95,6 +95,10 @@ ppio_api_key: ""
 # ----- 接口AI -----
 # Jiekou AI API key: https://jiekou.ai/settings/key-management
 jiekou_api_key: ""
+
+# ----- Cheaper Inference -----
+# Cheaper Inference API key: https://cheaperinference.com/signup
+cheaperinference_api_key: ""
 
 # ===== 语音设置 =====
 # 使用的 TTS 类型，目前支持 mi, edge, openai, azure, volc, baidu, google, minimax, fish
