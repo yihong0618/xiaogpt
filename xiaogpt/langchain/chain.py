@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from langchain.agents import AgentType, Tool, initialize_agent
-from langchain.callbacks.base import BaseCallbackHandler
-from langchain.chains import LLMMathChain
-from langchain.schema.memory import BaseMemory
-from langchain_community.chat_models import ChatOpenAI
+from langchain_classic.agents import AgentExecutor, create_openai_functions_agent
+from langchain_core.tools import Tool
+from langchain_core.callbacks import BaseCallbackHandler
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.chains import LLMMathChain
+from langchain_classic.base_memory import BaseMemory
+from langchain_openai import ChatOpenAI
 from langchain_community.utilities import SerpAPIWrapper
 
 
 async def agent_search(
-    query: str, memeory: BaseMemory, callback: BaseCallbackHandler | None = None
+    query: str, memory: BaseMemory, callback: BaseCallbackHandler | None = None
 ) -> str:
     llm = ChatOpenAI(
         streaming=True,
@@ -35,9 +37,21 @@ async def agent_search(
         ),
     ]
 
-    agent = initialize_agent(
-        tools, llm, agent=AgentType.OPENAI_FUNCTIONS, verbose=False, memory=memeory
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "You are a helpful AI assistant."),
+            MessagesPlaceholder("history", optional=True),
+            ("human", "{input}"),
+            MessagesPlaceholder("agent_scratchpad"),
+        ]
+    )
+    agent = AgentExecutor(
+        agent=create_openai_functions_agent(llm, tools, prompt),
+        tools=tools,
+        verbose=False,
+        memory=memory,
     )
     callbacks = [callback] if callback else None
     # query eg：'杭州亚运会中国队获得了多少枚金牌？' // '计算 3 的 2 次方'
-    return await agent.arun(query, callbacks=callbacks)
+    result = await agent.ainvoke({"input": query}, config={"callbacks": callbacks})
+    return result["output"]

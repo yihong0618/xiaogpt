@@ -1,10 +1,12 @@
-from langchain.tools import BaseTool
+from langchain_core.tools import BaseTool
 from xiaogpt.langchain.examples.email.mail_box import Mailbox
 
 
 class MailSummaryTool(BaseTool):
-    name = "MailSumary"
-    description = "当被问到总结邮件相关时，会触发这个工具，进行今日邮件总结和发送。当调用工具完毕，只需要回复总结成功或失败即可，立即结束本次回答"
+    name: str = "MailSumary"
+    description: str = (
+        "当被问到总结邮件相关时，会触发这个工具，进行今日邮件总结和发送。当调用工具完毕，只需要回复总结成功或失败即可，立即结束本次回答"
+    )
 
     def get_mail_summary(self) -> str:
         """

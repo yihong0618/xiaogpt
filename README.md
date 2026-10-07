@@ -43,7 +43,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 1. ChatGPT id
 2. 小爱音响
 3. 能正常联网的环境或 proxy
-4. python3.8+
+4. Python 3.12–3.14
 
 ## 使用
 

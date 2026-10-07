@@ -4,7 +4,7 @@ import asyncio
 from typing import Any, AsyncIterator
 from uuid import UUID
 
-from langchain.callbacks.base import AsyncCallbackHandler
+from langchain_core.callbacks import AsyncCallbackHandler
 
 
 class AsyncIteratorCallbackHandler(AsyncCallbackHandler):
@@ -29,7 +29,8 @@ class AsyncIteratorCallbackHandler(AsyncCallbackHandler):
         metadata: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
-        self.done.clear()
+        if parent_run_id is None:
+            self.done.clear()
 
     async def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         if token is not None and token != "":
@@ -45,7 +46,8 @@ class AsyncIteratorCallbackHandler(AsyncCallbackHandler):
         tags: list[str] | None = None,
         **kwargs: Any,
     ) -> None:
-        self.done.set()
+        if parent_run_id is None:
+            self.done.set()
 
     async def on_chain_error(
         self,
@@ -56,32 +58,22 @@ class AsyncIteratorCallbackHandler(AsyncCallbackHandler):
         tags: list[str] | None = None,
         **kwargs: Any,
     ) -> None:
-        self.done.set()
+        if parent_run_id is None:
+            self.done.set()
 
     async def aiter(self) -> AsyncIterator[str]:
         while not self.queue.empty() or not self.done.is_set():
-            # Wait for the next token in the queue,
-            # but stop waiting if the done event is set
-            done, other = await asyncio.wait(
-                [
-                    # NOTE: If you add other tasks here, update the code below,
-                    # which assumes each set has exactly one task each
-                    asyncio.ensure_future(self.queue.get()),
-                    asyncio.ensure_future(self.done.wait()),
-                ],
-                return_when=asyncio.FIRST_COMPLETED,
-            )
-
-            # Cancel the other task
-            if other:
-                other.pop().cancel()
-
-            # Extract the value of the first completed task
-            token_or_done = done.pop().result()
-
-            # If the extracted value is the boolean True, the done event was set
-            if token_or_done is True:
-                break
-
-            # Otherwise, the extracted value is a token, which we yield
-            yield token_or_done
+            token_task = asyncio.create_task(self.queue.get())
+            done_task = asyncio.create_task(self.done.wait())
+            try:
+                done, _ = await asyncio.wait(
+                    [token_task, done_task], return_when=asyncio.FIRST_COMPLETED
+                )
+                # Both tasks may finish together; keep the final queued token.
+                if token_task in done:
+                    yield token_task.result()
+            finally:
+                for task in (token_task, done_task):
+                    if not task.done():
+                        task.cancel()
+                await asyncio.gather(token_task, done_task, return_exceptions=True)

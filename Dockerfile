@@ -1,10 +1,10 @@
-FROM python:3.12
+FROM python:3.14
 
 WORKDIR /app
 COPY . .
 
-RUN pip install pdm && \
-    pdm install --no-self
+RUN pip install pdm==2.29.2 && \
+    pdm install --prod --no-self --frozen-lockfile
 
 ENV XIAOGPT_MI_TOKEN_PATH=/config/.mi.token
 ENV XDG_CONFIG_HOME=/config

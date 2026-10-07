@@ -54,7 +54,7 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
         kwargs = {**self.default_options, **options}
         httpx_kwargs = {}
         if self.proxy:
-            httpx_kwargs["proxies"] = self.proxy
+            httpx_kwargs["proxy"] = self.proxy
         async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = self._make_openai_client(sess)
             try:
@@ -74,7 +74,7 @@ class ChatGPTBot(ChatHistoryMixin, BaseBot):
         kwargs = {**self.default_options, **options}
         httpx_kwargs = {}
         if self.proxy:
-            httpx_kwargs["proxies"] = self.proxy
+            httpx_kwargs["proxy"] = self.proxy
         async with httpx.AsyncClient(trust_env=True, **httpx_kwargs) as sess:
             client = self._make_openai_client(sess)
             try:

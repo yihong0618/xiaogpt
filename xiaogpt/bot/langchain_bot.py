@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 
-from langchain.memory import ConversationBufferWindowMemory
+from langchain_classic.memory import ConversationBufferWindowMemory
 from rich import print
 
 from xiaogpt.bot.base_bot import BaseBot

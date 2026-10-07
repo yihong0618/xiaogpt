@@ -35,32 +35,37 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
     def __init__(
         self, gemini_key: str, gemini_api_domain: str, gemini_model: str
     ) -> None:
-        import google.generativeai as genai
+        from google.genai import types
 
-        from google.auth import api_key
-
-        credentials = api_key.Credentials(gemini_key)
+        self.client_options = {"api_key": gemini_key}
         if gemini_api_domain:
             print("Use custom gemini_api_domain: " + gemini_api_domain)
-            credentials._universe_domain = gemini_api_domain
-            genai.configure(
-                transport="rest",
-                credentials=credentials,
-                client_options={
-                    "api_endpoint": "https://" + gemini_api_domain,
-                    "universe_domain": gemini_api_domain,
-                },
-            )
-        else:
-            genai.configure(api_key=gemini_key)
+            base_url = gemini_api_domain.rstrip("/")
+            if not base_url.startswith(("http://", "https://")):
+                base_url = "https://" + base_url
+            self.client_options["http_options"] = types.HttpOptions(base_url=base_url)
 
         self.history = []
-        model = genai.GenerativeModel(
-            model_name=gemini_model or "gemini-2.0-flash-lite",
-            generation_config=generation_config,
+        self.model = gemini_model or "gemini-2.0-flash-lite"
+        self.generation_config = types.GenerateContentConfig(
+            **generation_config,
             safety_settings=safety_settings,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                disable=True
+            ),
         )
-        self.convo = model.start_chat()
+
+    def _get_contents(self, query: str):
+        from google.genai import types
+
+        messages = self.get_messages() + [{"role": "user", "content": query}]
+        return [
+            types.Content(
+                role="model" if message["role"] == "assistant" else "user",
+                parts=[types.Part.from_text(text=message["content"])],
+            )
+            for message in messages
+        ]
 
     @classmethod
     def from_config(cls, config):
@@ -71,17 +76,32 @@ class GeminiBot(ChatHistoryMixin, BaseBot):
         )
 
     async def ask(self, query, **options):
-        response = self.convo.send_message(query)
-        message = response.text.strip()
+        from google import genai
+
+        async with genai.Client(**self.client_options).aio as client:
+            response = await client.models.generate_content(
+                model=self.model,
+                contents=self._get_contents(query),
+                config=self.generation_config,
+            )
+        message = (response.text or "").strip()
+        self.add_message(query, message)
         print(message)
-        if len(self.convo.history) > 10:
-            self.convo.history = self.convo.history[2:]
         return message
 
     async def ask_stream(self, query: str, **options: Any):
-        if len(self.convo.history) > 10:
-            self.convo.history = self.convo.history[2:]
-        response = self.convo.send_message(query, stream=True)
-        for chunk in response:
-            print(chunk.text)
-            yield chunk.text
+        from google import genai
+
+        message = ""
+        async with genai.Client(**self.client_options).aio as client:
+            response = await client.models.generate_content_stream(
+                model=self.model,
+                contents=self._get_contents(query),
+                config=self.generation_config,
+            )
+            async for chunk in response:
+                if chunk.text:
+                    message += chunk.text
+                    print(chunk.text, end="")
+                    yield chunk.text
+        self.add_message(query, message)
