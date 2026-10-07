@@ -32,10 +32,11 @@ class MiServiceMigrationTests(unittest.IsolatedAsyncioTestCase):
         await self.bot.close()
         self.temp.cleanup()
 
-    async def test_startup_reuses_token_and_service_reauthenticates(self):
+    async def test_startup_reuses_token_and_relogs_in_with_pass_token(self):
         token = {
-            "userId": "test-user",
             "deviceId": "test-device",
+            "userId": "test-user",
+            "passToken": "test-pass",
             "micoapi": ["security", "persisted-token"],
         }
         devices = [{"deviceID": "speaker", "miotDID": "123", "hardware": "S12A"}]
@@ -56,49 +57,64 @@ class MiServiceMigrationTests(unittest.IsolatedAsyncioTestCase):
             async def text(self):
                 return "expired"
 
-        for expired in ("missing", False, True):
-            with self.subTest(expired=expired):
-                if expired != "missing":
+        async def security_token_service(account, location, nonce, ssecurity):
+            return "refreshed-token"
+
+        # token file state -> serviceTokens sent to mina, passTokens sent to login
+        cases = {
+            "missing": (["refreshed-token"], [None]),
+            "valid": (["persisted-token"], []),
+            "expired": (["persisted-token", "refreshed-token"], ["test-pass"]),
+            "retry": (["refreshed-token"], ["test-pass"]),
+        }
+        for case, (service_tokens, pass_tokens) in cases.items():
+            with self.subTest(case=case):
+                self.bot.mi_token_home.unlink(missing_ok=True)
+                if case != "missing":
                     self.bot.mi_token_home.write_text(json.dumps(token))
-                statuses = iter([401, 200] if expired is True else [200])
-                seen_tokens = []
+                statuses = iter([401, 200] if case == "expired" else [200])
+                seen_tokens, logins = [], []
 
                 def request(account, url, method, **kwargs):
                     seen_tokens.append(kwargs["cookies"]["serviceToken"])
                     return Response(next(statuses))
 
-                async def login(account, sid):
-                    account.token = {**token, sid: ["security", "refreshed-token"]}
-                    await account.token_store.save_token(account.token)
-                    return True
+                async def service_login(account, uri, data=None):
+                    logins.append(
+                        (account.token["deviceId"], account.token.get("passToken"))
+                    )
+                    return {
+                        "code": 0,
+                        "userId": "test-user",
+                        "passToken": "test-pass",
+                        "location": "https://sts.example",
+                        "nonce": "nonce",
+                        "ssecurity": "security",
+                    }
 
                 with (
                     patch.object(MiAccount, "request", request),
+                    patch.object(MiAccount, "_serviceLogin", service_login),
                     patch.object(
-                        MiAccount, "login", autospec=True, side_effect=login
-                    ) as authenticate,
+                        MiAccount, "_securityTokenService", security_token_service
+                    ),
                 ):
-                    await self.bot.init_all_data()
-                    self.assertEqual(
-                        authenticate.await_count, int(expired is not False)
-                    )
-                    self.assertEqual(
-                        seen_tokens,
-                        (
-                            ["persisted-token", "refreshed-token"]
-                            if expired is True
-                            else (
-                                ["refreshed-token"]
-                                if expired == "missing"
-                                else ["persisted-token"]
-                            )
-                        ),
-                    )
-                    self.assertEqual(self.bot.device_id, "speaker")
-                    self.assertIn(
-                        "refreshed-token" if expired else "persisted-token",
-                        self.bot.mi_token_home.read_text(),
-                    )
+                    if case == "retry":
+                        await self.bot._retry()
+                    else:
+                        await self.bot.init_all_data()
+
+                self.assertEqual(seen_tokens, service_tokens)
+                self.assertEqual([p for _, p in logins], pass_tokens)
+                if case != "missing":
+                    # relogin keeps the persisted device instead of a random one
+                    self.assertTrue(all(d == "test-device" for d, _ in logins))
+                persisted = json.loads(self.bot.mi_token_home.read_text())
+                self.assertEqual(persisted["micoapi"][1], service_tokens[-1])
+                self.assertEqual(
+                    self.bot.get_cookie().get("serviceToken"), service_tokens[-1]
+                )
+                self.assertEqual(self.bot.device_id, "speaker")
 
     async def test_official_playback_status_for_both_callers(self):
         for response, playing in (

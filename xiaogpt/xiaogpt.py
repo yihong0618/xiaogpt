@@ -5,13 +5,15 @@ import asyncio
 import functools
 import json
 import logging
+import os
 import re
 import time
 from pathlib import Path
 from typing import AsyncIterator
 
+import miservice
 from aiohttp import ClientSession, ClientTimeout
-from miservice import MiAccount, MiIOService, MiNAService, miio_command
+from miservice import MiIOService, MiNAService, miio_command
 from rich import print
 from rich.logging import RichHandler
 
@@ -28,13 +30,42 @@ from xiaogpt.tts.live import TetosLiveTTS
 from xiaogpt.utils import detect_language, parse_cookie_string
 
 EOF = object()
+PASS_TOKEN_KEYS = ("deviceId", "userId", "passToken")
+
+
+class MiAccount(miservice.MiAccount):
+    """Log in again with the last passToken before falling back to the password.
+
+    MiService drops the whole token when a request is rejected, so its relogin
+    would start from a new deviceId and may ask for a verification code again.
+    """
+
+    pass_token: dict | None = None
+
+    async def mi_request(self, sid, url, data, headers, relogin=True):
+        await self._load_token()
+        return await super().mi_request(sid, url, data, headers, relogin)
+
+    async def login(self, sid):
+        await self._load_token()
+        if not self.token and self.pass_token:
+            self.token = dict(self.pass_token)
+        return await super().login(sid)
+
+    async def _load_token(self):
+        if self.token is None and self.token_store:
+            self.token = await self.token_store.load_token()
+        if self.token and all(k in self.token for k in PASS_TOKEN_KEYS):
+            self.pass_token = {k: self.token[k] for k in PASS_TOKEN_KEYS}
 
 
 class MiGPT:
     def __init__(self, config: Config):
         self.config = config
 
-        self.mi_token_home = Path.home() / ".mi.token"
+        self.mi_token_home = Path(
+            os.getenv("XIAOGPT_MI_TOKEN_PATH", Path.home() / ".mi.token")
+        )
         self.last_timestamp = int(time.time() * 1000)  # timestamp last call mi speaker
         self.cookie_jar = None
         self.device_id = ""
@@ -86,14 +117,14 @@ class MiGPT:
                     # if you want force mute xiaoai, comment this line below.
                     await asyncio.sleep(1 - d)
 
-    async def init_all_data(self):
-        await self.login_miboy()
+    async def init_all_data(self, refresh_token: bool = False):
+        await self.login_miboy(refresh_token)
         await self._init_data_hardware()
         self.mi_session.cookie_jar.update_cookies(self.get_cookie())
         self.cookie_jar = self.mi_session.cookie_jar
         self.tts  # init tts
 
-    async def login_miboy(self):
+    async def login_miboy(self, refresh_token: bool = False):
         account = MiAccount(
             self.mi_session,
             self.config.account,
@@ -102,6 +133,8 @@ class MiGPT:
         )
         # MiService loads persisted tokens on first request and reauthenticates
         # only when they are missing or rejected by the service.
+        if refresh_token:
+            await account.login("micoapi")
         self.mina_service = MiNAService(account)
         self.miio_service = MiIOService(account)
 
@@ -152,12 +185,12 @@ class MiGPT:
             self.device_id = cookie_dict["deviceId"]
             return cookie_jar
         else:
-            with open(self.mi_token_home) as f:
-                user_data = json.loads(f.read())
-            user_id = user_data.get("userId")
-            service_token = user_data.get("micoapi")[1]
+            # use the live token, the persisted one may be missing or stale
+            token = self.mina_service.account.token
             cookie_string = COOKIE_TEMPLATE.format(
-                device_id=self.device_id, service_token=service_token, user_id=user_id
+                device_id=self.device_id,
+                service_token=token["micoapi"][1],
+                user_id=token["userId"],
             )
             return parse_cookie_string(cookie_string)
 
@@ -233,7 +266,9 @@ class MiGPT:
         return None
 
     async def _retry(self):
-        await self.init_all_data()
+        # the conversation API may reject a serviceToken that mina still
+        # accepts, so renew it with passToken instead of reusing it
+        await self.init_all_data(refresh_token=True)
 
     def _get_last_query(self, data: dict) -> dict | None:
         if d := data.get("data"):
