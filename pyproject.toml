@@ -16,7 +16,6 @@ dependencies = [
     "republic>=0.6.1",
     "httpx2[socks]>=2.16.0",
     "aiohttp>=3.14.4",
-    "requests>=2.32.3",
     "rich>=15.0.0",
     "tetos>=0.4.3",
     "pyyaml>=6.0.3",

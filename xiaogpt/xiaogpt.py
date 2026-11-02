@@ -179,13 +179,12 @@ class MiGPT:
                     "please set it via MI_DID env"
                 )
 
-    def get_cookie(self):
+    def get_cookie(self) -> dict[str, str]:
         if self.config.cookie:
-            cookie_jar = parse_cookie_string(self.config.cookie)
+            cookies = parse_cookie_string(self.config.cookie)
             # set attr from cookie fix #134
-            cookie_dict = cookie_jar.get_dict()
-            self.device_id = cookie_dict["deviceId"]
-            return cookie_jar
+            self.device_id = cookies["deviceId"]
+            return cookies
         else:
             # use the live token, the persisted one may be missing or stale
             token = self.mina_service.account.token
