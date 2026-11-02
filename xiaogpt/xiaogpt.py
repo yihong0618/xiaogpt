@@ -17,7 +17,7 @@ from miservice import MiIOService, MiNAService, miio_command
 from rich import print
 from rich.logging import RichHandler
 
-from xiaogpt.bot import get_bot
+from xiaogpt.bot import Chatbot
 from xiaogpt.config import (
     COOKIE_TEMPLATE,
     LATEST_ASK_API,
@@ -82,6 +82,8 @@ class MiGPT:
         self.mi_session = ClientSession()
 
     async def close(self):
+        if "chatbot" in self.__dict__:
+            await self.chatbot.close()
         await self.mi_session.close()
 
     async def poll_latest_ask(self):
@@ -195,8 +197,8 @@ class MiGPT:
             return parse_cookie_string(cookie_string)
 
     @functools.cached_property
-    def chatbot(self):
-        return get_bot(self.config)
+    def chatbot(self) -> Chatbot:
+        return Chatbot(self.config)
 
     async def simulate_xiaoai_question(self):
         data = MI_ASK_SIMULATE_DATA
@@ -234,7 +236,6 @@ class MiGPT:
         new_prompt = "以下都" + new_prompt
         print(f"Prompt from {self.config.prompt} change to {new_prompt}")
         self.config.prompt = new_prompt
-        self.chatbot.change_prompt(new_prompt)
 
     async def get_latest_ask_from_xiaoai(self, session: ClientSession) -> dict | None:
         retries = 3
@@ -324,10 +325,7 @@ class MiGPT:
 
     async def ask_gpt(self, query: str) -> AsyncIterator[str]:
         if not self.config.stream:
-            if self.config.bot == "glm":
-                answer = self.chatbot.ask(query, **self.config.gpt_options)
-            else:
-                answer = await self.chatbot.ask(query, **self.config.gpt_options)
+            answer = await self.chatbot.ask(query, **self.config.gpt_options)
             message = self._normalize(answer) if answer else ""
             yield message
             return
@@ -420,15 +418,9 @@ class MiGPT:
 
             # drop key words
             query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
-            # llama3 is not good at Chinese, so we need to add prompt in it.
-            if self.config.bot == "llama":
-                query = f"你是一个基于 llama3 的智能助手，请你跟我对话时，一定使用中文，不要夹杂一些英文单词，甚至英语短语也不能随意使用，但类似于 llama3 这样的专属名词除外，问题是：{query}"
 
             print("-" * 20)
             print("问题：" + query + "？")
-            if not self.chatbot.has_history():
-                query = f"{query},{self.config.prompt}"
-            # some model can not detect the language code, so we need to add it
 
             if self.config.mute_xiaoai:
                 await self.stop_if_xiaoai_is_playing()

@@ -53,33 +53,22 @@ class Config:
     hardware: str = "LX06"
     account: str = os.getenv("MI_USER", "")
     password: str = os.getenv("MI_PASS", "")
-    openai_key: str = os.getenv("OPENAI_API_KEY", "")
-    moonshot_api_key: str = os.getenv("MOONSHOT_API_KEY", "")
-    yi_api_key: str = os.getenv("YI_API_KEY", "")
-    llama_api_key: str = os.getenv("GROQ_API_KEY", "")  # use groq
-    glm_key: str = os.getenv("CHATGLM_KEY", "")
-    gemini_key: str = os.getenv("GEMINI_KEY", "")  # keep the old rule
-    gemini_model: str = os.getenv("GEMINI_MODEL", "")  # keep the old rule
-    qwen_key: str = os.getenv("DASHSCOPE_API_KEY", "")  # keep the old rule
-    serpapi_api_key: str = os.getenv("SERPAPI_API_KEY", "")
-    gemini_api_domain: str = os.getenv(
-        "GEMINI_API_DOMAIN", ""
-    )  # 自行部署的 Google Gemini 代理
+    # Republic model spec in the form of `provider:model`
+    model: str = os.getenv("XIAOGPT_MODEL", "openai:gpt-4o-mini")
+    # Defaults to REPUBLIC_<PROVIDER>_API_KEY / REPUBLIC_<PROVIDER>_API_BASE when not given
+    api_key: str = ""
+    api_base: str | None = None
+    # Chat API format, e.g. "chat" for OpenAI-compatible services
+    api_format: str | None = None
     volc_access_key: str = os.getenv("VOLC_ACCESS_KEY", "")
     volc_secret_key: str = os.getenv("VOLC_SECRET_KEY", "")
-    volc_api_key: str = os.getenv("volc_api_key", "")
-    ppio_api_key: str = os.getenv("PPIO_API_KEY", "")
-    jiekou_api_key: str = os.getenv("JIEKOU_API_KEY", "")
     proxy: str | None = None
     mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
     change_prompt_keyword: Iterable[str] = CHANGE_PROMPT_KEY_WORD
     prompt: str = PROMPT
     mute_xiaoai: bool = False
-    bot: str = "chatgptapi"
     cookie: str = ""
-    api_base: str | None = None
-    deployment_id: str | None = None
     use_command: bool = False
     verbose: int = 0
     start_conversation: str = "开始持续对话"
@@ -94,30 +83,20 @@ class Config:
     def __post_init__(self) -> None:
         if self.proxy:
             validate_proxy(self.proxy)
-        if (
-            self.api_base
-            and self.api_base.endswith(("openai.azure.com", "openai.azure.com/"))
-            and not self.deployment_id
-        ):
-            raise Exception(
-                "Using Azure OpenAI needs deployment_id, read this: "
-                "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/chatgpt?pivots=programming-language-chat-completions"
+        if "model" in self.gpt_options:
+            # Backward compatibility: `gpt_options.model` overrides the model name
+            model = self.gpt_options.pop("model")
+            if ":" not in model:
+                model = f"{self.model.split(':', 1)[0]}:{model}"
+            self.model = model
+        if ":" not in self.model:
+            raise ValueError(
+                f"Invalid model {self.model!r}, it must be in the form of `provider:model`, "
+                "e.g. openai:gpt-4o-mini"
             )
-        if self.bot in ["chatgptapi"]:
-            if not self.openai_key:
-                raise Exception(
-                    "Using GPT api needs openai API key, please google how to"
-                )
-        if self.bot == "ppio":
-            if not self.ppio_api_key:
-                raise Exception(
-                    "Using PPIO api needs PPIO API key, please visit https://ppio.com/docs/models/reference-authentication"
-                )
-        if self.bot == "jiekou":
-            if not self.jiekou_api_key:
-                raise Exception(
-                    "Using Jiekou AI api needs Jiekou API key, please visit https://api.jiekou.ai"
-                )
+        if not self.api_key and self.model.startswith("openai:"):
+            # Backward compatibility: read the key from OPENAI_API_KEY
+            self.api_key = os.getenv("OPENAI_API_KEY", "")
 
     @property
     def tts_command(self) -> str:
@@ -166,30 +145,8 @@ class Config:
                     if not isinstance(value, list):
                         value = [value]
                     value = [kw for kw in value if kw]
-                elif key == "use_chatgpt_api":
-                    key, value = "bot", "chatgptapi"
-                elif key == "use_newbing":
-                    key, value = "bot", "newbing"
-                elif key == "use_glm":
-                    key, value = "bot", "glm"
-                elif key == "use_gemini":
-                    key, value = "bot", "gemini"
-                elif key == "use_qwen":
-                    key, value = "bot", "qwen"
-                elif key == "use_doubao":
-                    key, value = "bot", "doubao"
-                elif key == "use_moonshot":
-                    key, value = "bot", "moonshot"
-                elif key == "use_yi":
-                    key, value = "bot", "yi"
-                elif key == "use_llama":
-                    key, value = "bot", "llama"
-                elif key == "use_langchain":
-                    key, value = "bot", "langchain"
-                elif key == "use_ppio":
-                    key, value = "bot", "ppio"
-                elif key == "use_jiekou":
-                    key, value = "bot", "jiekou"
+                elif key == "openai_key":
+                    key = "api_key"
                 elif key == "enable_edge_tts":
                     key, value = "tts", "edge"
                 if key in cls.__dataclass_fields__:

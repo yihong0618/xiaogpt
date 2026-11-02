@@ -14,13 +14,15 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 
 - ChatGPT
 - New Bing
-- [ChatGLM](http://open.bigmodel.cn/)
+- [智谱 GLM](http://open.bigmodel.cn/)（`zai`）
 - [Gemini](https://makersuite.google.com/app/apikey)
 - [Doubao](https://console.volcengine.com/iam/keymanage/)
 - [Moonshot](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
-- [01](https://platform.lingyiwanwu.com/apikeys)
 - [Llama3](https://console.groq.com/docs/quickstart)
 - [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
+- [PPIO 派欧云](https://ppio.com/settings/key-management)
+- [接口AI](https://jiekou.ai/settings/key-management)
+- 以及 [Republic 支持的所有 provider](https://getrepublic.org/providers/)
 
 ## 获取小米音响 DID
 
@@ -50,87 +52,59 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - `pip install -U --force-reinstall xiaogpt[locked]`
 - 参考官方 [MiService](https://github.com/Yonsm/MiService) 项目 README 并在本地 terminal 跑 `miservice list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用
 - 官方 MiService 会优先读取当前用户的 `~/.mi.token`，仅在 token 缺失或认证被拒绝时登录，重新认证会先用保存的 passToken 续期。首次登录或 passToken 也失效时可能需要在交互终端输入短信/邮件验证码；可先运行 `miservice mina` 完成登录。可通过环境变量 `XIAOGPT_MI_TOKEN_PATH` 修改 xiaogpt 使用的 token 路径，Docker 部署见下方说明；有效 token 下重启无需重新输入验证码。升级已有环境时先卸载 `miservice-fork`，避免两个发行包共用 `miservice` 模块造成冲突，再安装项目依赖。
-- run `xiaogpt --hardware ${your_hardware} --use_chatgpt_api` hardware 你看小爱屁股上有型号，输入进来，如果在屁股上找不到或者型号不对，可以用 `miservice mina` 找到型号
+- run `xiaogpt --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来，如果在屁股上找不到或者型号不对，可以用 `miservice mina` 找到型号
 - 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
 - 如果上面不可用，可以尝试用手机抓包，<https://userprofile.mina.mi.com/device_profile/v2/conversation> 找到 cookie 利用 `--cookie '${cookie}'` cookie 别忘了用单引号包裹
 - 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 `--use_command` 来使用 command 来 tts
 - 使用 `--mute_xiaoai` 选项，可以快速停掉小爱的回答
 - 使用 `--account ${account} --password ${password}`
 - 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
-- 使用 `--use_chatgpt_api` 的 api 那样可以更流畅的对话，速度特别快，达到了对话的体验，[openai api](https://platform.openai.com/account/api-keys), 命令 `--use_chatgpt_api`
+- LLM 调用统一使用 [Republic](https://getrepublic.org)，用 `--model provider:model` 指定模型，默认 `openai:gpt-4o-mini`。支持的 provider 见 [Republic provider 列表](https://getrepublic.org/providers/)，如 `openai`、`anthropic`、`google`、`deepseek`、`moonshot`、`zai`、`openrouter`、`ollama` 等
+- 用 `--api_key` 指定 API key，不指定时读取环境变量 `REPUBLIC_<PROVIDER>_API_KEY`（如 `REPUBLIC_DEEPSEEK_API_KEY`）；`openai` 还兼容旧的 `OPENAI_API_KEY`
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。 **请注意，此处你输入的 api 应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
-- `--use_moonshot_api` and other models please refer below
+- 其他 OpenAI 兼容的服务（通义千问、豆包、Groq、PPIO、接口AI 等）用 `openai:<模型名> --api_base <服务地址> --api_format chat` 接入
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
 - 可以使用 `--tts fish --fish_api_key <your-fish-key> --fish_voice_key <fish-voice>` 来获取 [fish-audio](https://fish.audio/) 能力 (如何获取 fish voice 见下)
 - 可以使用 `--tts openai` 来获取 openai tts 能力
 - 可以使用 `--tts azure --azure_tts_speech_key <your-speech-key>` 来获取 Azure TTS 能力
-- 可以使用 `--use_langchain` 替代 `--use_chatgpt_api` 来调用 LangChain（默认 chatgpt）服务，实现上网检索、数学运算..
 
 e.g.
 
 ```shell
 export OPENAI_API_KEY=${your_api_key}
-xiaogpt --hardware LX06 --use_chatgpt_api
+xiaogpt --hardware LX06
 # or
-xiaogpt --hardware LX06 --cookie ${cookie} --use_chatgpt_api
+xiaogpt --hardware LX06 --cookie ${cookie}
 # 如果你想直接输入账号密码
-xiaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
+xiaogpt --hardware LX06 --account ${your_xiaomi_account} --password ${your_password}
 # 如果你想 mute 小米的回答
-xiaogpt --hardware LX06  --mute_xiaoai --use_chatgpt_api
+xiaogpt --hardware LX06  --mute_xiaoai
 # 使用流式响应，获得更快的响应
 xiaogpt --hardware LX06  --mute_xiaoai --stream
 # 如果你想使用 google 的 gemini
-xiaogpt --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
-# 如果你想使用自己的 google gemini 服务
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
-# 如果你想使用阿里的通义千问
-xiaogpt --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
+xiaogpt --hardware LX06  --mute_xiaoai --model google:gemini-2.0-flash --api_key ${gemini_key}
+# 如果你想使用 DeepSeek
+xiaogpt --hardware LX06  --mute_xiaoai --model deepseek:deepseek-chat --api_key ${deepseek_key}
 # 如果你想使用 kimi
-xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${moonshot_api_key}
-# 如果你想使用 llama3
-xiaogpt --hardware LX06  --mute_xiaoai --use_llama --llama_api_key ${llama_api_key}
-# 如果你想使用 01
-xiaogpt --hardware LX06  --mute_xiaoai --use_yi_api --ti_api_key ${yi_api_key}
-# 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
-export OPENAI_API_KEY=${your_api_key}
-export SERPAPI_API_KEY=${your_serpapi_key}
-xiaogpt --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
+xiaogpt --hardware LX06  --mute_xiaoai --model moonshot:kimi-latest --api_key ${moonshot_api_key}
+# 如果你想使用智谱 GLM（国内平台需指定 api_base）
+xiaogpt --hardware LX06  --mute_xiaoai --model zai:glm-4-flash --api_base https://open.bigmodel.cn/api/paas/v4 --api_key ${glm_key}
+# 如果你想使用阿里的通义千问（OpenAI 兼容接口）
+xiaogpt --hardware LX06  --mute_xiaoai --model openai:qwen-plus --api_format chat --api_base https://dashscope.aliyuncs.com/compatible-mode/v1 --api_key ${qwen_key}
+# 如果你想使用豆包（OpenAI 兼容接口，模型名填推理接入点 ID）
+xiaogpt --hardware LX06  --mute_xiaoai --model openai:${endpoint_id} --api_format chat --api_base https://ark.cn-beijing.volces.com/api/v3 --api_key ${ark_api_key}
+# 如果你想使用 Groq 的 llama
+xiaogpt --hardware LX06  --mute_xiaoai --model openai:llama-3.3-70b-versatile --api_format chat --api_base https://api.groq.com/openai/v1 --api_key ${groq_key}
+# 如果你想使用 PPIO 派欧云（接口AI 把 api_base 换成 https://api.jiekou.ai/openai）
+xiaogpt --hardware LX06  --mute_xiaoai --model openai:deepseek/deepseek-v3.2 --api_format chat --api_base https://api.ppinfra.com/openai --api_key ${ppio_api_key}
 ```
 
-使用 git clone 运行
+使用 git clone 运行，把上面的 `xiaogpt` 换成 `python3 xiaogpt.py` 即可：
 
 ```shell
 export OPENAI_API_KEY=${your_api_key}
 python3 xiaogpt.py --hardware LX06
-# or
-python3 xiaogpt.py --hardware LX06 --cookie ${cookie}
-# 如果你想直接输入账号密码
-python3 xiaogpt.py --hardware LX06 --account ${your_xiaomi_account} --password ${your_password} --use_chatgpt_api
-# 如果你想 mute 小米的回答
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai
-# 使用流式响应，获得更快的响应
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --stream
-# 如果你想使用 ChatGLM api
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_glm --glm_key ${glm_key}
-# 如果你想使用 google 的 gemini
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key}
-# 如果你想使用自己的 google gemini 服务
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_gemini --gemini_key ${gemini_key} --gemini_api_domain ${gemini_api_domain}
-# 如果你想使用阿里的通义千问
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_qwen --qwen_key ${qwen_key}
-# 如果你想使用 kimi
-xiaogpt --hardware LX06  --mute_xiaoai --use_moonshot_api --moonshot_api_key ${moonshot_api_key}
-# 如果你想使用 01
-xiaogpt --hardware LX06  --mute_xiaoai --use_yi_api --ti_api_key ${yi_api_key}
-# 如果你想使用豆包
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_doubao --stream --volc_access_key xxxx --volc_secret_key xxx
-# 如果你想使用 llama3
-python3 xiaogpt.py --hardware LX06  --mute_xiaoai --use_llama --llama_api_key ${llama_api_key}
-# 如果你想使用 LangChain+SerpApi 实现上网检索或其他本地服务（目前仅支持 stream 模式）
-export OPENAI_API_KEY=${your_api_key}
-export SERPAPI_API_KEY=${your_serpapi_key}
-python3 xiaogpt.py --hardware Lx06 --use_langchain --mute_xiaoai --stream --openai_key ${your_api_key} --serpapi_api_key ${your_serpapi_key}
 ```
 
 ## config.yaml
@@ -153,7 +127,7 @@ cp xiao_config.yaml.example xiao_config.yaml
 python3 xiaogpt.py
 ```
 
-若要指定 OpenAI 的模型参数，如 model, temporature, top_p, 请在 config.yaml 中指定：
+若要指定模型参数，如 temperature, top_p, max_tokens, 请在 config.yaml 中指定：
 
 ```yaml
 gpt_options:
@@ -161,8 +135,7 @@ gpt_options:
   top_p: 0.9
 ```
 
-具体参数作用请参考 [Open AI API 文档](https://platform.openai.com/docs/api-reference/chat/create)。
-ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
+可用参数见 [Republic ChatOptions](https://getrepublic.org/reference/provider-api/)，服务特有的参数可以放到 `extra_body` 中。
 
 ## 配置项说明
 
@@ -171,21 +144,15 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | hardware              | 设备型号                                                                                                   |                                                                                                           |                                                                  |
 | account               | 小爱账户                                                                                                   |                                                                                                           |                                                                  |
 | password              | 小爱账户密码                                                                                               |                                                                                                           |                                                                  |
-| openai_key            | openai 的 apikey                                                                                             |                                                                                                           |                                                                  |
-| moonshot_api_key      | moonshot kimi 的 [apikey](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) |                                                                                                           |                                                                  |
-| yi_api_key            | 01 wanwu 的 [apikey](https://platform.lingyiwanwu.com/apikeys)                                             |                                                                                                           |                                                                  |
-| llama_api_key         | groq 的 llama3 [apikey](https://console.groq.com/docs/quickstart)                                          |                                                                                                           |                                                                  |
-| serpapi_api_key       | serpapi 的 key 参考 [SerpAPI](https://serpapi.com/)                                                          |                                                                                                           |                                                                  |
-| glm_key               | chatglm 的 apikey                                                                                          |                                                                                                           |                                                                  |
-| gemini_key            | gemini 的 apikey [参考](https://makersuite.google.com/app/apikey)                                          |                                                                                                           |                                                                  |
-| gemini_api_domain     | gemini 的自定义域名 [参考](https://github.com/antergone/palm-netlify-proxy)                                |                                                                                                           |
-| qwen_key              | qwen 的 apikey [参考](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)                |                                                                                                           |                                                                  |
+| model                 | Republic 模型，格式为 `provider:model` | `openai:gpt-4o-mini` | 参考 [Republic providers](https://getrepublic.org/providers/) |
+| api_key               | 模型服务的 API key，不填则读取 `REPUBLIC_<PROVIDER>_API_KEY` | | |
+| api_base              | 替换默认的 API 地址 | 例如：`https://xxxx/v1` | |
+| api_format            | 对话接口格式，OpenAI 兼容服务使用 `chat` | | `chat`、`responses`、`messages` |
 | cookie                | 小爱账户 cookie（如果用上面密码登录可以不填）                                                              |                                                                                                           |                                                                  |
 | mi_did                | 设备 did                                                                                                    |                                                                                                           |                                                                  |
 | use_command           | 使用 MI command 与小爱交互                                                                                 | `false`                                                                                                   |                                                                  |
 | mute_xiaoai           | 快速停掉小爱自己的回答                                                                                     | `true`                                                                                                    |                                                                  |
 | verbose               | 是否打印详细日志                                                                                           | `false`                                                                                                   |                                                                  |
-| bot                   | 使用的 bot 类型，目前支持 chatgptapi,newbing, qwen, gemini                                                 | `chatgptapi`                                                                                              |                                                                  |
 | tts                   | 使用的 TTS 类型                                                                                            | `mi`                                                                                                      | `edge`、 `openai`、`azure`、`volc`、`baidu`、`google`、`minimax` |
 | tts_options           | TTS 参数字典，参考 [tetos](https://github.com/frostming/tetos) 获取可用参数                                |                                                                                                           |                                                                  |
 | prompt                | 自定义 prompt                                                                                               | `请用100字以内回答`                                                                                       |                                                                  |
@@ -195,9 +162,7 @@ ChatGLM [文档](http://open.bigmodel.cn/doc/api#chatglm_130b)
 | end_conversation      | 结束持续对话关键词                                                                                         | `结束持续对话`                                                                                            |                                                                  |
 | stream                | 使用流式响应，获得更快的响应                                                                               | `true`                                                                                                    |                                                                  |
 | proxy                 | 支持 HTTP 代理，传入 http proxy URL                                                                        | ""                                                                                                        |                                                                  |
-| gpt_options           | OpenAI API 的参数字典                                                                                      | `{}`                                                                                                      |                                                                  |
-| deployment_id         | Azure OpenAI 服务的 deployment ID                                                                          | 参考这个[如何找到 deployment_id](https://github.com/yihong0618/xiaogpt/issues/347#issuecomment-1784410784) |                                                                  |
-| api_base              | 如果需要替换默认的 api，或者使用 Azure OpenAI 服务                                                            | 例如：`https://abc-def.openai.azure.com/`                                                                 |
+| gpt_options           | 模型调用参数字典                                                                                           | `{}`                                                                                                      |                                                                  |
 | volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |                                                                  |
 | volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |
 
@@ -243,7 +208,7 @@ docker run -v <your-config-dir>:/config -e OPENAI_API_KEY=<your-openapi-key> yih
 如
 
 ```shell
-docker run -v <your-config-dir>:/config -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware> --use_chatgpt_api
+docker run -v <your-config-dir>:/config -e OPENAI_API_KEY=<your-openapi-key> yihong0618/xiaogpt --account=<your-xiaomi-account> --password=<your-xiaomi-password> --hardware=<your-xiaomi-hardware>
 ```
 
 ### 使用配置文件
@@ -305,7 +270,7 @@ edge-tts --list-voices
 
 1. 注册 https://fish.audio/zh-CN/go-api/ 拿到 api key
 2. 选择你想要的声音自建声音或者使用热门声音  https://fish.audio/zh-CN/text-to-speech/?modelId=e80ea225770f42f79d50aa98be3cedfc 其中 `e80ea225770f42f79d50aa98be3cedfc` 就声音的 key id
-3. python3 xiaogpt.py --hardware LX06 --account xxxx --password xxxxx --use_chatgpt_api --mute_xiaoai --stream --tts fish --fish_api_key xxxxx --fish_voice_key xxxxx
+3. python3 xiaogpt.py --hardware LX06 --account xxxx --password xxxxx --mute_xiaoai --stream --tts fish --fish_api_key xxxxx --fish_voice_key xxxxx
 4. 或者在 xiao_config.yaml 中配置
 
 ```yaml
