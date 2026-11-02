@@ -127,3 +127,37 @@ class ConfigTests(unittest.TestCase):
         with patch.dict("os.environ", {"OPENAI_API_KEY": "env-key"}):
             self.assertEqual(Config().api_key, "env-key")
             self.assertEqual(Config(model="deepseek:deepseek-chat").api_key, "")
+
+
+class DoubaoProviderTests(unittest.IsolatedAsyncioTestCase):
+    async def test_doubao_request(self):
+        requests = []
+
+        async def respond(transport, request):
+            requests.append((request, json.loads(request.content)))
+            return completion(requests[-1][1])
+
+        with patch.object(httpx2.AsyncHTTPTransport, "handle_async_request", respond):
+            bot = Chatbot(
+                Config(
+                    model="doubao:ep-test",
+                    api_key="test",
+                    gpt_options={"reasoning_effort": "none", "max_tokens": 100},
+                )
+            )
+            self.addAsyncCleanup(bot.close)
+            self.assertEqual(await bot.ask("hello", **bot.config.gpt_options), "ok")
+        request, body = requests[0]
+        self.assertEqual(
+            str(request.url),
+            "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+        )
+        self.assertEqual(request.headers["authorization"], "Bearer test")
+        self.assertEqual(body["model"], "ep-test")
+        self.assertEqual(body["thinking"], {"type": "disabled"})
+        self.assertEqual(body["max_tokens"], 100)
+        self.assertNotIn("reasoning_effort", body)
+
+    def test_ark_api_key_fallback(self):
+        with patch.dict("os.environ", {"ARK_API_KEY": "ark-key"}):
+            self.assertEqual(Config(model="doubao:ep-test").api_key, "ark-key")

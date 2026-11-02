@@ -15,7 +15,8 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 LLM 调用统一由 [Republic](https://getrepublic.org) 完成，支持 [Republic 的所有 provider](https://getrepublic.org/providers/)，包括：
 
 - 内置 provider：OpenAI、Anthropic、Google Gemini、DeepSeek、Moonshot（Kimi）、智谱 GLM（`zai`）、OpenRouter、Ollama 等
-- OpenAI 兼容服务：通义千问、豆包、Groq、PPIO 派欧云、接口AI 等
+- xiaogpt 额外注册的 provider：豆包（`doubao`，火山方舟）
+- OpenAI 兼容服务：通义千问、Groq、PPIO 派欧云、接口AI 等
 
 ## 获取小米音响 DID
 
@@ -53,9 +54,9 @@ LLM 调用统一由 [Republic](https://getrepublic.org) 完成，支持 [Republi
 - 使用 `--account ${account} --password ${password}`
 - 如果有能力可以自行替换唤醒词，也可以去掉唤醒词
 - LLM 调用统一使用 [Republic](https://getrepublic.org)，用 `--model provider:model` 指定模型，默认 `openai:gpt-4o-mini`。支持的 provider 见 [Republic provider 列表](https://getrepublic.org/providers/)，如 `openai`、`anthropic`、`google`、`deepseek`、`moonshot`、`zai`、`openrouter`、`ollama` 等
-- 用 `--api_key` 指定 API key，不指定时读取环境变量 `REPUBLIC_<PROVIDER>_API_KEY`（如 `REPUBLIC_DEEPSEEK_API_KEY`）；`openai` 还兼容旧的 `OPENAI_API_KEY`
+- 用 `--api_key` 指定 API key，不指定时读取环境变量 `REPUBLIC_<PROVIDER>_API_KEY`（如 `REPUBLIC_DEEPSEEK_API_KEY`）；`openai` 还会读取 `OPENAI_API_KEY`，`doubao` 还会读取 `ARK_API_KEY`
 - 如果你遇到了墙需要用 Cloudflare Workers 替换 api_base 请使用 `--api_base ${url}` 来替换。 **请注意，此处你输入的 api 应该是'`https://xxxx/v1`'的字样，域名需要用引号包裹**
-- 其他 OpenAI 兼容的服务（通义千问、豆包、Groq、PPIO、接口AI 等）用 `openai:<模型名> --api_base <服务地址> --api_format chat` 接入
+- 其他 OpenAI 兼容的服务（通义千问、Groq、PPIO、接口AI 等）用 `openai:<模型名> --api_base <服务地址> --api_format chat` 接入
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
 - 可以使用 `--tts fish --fish_api_key <your-fish-key> --fish_voice_key <fish-voice>` 来获取 [fish-audio](https://fish.audio/) 能力 (如何获取 fish voice 见下)
@@ -84,8 +85,8 @@ xiaogpt --hardware LX06  --mute_xiaoai --model moonshot:kimi-latest --api_key ${
 xiaogpt --hardware LX06  --mute_xiaoai --model zai:glm-4-flash --api_base https://open.bigmodel.cn/api/paas/v4 --api_key ${glm_key}
 # 如果你想使用阿里的通义千问（OpenAI 兼容接口）
 xiaogpt --hardware LX06  --mute_xiaoai --model openai:qwen-plus --api_format chat --api_base https://dashscope.aliyuncs.com/compatible-mode/v1 --api_key ${qwen_key}
-# 如果你想使用豆包（OpenAI 兼容接口，模型名填推理接入点 ID）
-xiaogpt --hardware LX06  --mute_xiaoai --model openai:${endpoint_id} --api_format chat --api_base https://ark.cn-beijing.volces.com/api/v3 --api_key ${ark_api_key}
+# 如果你想使用豆包（火山方舟，模型名填模型 ID 或推理接入点 ID）
+xiaogpt --hardware LX06  --mute_xiaoai --model doubao:${model_or_endpoint_id} --api_key ${ark_api_key}
 # 如果你想使用 Groq 的 llama
 xiaogpt --hardware LX06  --mute_xiaoai --model openai:llama-3.3-70b-versatile --api_format chat --api_base https://api.groq.com/openai/v1 --api_key ${groq_key}
 # 如果你想使用 PPIO 派欧云（接口AI 把 api_base 换成 https://api.jiekou.ai/openai）
@@ -120,7 +121,7 @@ gpt_options:
   top_p: 0.9
 ```
 
-可用参数见 [Republic ChatOptions](https://getrepublic.org/reference/provider-api/)，服务特有的参数可以放到 `extra_body` 中。
+可用参数见 [Republic ChatOptions](https://getrepublic.org/reference/provider-api/)，服务特有的参数可以放到 `extra_body` 中。对于豆包、DeepSeek 等思考模型，设置 `reasoning_effort: none` 可以关闭深度思考，降低语音回复的延迟。
 
 ## 配置项说明
 

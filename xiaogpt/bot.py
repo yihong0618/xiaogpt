@@ -7,6 +7,7 @@ import republic
 from republic.events import TextDelta
 from rich import print
 
+import xiaogpt.providers  # noqa: F401  register extra providers
 from xiaogpt.config import Config
 from xiaogpt.utils import split_sentences
 

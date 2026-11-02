@@ -37,6 +37,12 @@ HARDWARE_COMMAND_DICT = {
 
 DEFAULT_COMMAND = ("5-1", "5-5")
 
+# Official API key environment variables, used when `api_key` is not given
+PROVIDER_API_KEY_ENVS = {
+    "openai": "OPENAI_API_KEY",
+    "doubao": "ARK_API_KEY",
+}
+
 KEY_WORD = ("帮我", "请")
 CHANGE_PROMPT_KEY_WORD = ("更改提示词",)
 PROMPT = "以下请用 300 字以内回答，请只回答文字不要带链接"
@@ -94,9 +100,11 @@ class Config:
                 f"Invalid model {self.model!r}, it must be in the form of `provider:model`, "
                 "e.g. openai:gpt-4o-mini"
             )
-        if not self.api_key and self.model.startswith("openai:"):
-            # Backward compatibility: read the key from OPENAI_API_KEY
-            self.api_key = os.getenv("OPENAI_API_KEY", "")
+        if not self.api_key:
+            # Also read the key from the provider's official environment variable
+            provider = self.model.split(":", 1)[0]
+            if env := PROVIDER_API_KEY_ENVS.get(provider):
+                self.api_key = os.getenv(env, "")
 
     @property
     def tts_command(self) -> str:
