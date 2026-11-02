@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install PDM
-        run: python -m pip install pdm==2.29.2 pdm-autoexport==0.2.0
+        run: python -m pip install "pdm[locked]==2.29.2" pdm-autoexport==0.2.0
       - name: Install locked dependencies
         run: pdm install --frozen-lockfile
       - name: Check formatting (black)

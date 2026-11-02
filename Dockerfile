@@ -3,7 +3,7 @@ FROM python:3.14
 WORKDIR /app
 COPY . .
 
-RUN pip install pdm==2.29.2 && \
+RUN pip install "pdm[locked]==2.29.2" && \
     pdm install --prod --no-self --frozen-lockfile
 
 ENV XIAOGPT_MI_TOKEN_PATH=/config/.mi.token

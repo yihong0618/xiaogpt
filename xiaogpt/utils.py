@@ -8,18 +8,15 @@ from http.cookies import SimpleCookie
 from typing import TYPE_CHECKING, AsyncIterator
 from urllib.parse import urlparse
 
-from requests.utils import cookiejar_from_dict
-
 if TYPE_CHECKING:
     from lingua import LanguageDetector
 
 
 ### HELP FUNCTION ###
-def parse_cookie_string(cookie_string):
+def parse_cookie_string(cookie_string: str) -> dict[str, str]:
     cookie = SimpleCookie()
     cookie.load(cookie_string)
-    cookies_dict = {k: m.value for k, m in cookie.items()}
-    return cookiejar_from_dict(cookies_dict, cookiejar=None, overwrite=True)
+    return {k: m.value for k, m in cookie.items()}
 
 
 _no_elapse_chars = re.compile(r"([「」『』《》“”'\"()（）]|(?<!-)-(?!-))", re.UNICODE)

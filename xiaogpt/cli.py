@@ -23,59 +23,15 @@ def main():
         help="xiaomi password",
     )
     parser.add_argument(
+        "--model",
+        dest="model",
+        help="LLM model in the form of `provider:model`, e.g. openai:gpt-4o-mini",
+    )
+    parser.add_argument(
+        "--api_key",
         "--openai_key",
-        dest="openai_key",
-        help="openai api key",
-    )
-    parser.add_argument(
-        "--moonshot_api_key",
-        dest="moonshot_api_key",
-        help="Moonshot api key",
-    )
-    parser.add_argument(
-        "--llama_api_key",
-        dest="llama_api_key",
-        help="llama(use groq) api key",
-    )
-    parser.add_argument(
-        "--yi_api_key",
-        dest="yi_api_key",
-        help="01wanwu api key",
-    )
-    parser.add_argument(
-        "--glm_key",
-        dest="glm_key",
-        help="chatglm api key",
-    )
-    parser.add_argument(
-        "--gemini_key",
-        dest="gemini_key",
-        help="gemini api key",
-    )
-    parser.add_argument(
-        "--gemini_api_domain",
-        dest="gemini_api_domain",
-        help="custom gemini api domain",
-    )
-    parser.add_argument(
-        "--qwen_key",
-        dest="qwen_key",
-        help="Alibaba Qwen api key",
-    )
-    parser.add_argument(
-        "--ppio_api_key",
-        dest="ppio_api_key",
-        help="PPIO api key",
-    )
-    parser.add_argument(
-        "--jiekou_api_key",
-        dest="jiekou_api_key",
-        help="Jiekou AI api key",
-    )
-    parser.add_argument(
-        "--serpapi_api_key",
-        dest="serpapi_api_key",
-        help="serp api key see https://serpapi.com/",
+        dest="api_key",
+        help="API key of the model provider",
     )
     parser.add_argument(
         "--proxy",
@@ -132,123 +88,20 @@ def main():
         help="TTS provider",
         choices=["mi", "edge", "openai", "azure", "google", "baidu", "volc", "fish"],
     )
-    bot_group = parser.add_mutually_exclusive_group()
-    bot_group.add_argument(
-        "--use_chatgpt_api",
-        dest="bot",
-        action="store_const",
-        const="chatgptapi",
-        help="if use openai chatgpt api",
-    )
-    bot_group.add_argument(
-        "--use_moonshot_api",
-        dest="bot",
-        action="store_const",
-        const="moonshot",
-        help="if use moonshot api",
-    )
-    bot_group.add_argument(
-        "--use_yi_api",
-        dest="bot",
-        action="store_const",
-        const="yi",
-        help="if use yi api",
-    )
-    bot_group.add_argument(
-        "--use_langchain",
-        dest="bot",
-        action="store_const",
-        const="langchain",
-        help="if use langchain",
-    )
-    bot_group.add_argument(
-        "--use_glm",
-        dest="bot",
-        action="store_const",
-        const="glm",
-        help="if use chatglm",
-    )
-    bot_group.add_argument(
-        "--use_qwen",
-        dest="bot",
-        action="store_const",
-        const="qwen",
-        help="if use qwen",
-    )
-    bot_group.add_argument(
-        "--use_gemini",
-        dest="bot",
-        action="store_const",
-        const="gemini",
-        help="if use gemini",
-    )
-    bot_group.add_argument(
-        "--use_doubao",
-        dest="bot",
-        action="store_const",
-        const="doubao",
-        help="if use doubao",
-    )
-    bot_group.add_argument(
-        "--use_llama",  # use groq
-        dest="bot",
-        action="store_const",
-        const="llama",
-        help="if use groq llama3",
-    )
-    bot_group.add_argument(
-        "--use_ppio",
-        dest="bot",
-        action="store_const",
-        const="ppio",
-        help="if use PPIO api",
-    )
-    bot_group.add_argument(
-        "--use_jiekou",
-        dest="bot",
-        action="store_const",
-        const="jiekou",
-        help="if use Jiekou AI api",
-    )
-    parser.add_argument(
-        "--bing_cookie_path",
-        dest="bing_cookie_path",
-        help="new bing cookies path if use new bing",
-    )
-    bot_group.add_argument(
-        "--bot",
-        dest="bot",
-        help="bot type",
-        choices=[
-            "chatgptapi",
-            "glm",
-            "gemini",
-            "langchain",
-            "qwen",
-            "doubao",
-            "moonshot",
-            "yi",
-            "llama",
-            "ppio",
-            "jiekou",
-        ],
-    )
     parser.add_argument(
         "--config",
         dest="config",
         help="config file path",
     )
-    # args to change api_base
     parser.add_argument(
         "--api_base",
         dest="api_base",
-        help="specify base url other than the OpenAI's official API address",
+        help="specify base url other than the provider's default API address",
     )
-
     parser.add_argument(
-        "--deployment_id",
-        dest="deployment_id",
-        help="specify deployment id, only used when api_base points to azure",
+        "--api_format",
+        dest="api_format",
+        help='chat API format, e.g. "chat" for OpenAI-compatible services',
     )
 
     options = parser.parse_args()
@@ -261,8 +114,7 @@ def main():
         finally:
             await miboy.close()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(config))
+    asyncio.run(main(config))
 
 
 if __name__ == "__main__":

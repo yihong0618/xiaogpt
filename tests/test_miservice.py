@@ -20,7 +20,7 @@ class MiServiceMigrationTests(unittest.IsolatedAsyncioTestCase):
             Config(
                 account="test",
                 password="test",
-                openai_key="test",
+                api_key="test",
                 hardware="S12A",
                 mi_did="123",
                 mute_xiaoai=True,
