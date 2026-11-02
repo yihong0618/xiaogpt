@@ -12,17 +12,10 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 
 ## 支持的 AI 类型
 
-- ChatGPT
-- New Bing
-- [智谱 GLM](http://open.bigmodel.cn/)（`zai`）
-- [Gemini](https://makersuite.google.com/app/apikey)
-- [Doubao](https://console.volcengine.com/iam/keymanage/)
-- [Moonshot](https://platform.moonshot.cn/docs/api/chat#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
-- [Llama3](https://console.groq.com/docs/quickstart)
-- [通义千问](https://help.aliyun.com/zh/dashscope/developer-reference/api-details)
-- [PPIO 派欧云](https://ppio.com/settings/key-management)
-- [接口AI](https://jiekou.ai/settings/key-management)
-- 以及 [Republic 支持的所有 provider](https://getrepublic.org/providers/)
+LLM 调用统一由 [Republic](https://getrepublic.org) 完成，支持 [Republic 的所有 provider](https://getrepublic.org/providers/)，包括：
+
+- 内置 provider：OpenAI、Anthropic、Google Gemini、DeepSeek、Moonshot（Kimi）、智谱 GLM（`zai`）、OpenRouter、Ollama 等
+- OpenAI 兼容服务：通义千问、豆包、Groq、PPIO 派欧云、接口AI 等
 
 ## 获取小米音响 DID
 
@@ -42,7 +35,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 
 ## 准备
 
-1. ChatGPT id
+1. LLM 服务的 API key
 2. 小爱音响
 3. 能正常联网的环境或 proxy
 4. Python 3.12–3.14
@@ -53,7 +46,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 参考官方 [MiService](https://github.com/Yonsm/MiService) 项目 README 并在本地 terminal 跑 `miservice list` 拿到你音响的 DID 成功 **别忘了设置 export MI_DID=xxx** 这个 MI_DID 用
 - 官方 MiService 会优先读取当前用户的 `~/.mi.token`，仅在 token 缺失或认证被拒绝时登录，重新认证会先用保存的 passToken 续期。首次登录或 passToken 也失效时可能需要在交互终端输入短信/邮件验证码；可先运行 `miservice mina` 完成登录。可通过环境变量 `XIAOGPT_MI_TOKEN_PATH` 修改 xiaogpt 使用的 token 路径，Docker 部署见下方说明；有效 token 下重启无需重新输入验证码。升级已有环境时先卸载 `miservice-fork`，避免两个发行包共用 `miservice` 模块造成冲突，再安装项目依赖。
 - run `xiaogpt --hardware ${your_hardware}` hardware 你看小爱屁股上有型号，输入进来，如果在屁股上找不到或者型号不对，可以用 `miservice mina` 找到型号
-- 跑起来之后就可以问小爱同学问题了，“帮我"开头的问题，会发送一份给 ChatGPT 然后小爱同学用 tts 回答
+- 跑起来之后就可以问小爱同学问题了，“帮我”或“请”开头的问题，会发送一份给 LLM 然后小爱同学用 tts 回答
 - 如果上面不可用，可以尝试用手机抓包，<https://userprofile.mina.mi.com/device_profile/v2/conversation> 找到 cookie 利用 `--cookie '${cookie}'` cookie 别忘了用单引号包裹
 - 默认用目前 ubus, 如果你的设备不支持 ubus 可以使用 `--use_command` 来使用 command 来 tts
 - 使用 `--mute_xiaoai` 选项，可以快速停掉小爱的回答
@@ -66,8 +59,7 @@ Play ChatGPT and other LLM with Xiaomi AI Speaker
 - 可以跟小爱说 `开始持续对话` 自动进入持续对话状态，`结束持续对话` 结束持续对话状态。
 - 可以使用 `--tts edge` 来获取更好的 tts 能力
 - 可以使用 `--tts fish --fish_api_key <your-fish-key> --fish_voice_key <fish-voice>` 来获取 [fish-audio](https://fish.audio/) 能力 (如何获取 fish voice 见下)
-- 可以使用 `--tts openai` 来获取 openai tts 能力
-- 可以使用 `--tts azure --azure_tts_speech_key <your-speech-key>` 来获取 Azure TTS 能力
+- 可以使用 `--tts openai`、`--tts azure` 等第三方 TTS，所需的 key 等参数通过配置文件中的 `tts_options` 传入，见下方 [第三方 TTS](#第三方-tts)
 
 e.g.
 
@@ -100,31 +92,24 @@ xiaogpt --hardware LX06  --mute_xiaoai --model openai:llama-3.3-70b-versatile --
 xiaogpt --hardware LX06  --mute_xiaoai --model openai:deepseek/deepseek-v3.2 --api_format chat --api_base https://api.ppinfra.com/openai --api_key ${ppio_api_key}
 ```
 
-使用 git clone 运行，把上面的 `xiaogpt` 换成 `python3 xiaogpt.py` 即可：
+使用 git clone 运行，先用 [PDM](https://pdm-project.org/) 安装依赖，再把上面的 `xiaogpt` 换成 `pdm run xiaogpt` 即可：
 
 ```shell
+pdm install
 export OPENAI_API_KEY=${your_api_key}
-python3 xiaogpt.py --hardware LX06
+pdm run xiaogpt --hardware LX06
 ```
 
 ## config.yaml
 
-如果想通过单一配置文件启动也是可以的，可以通过 `--config` 参数指定配置文件，config 文件必须是合法的 Yaml 或 JSON 格式
-参数优先级
+如果想通过单一配置文件启动也是可以的，可以通过 `--config` 参数指定配置文件，config 文件必须是合法的 YAML 或 JSON 格式。
 
-- cli args > default > config
-
-```shell
-python3 xiaogpt.py --config xiao_config.yaml
-# or
-xiaogpt --config xiao_config.yaml
-```
-
-或者
+参数优先级：命令行参数 > 配置文件 > 默认值
 
 ```shell
 cp xiao_config.yaml.example xiao_config.yaml
-python3 xiaogpt.py
+# 编辑 xiao_config.yaml 后
+xiaogpt --config xiao_config.yaml
 ```
 
 若要指定模型参数，如 temperature, top_p, max_tokens, 请在 config.yaml 中指定：
@@ -139,39 +124,39 @@ gpt_options:
 
 ## 配置项说明
 
-| 参数                  | 说明                                                                                                       | 默认值                                                                                                    | 可选值                                                           |
-| --------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| hardware              | 设备型号                                                                                                   |                                                                                                           |                                                                  |
-| account               | 小爱账户                                                                                                   |                                                                                                           |                                                                  |
-| password              | 小爱账户密码                                                                                               |                                                                                                           |                                                                  |
-| model                 | Republic 模型，格式为 `provider:model` | `openai:gpt-4o-mini` | 参考 [Republic providers](https://getrepublic.org/providers/) |
-| api_key               | 模型服务的 API key，不填则读取 `REPUBLIC_<PROVIDER>_API_KEY` | | |
-| api_base              | 替换默认的 API 地址 | 例如：`https://xxxx/v1` | |
-| api_format            | 对话接口格式，OpenAI 兼容服务使用 `chat` | | `chat`、`responses`、`messages` |
-| cookie                | 小爱账户 cookie（如果用上面密码登录可以不填）                                                              |                                                                                                           |                                                                  |
-| mi_did                | 设备 did                                                                                                    |                                                                                                           |                                                                  |
-| use_command           | 使用 MI command 与小爱交互                                                                                 | `false`                                                                                                   |                                                                  |
-| mute_xiaoai           | 快速停掉小爱自己的回答                                                                                     | `true`                                                                                                    |                                                                  |
-| verbose               | 是否打印详细日志                                                                                           | `false`                                                                                                   |                                                                  |
-| tts                   | 使用的 TTS 类型                                                                                            | `mi`                                                                                                      | `edge`、 `openai`、`azure`、`volc`、`baidu`、`google`、`minimax` |
-| tts_options           | TTS 参数字典，参考 [tetos](https://github.com/frostming/tetos) 获取可用参数                                |                                                                                                           |                                                                  |
-| prompt                | 自定义 prompt                                                                                               | `请用100字以内回答`                                                                                       |                                                                  |
-| keyword               | 自定义请求词列表                                                                                           | `["请"]`                                                                                                  |                                                                  |
-| change_prompt_keyword | 更改提示词触发列表                                                                                         | `["更改提示词"]`                                                                                          |                                                                  |
-| start_conversation    | 开始持续对话关键词                                                                                         | `开始持续对话`                                                                                            |                                                                  |
-| end_conversation      | 结束持续对话关键词                                                                                         | `结束持续对话`                                                                                            |                                                                  |
-| stream                | 使用流式响应，获得更快的响应                                                                               | `true`                                                                                                    |                                                                  |
-| proxy                 | 支持 HTTP 代理，传入 http proxy URL                                                                        | ""                                                                                                        |                                                                  |
-| gpt_options           | 模型调用参数字典                                                                                           | `{}`                                                                                                      |                                                                  |
-| volc_access_key       | 火山引擎的 access key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |                                                                  |
-| volc_secret_key       | 火山引擎的 secret key 请在[这里](https://console.volcengine.com/iam/keymanage/)获取                        |                                                                                                           |
+| 参数                  | 说明                                                                    | 默认值                                           |
+| --------------------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
+| hardware              | 设备型号                                                                | `LX06`                                           |
+| account               | 小米账户，也可用环境变量 `MI_USER`                                      |                                                  |
+| password              | 小米账户密码，也可用环境变量 `MI_PASS`                                  |                                                  |
+| cookie                | 小米账户 cookie（如果用上面密码登录可以不填）                           |                                                  |
+| mi_did                | 设备 did，也可用环境变量 `MI_DID`                                       |                                                  |
+| model                 | 模型，格式为 `provider:model`，参考 [Republic providers](https://getrepublic.org/providers/) | `openai:gpt-4o-mini`         |
+| api_key               | 模型服务的 API key，不填则读取 `REPUBLIC_<PROVIDER>_API_KEY`            |                                                  |
+| api_base              | 替换默认的 API 地址，例如 `https://xxxx/v1`                             |                                                  |
+| api_format            | 对话接口格式：`chat`、`responses`、`messages`，OpenAI 兼容服务用 `chat` | provider 默认格式                                |
+| gpt_options           | 模型调用参数字典，如 `temperature`、`top_p`、`max_tokens`               | `{}`                                             |
+| prompt                | 自定义 prompt，作为 system 消息发送                                     | `以下请用 300 字以内回答，请只回答文字不要带链接` |
+| keyword               | 自定义请求词列表                                                        | `["帮我", "请"]`                                 |
+| change_prompt_keyword | 更改提示词触发列表                                                      | `["更改提示词"]`                                 |
+| start_conversation    | 开始持续对话关键词                                                      | `开始持续对话`                                   |
+| end_conversation      | 结束持续对话关键词                                                      | `结束持续对话`                                   |
+| stream                | 使用流式响应，获得更快的响应                                            | `false`                                          |
+| mute_xiaoai           | 快速停掉小爱自己的回答                                                  | `false`                                          |
+| use_command           | 使用 MI command 与小爱交互                                              | `false`                                          |
+| verbose               | 打印详细日志                                                            | `0`                                              |
+| proxy                 | HTTP 代理地址，如 `http://localhost:8080`                               |                                                  |
+| tts                   | TTS 类型：`mi`、`edge`、`openai`、`azure`、`volc`、`baidu`、`google`、`minimax`、`fish` | `mi`                             |
+| tts_options           | TTS 参数字典，参考 [tetos](https://github.com/frostming/tetos) 获取可用参数 | `{}`                                         |
+| volc_access_key       | 火山引擎 TTS 的 access key，请在[这里](https://console.volcengine.com/iam/keymanage/)获取 |                                |
+| volc_secret_key       | 火山引擎 TTS 的 secret key                                              |                                                  |
 
 ## 注意
 
 1. 请开启小爱同学的蓝牙
-2. 如果要更改提示词和 PROMPT 在代码最上面自行更改
+2. 提示词可以用 `prompt` 配置项修改，也可以对小爱说「更改提示词」+ 新的提示词临时修改
 3. 目前已知 LX04、X10A 和 L05B L05C 可能需要使用 `--use_command`，否则可能会出现终端能输出 GPT 的回复但小爱同学不回答 GPT 的情况。这几个型号也只支持小爱原本的 tts.
-4. 在 wsl 使用时，需要设置代理为 <http://wls 的 ip:port(vpn 的代理端口)>, 否则会出现连接超时的情况，详情 [报错：Error communicating with OpenAI](https://github.com/yihong0618/xiaogpt/issues/235)
+4. 在 wsl 使用时，需要设置代理为 <http://wsl 的 ip:port(vpn 的代理端口)>, 否则会出现连接超时的情况，详情 [报错：Error communicating with OpenAI](https://github.com/yihong0618/xiaogpt/issues/235)
 
 ## QA
 
@@ -231,13 +216,7 @@ docker run -v <your-config-dir>:/config --network=host yihong0618/xiaogpt --conf
  docker build -t xiaogpt .
 ```
 
-如果在安装依赖时构建失败或安装缓慢时，可以在构建 Docker 镜像时使用 `--build-arg` 参数来指定国内源地址：
-
-```sh
-docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple -t xiaogpt .
-```
-
-如果需要在 Apple M1/M2上编译x86
+如果需要在 Apple Silicon 上编译 x86 镜像
 
 ```shell
  docker buildx build --platform=linux/amd64 -t xiaogpt-x86 .
@@ -245,19 +224,25 @@ docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple 
 
 ### 第三方 TTS
 
-我们目前支持是三种第三方 TTS：edge/openai/azure/volc/baidu/google
+除了小爱自带的 TTS，还可以通过 [tetos](https://github.com/frostming/tetos) 使用以下第三方 TTS：
 
-[edge-tts](https://github.com/rany2/edge-tts) 提供了类似微软 tts 的能力
-[azure-tts](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/9-more-realistic-ai-voices-for-conversations-now-generally/ba-p/4099471) 提供了微软 azure tts 的能力
-[openai-tts](https://platform.openai.com/docs/guides/text-to-speech) 提供了类似 openai tts 的能力
-[fish-tts](https://fish.audio/) 提供了 fish tts 的能力
+- [edge-tts](https://github.com/rany2/edge-tts)：免费，无需 key
+- [openai-tts](https://platform.openai.com/docs/guides/text-to-speech)
+- [azure-tts](https://learn.microsoft.com/azure/ai-services/speech-service/text-to-speech)
+- [fish-tts](https://fish.audio/)
+- 火山引擎（volc）、百度（baidu）、Google（google）、MiniMax（minimax）
 
 #### Usage
 
-你可以通过参数 `tts`, 来启用它
+你可以通过参数 `tts` 来启用它，需要 key 的 TTS 通过 `tts_options` 传参，可用参数见 [tetos](https://github.com/frostming/tetos)：
 
 ```yaml
 tts: edge
+# 或者
+tts: openai
+tts_options:
+  api_key: sk-xxxx
+  api_base: https://api.openai.com/v1
 ```
 
 For edge 查看更多语言支持，从中选择一个
@@ -270,22 +255,20 @@ edge-tts --list-voices
 
 1. 注册 https://fish.audio/zh-CN/go-api/ 拿到 api key
 2. 选择你想要的声音自建声音或者使用热门声音  https://fish.audio/zh-CN/text-to-speech/?modelId=e80ea225770f42f79d50aa98be3cedfc 其中 `e80ea225770f42f79d50aa98be3cedfc` 就声音的 key id
-3. python3 xiaogpt.py --hardware LX06 --account xxxx --password xxxxx --mute_xiaoai --stream --tts fish --fish_api_key xxxxx --fish_voice_key xxxxx
+3. `xiaogpt --hardware LX06 --account xxxx --password xxxxx --mute_xiaoai --stream --tts fish --fish_api_key xxxxx --fish_voice_key xxxxx`
 4. 或者在 xiao_config.yaml 中配置
 
 ```yaml
-tts: fish 
+tts: fish
 # TTS 参数字典，参考 https://github.com/frostming/tetos 获取可用参数
-tts_options: {
-    "api_key": "xxxxx",
-    "voice": "xxxxxx"
-}
-
-``` 
+tts_options:
+  api_key: xxxxx
+  voice: xxxxx
+```
 
 #### 在容器中使用 edge-tts/azure-tts/openai-tts/volc/google/baidu/fish
 
-由于 Edge TTS 启动了一个本地的 HTTP 服务，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
+由于第三方 TTS 会启动一个本地的 HTTP 服务供小爱拉取音频，所以需要将容器的端口映射到宿主机上，并且指定本地机器的 hostname:
 
 ```shell
 docker run -v <your-config-dir>:/config -p 9527:9527 -e XIAOGPT_HOSTNAME=<your ip> yihong0618/xiaogpt --config=/config/config.yaml
@@ -301,7 +284,8 @@ docker run -v <your-config-dir>:/config -p 9527:9527 -e XIAOGPT_HOSTNAME=<your i
 ## 感谢
 
 - [xiaomi](https://www.mi.com/)
-- [PDM](https://pdm.fming.dev/latest/)
+- [PDM](https://pdm-project.org/)
+- [Republic](https://getrepublic.org) LLM 调用
 - [Tetos](https://github.com/frostming/tetos) TTS 云服务支持
 - @[Yonsm](https://github.com/Yonsm) 的 [MiService](https://github.com/Yonsm/MiService)
 - @[pjq](https://github.com/pjq) 给了这个项目非常多的帮助
