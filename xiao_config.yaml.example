@@ -21,13 +21,13 @@ proxy: ""
 
 # ===== 对话 AI 设置 =====
 # 使用的模型，格式为 provider:model，LLM 调用由 Republic 完成
-# 支持的 provider 见 https://getrepublic.org/providers/
+# 支持的 provider 见 https://getrepublic.org/providers/ ，另外支持豆包 doubao:<模型或接入点 ID>
 model: "openai:gpt-4o-mini"
 # 模型服务的 API key，不填则读取环境变量 REPUBLIC_<PROVIDER>_API_KEY
 api_key: ""
 # 替换默认的 API 地址，例：https://myopenai.com/v1
 #api_base: ""
-# 对话接口格式，接入 OpenAI 兼容服务（通义千问、豆包、Groq、PPIO、接口AI 等）时填 chat
+# 对话接口格式，接入 OpenAI 兼容服务（通义千问、Groq、PPIO、接口AI 等）时填 chat
 #api_format: chat
 # 自定义 prompt
 prompt: "请用300字以内回答"
