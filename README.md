@@ -28,6 +28,7 @@ LLM 调用统一由 [Republic](https://getrepublic.org) 完成，支持 [Republi
 | 4、设置 MI_DID | `export MI_DID=xxx`                            | `set MI_DID=xxx`                       | `$env:MI_DID="xxx"`                            |
 
 - 注意不同 shell 对环境变量的处理是不同的，尤其是 powershell 赋值时，可能需要双引号来包括值。
+- 如果 `miservice list` 在输入正确验证码后仍报 `70016`，请先安装本项目，在交互终端运行 `xiaogpt --hardware 你的音箱型号` 并输入验证码。使用默认 token 路径时，随后运行 `miservice list` 即可复用这次登录。
 - 如果获取 did 报错时，请更换一下无线网络，有很大概率解决问题。
 
 ## 一点原理

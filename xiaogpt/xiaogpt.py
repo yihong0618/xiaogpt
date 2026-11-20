@@ -8,14 +8,17 @@ import logging
 import os
 import re
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncIterator
 
 import miservice
 from aiohttp import ClientSession, ClientTimeout
 from miservice import MiIOService, MiNAService, miio_command
+from miservice.miaccount import ACCOUNT_BASE, UA_OTP
 from rich import print
 from rich.logging import RichHandler
+from yarl import URL
 
 from xiaogpt.bot import Chatbot
 from xiaogpt.config import (
@@ -41,6 +44,35 @@ class MiAccount(miservice.MiAccount):
     """
 
     pass_token: dict | None = None
+
+    def request(self, url, method="GET", **kwargs):
+        request = super().request(url, method, **kwargs)
+        if (
+            method == "GET"
+            and (kwargs.get("headers") or {}).get("User-Agent") == UA_OTP
+        ):
+            return self._follow_phone_confirmation(request, kwargs)
+        return request
+
+    @asynccontextmanager
+    async def _follow_phone_confirmation(self, request, kwargs):
+        # Backport Yonsm/MiService#64 until a release includes the OTP redirect.
+        async with request as response:
+            yield response
+            page = response.url
+            if (
+                str(page.origin()) != ACCOUNT_BASE
+                or page.path != "/fe/service/verifyPhone"
+                or not (confirm_url := page.query.get("confirmUrl"))
+            ):
+                return
+
+        target = page.join(URL(confirm_url))
+        if str(target.origin()) != ACCOUNT_BASE:
+            raise ValueError("Unexpected Xiaomi phone confirmation URL")
+        async with super().request(str(target), **kwargs) as confirmation:
+            confirmation.raise_for_status()
+            await confirmation.read()
 
     async def mi_request(self, sid, url, data, headers, relogin=True):
         await self._load_token()

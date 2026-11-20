@@ -3,11 +3,13 @@
 import json
 import tempfile
 import unittest
+from contextlib import asynccontextmanager
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from miservice import MiAccount
+from yarl import URL
 from xiaogpt.config import Config
 from xiaogpt.tts.base import TTS
 from xiaogpt.xiaogpt import MiGPT
@@ -31,6 +33,54 @@ class MiServiceMigrationTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.bot.close()
         self.temp.cleanup()
+
+    async def test_otp_resumes_login_after_optional_phone_confirmation(self):
+        base = URL("https://account.xiaomi.com")
+        location = base / "otp/resume"
+        confirm = (base / "pass/serviceLoginAuth2/end").with_query(ticket="a+b")
+        verify_phone = (base / "fe/service/verifyPhone").with_query(
+            confirmUrl=str(confirm)
+        )
+        await self.bot.login_miboy()
+        account = self.bot.mina_service.account
+        account.token = {"deviceId": "test-device"}
+        account.otp_callback = AsyncMock(return_value="123456")
+
+        for landing_page in (location, verify_phone):
+            with self.subTest(landing_page=landing_page):
+                confirmed = False
+
+                @asynccontextmanager
+                async def request(method, url, **kwargs):
+                    nonlocal confirmed
+                    url = URL(url)
+                    body = {}
+                    if method == "POST" and url.path == "/identity/auth/verifyPhone":
+                        self.assertEqual(kwargs["data"]["ticket"], "123456")
+                        body = {"location": str(location)}
+                    elif url == location:
+                        url = landing_page
+                    elif url == confirm:
+                        self.assertEqual(method, "GET")
+                        self.assertEqual(kwargs["cookies"], {"deviceId": "test-device"})
+                        self.assertFalse(confirmed)
+                        confirmed = True
+                    elif url.path == "/pass/serviceLogin":
+                        if landing_page == verify_phone and not confirmed:
+                            body = {"code": 70016}
+                        else:
+                            body = {"code": 0, "passToken": "new-pass"}
+                    yield SimpleNamespace(
+                        status=200,
+                        url=url,
+                        read=AsyncMock(return_value=json.dumps(body).encode()),
+                        raise_for_status=lambda: None,
+                    )
+
+                with patch.object(self.bot.mi_session, "request", request):
+                    result = await account._verify_otp("micoapi", "/otp/start")
+                self.assertEqual(result["passToken"], "new-pass")
+                self.assertEqual(confirmed, landing_page == verify_phone)
 
     async def test_startup_reuses_token_and_relogs_in_with_pass_token(self):
         token = {
